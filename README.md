@@ -1,6 +1,6 @@
 # Bobby
 
-[![Build Status](https://travis-ci.org/teemoo7/bobby.svg?branch=master)](https://travis-ci.org/teemoo7/bobby) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ch.teemoo%3Abobby&metric=alert_status)](https://sonarcloud.io/dashboard?id=ch.teemoo%3Abobby) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=ch.teemoo%3Abobby&metric=coverage)](https://sonarcloud.io/dashboard?id=ch.teemoo%3Abobby)
+[![CircleCI](https://circleci.com/gh/fcarne/bobby/tree/master.svg?style=svg)](https://circleci.com/gh/fcarne/bobby/tree/master) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=fcarne_bobby&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=fcarne_bobby) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/4701db86f4ac4478a54f9509fee0ce74)](https://www.codacy.com/gh/fcarne/bobby/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=fcarne/bobby&amp;utm_campaign=Badge_Grade)
 
 This basic Chess game is a humble tribute to famous Chess player [Robert James "Bobby" Fischer](https://en.wikipedia.org/wiki/Bobby_Fischer), World Chess Champion.
 

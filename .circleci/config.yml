@@ -13,16 +13,12 @@ jobs:
     # A list of available CircleCI Docker Convenience Images are available here: https://circleci.com/developer/images/image/cimg/openjdk
     docker:
       - image: cimg/openjdk:11.0-browsers
-    resource_class: small
+    resource_class: medium
     # Add steps to the job
     # See: https://circleci.com/docs/2.0/configuration-reference/#steps
     steps:
       # Checkout the code as the first step.
       - checkout
-      - run:
-          name: Running X virtual framebuffer
-          command: Xvfb :99 -screen 0 1280x1024x24
-          background: true
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "pom.xml" }} # appends cache key with a hash of pom.xml file
@@ -39,10 +35,15 @@ jobs:
             paths:
               - ~/.m2
             key: v1-dependencies-{{ checksum "pom.xml" }}
-
+      - run:
+          name: Save test results
+          command: |
+            mkdir -p ~/test-results/junit/
+            find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} ~/test-results/junit/ \;
+          when: always
       - store_test_results:
-          path: ./test-results/
-
+          path: ~/test-results
+          
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:

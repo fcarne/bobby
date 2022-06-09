@@ -9,11 +9,13 @@ public class Rook extends Piece {
 
     @Override
     public String getUnicode() {
-        if (color == Color.WHITE) {
-            return "\u2656";
+        String unicode;
+    	if (color == Color.WHITE) {
+        	unicode = "\u2656";
         } else {
-            return "\u265C";
+        	unicode ="\u265C";
         }
+        return unicode;
     }
 
     @Override

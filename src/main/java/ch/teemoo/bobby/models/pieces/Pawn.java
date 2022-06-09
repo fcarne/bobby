@@ -3,17 +3,19 @@ package ch.teemoo.bobby.models.pieces;
 import ch.teemoo.bobby.models.Color;
 
 public class Pawn extends Piece {
-    public Pawn(Color color) {
+    public Pawn(final Color color) {
         super(color, 1);
     }
 
     @Override
     public String getUnicode() {
+    	String unicode;
         if (color == Color.WHITE) {
-            return "\u2659";
+        	unicode = "\u2659";
         } else {
-            return "\u265F";
+        	unicode = "\u265F";
         }
+        return unicode;
     }
 
     @Override

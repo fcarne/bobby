@@ -6,8 +6,9 @@ import ch.teemoo.bobby.models.moves.Move;
 import ch.teemoo.bobby.models.pieces.Piece;
 import ch.teemoo.bobby.models.pieces.Queen;
 import ch.teemoo.bobby.models.pieces.Rook;
-import org.junit.Before;
-import org.junit.Test;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
@@ -22,8 +23,8 @@ public class BoardViewTest {
 
     private BoardView view;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    public void setup() {
         view = new BoardView("Test board", guiHelper, false);
     }
 

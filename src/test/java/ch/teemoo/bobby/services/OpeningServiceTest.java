@@ -12,8 +12,9 @@ import java.util.List;
 import ch.teemoo.bobby.models.Color;
 import ch.teemoo.bobby.models.moves.Move;
 import ch.teemoo.bobby.models.pieces.Pawn;
-import org.junit.Before;
-import org.junit.Test;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class OpeningServiceTest {
 
@@ -22,8 +23,8 @@ public class OpeningServiceTest {
 	private PortableGameNotationService portableGameNotationService;
 	private MoveService moveService;
 
-	@Before
-	public void setUp() {
+	@BeforeEach
+	public void setup() {
 		this.fileService = new FileService();
 		this.moveService = new MoveService();
 		this.portableGameNotationService = new PortableGameNotationService(moveService);
@@ -50,9 +51,8 @@ public class OpeningServiceTest {
 		when(fileServiceMock.readFileFromResourceFolder(any(), any())).thenThrow(new IOException("test"));
 
 		// when
-		OpeningService openingServiceWithException =
-			new OpeningService(portableGameNotationServiceMock, fileServiceMock);
-
+		OpeningService openingServiceWithException = new OpeningService(portableGameNotationServiceMock,
+				fileServiceMock);
 
 		// then
 		String tree = openingServiceWithException.prettyPrintTree();

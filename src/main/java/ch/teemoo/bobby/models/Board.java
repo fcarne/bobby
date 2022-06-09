@@ -7,27 +7,22 @@ import ch.teemoo.bobby.models.moves.EnPassantMove;
 import ch.teemoo.bobby.models.moves.Move;
 import ch.teemoo.bobby.models.moves.PromotionMove;
 import ch.teemoo.bobby.models.pieces.*;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public class Board {
     public final static int SIZE = 8;
 
     private final Piece[][] board;
 
-    //fixme: do not store pieces array (mutable internal representation)
-    @SuppressFBWarnings("EI_EXPOSE_REP")
     public Board(Piece[][] board) {
-        this.board = board;
+        this.board = board.clone();
     }
 
     public Board(String representation) {
         this.board = fromString(representation);
     }
 
-    //fixme: do not expose pieces array (mutable internal representation)
-    @SuppressFBWarnings("EI_EXPOSE_REP")
     public Piece[][] getBoard() {
-        return board;
+        return board.clone();
     }
 
     public Optional<Piece> getPiece(int x, int y) {

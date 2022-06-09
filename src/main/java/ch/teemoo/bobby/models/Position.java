@@ -1,19 +1,22 @@
 package ch.teemoo.bobby.models;
 
 public class Position {
-	private final int x;
-	private final int y;
+	private final int file;
+	private final int rank;
 
-	public Position(int x, int y) {
-		this.x = x;
-		this.y = y;
+	public Position(int file, int rank) {
+		assert 0 <= file && file < 8;
+		assert 0 <= rank && rank < 8;
+		
+		this.file = file;
+		this.rank = rank;
 	}
 
-	public int getX() {
-		return x;
+	public int getFile() {
+		return file;
 	}
 
-	public int getY() {
-		return y;
+	public int getRank() {
+		return rank;
 	}
 }

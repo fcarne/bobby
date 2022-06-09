@@ -2,6 +2,7 @@ package ch.teemoo.bobby.models.moves;
 
 import java.util.Objects;
 
+import ch.teemoo.bobby.models.Board;
 import ch.teemoo.bobby.models.Color;
 import ch.teemoo.bobby.models.pieces.Pawn;
 import ch.teemoo.bobby.models.pieces.Piece;
@@ -12,7 +13,7 @@ public class Move {
 	private final int fromY;
 	private final int toX;
 	private final int toY;
-	private Piece tookPiece = null;
+	private Piece tookPiece;
 	private boolean isChecking;
 
 	public Move(Piece piece, int fromX, int fromY, int toX, int toY) {
@@ -21,6 +22,7 @@ public class Move {
 		this.fromY = fromY;
 		this.toX = toX;
 		this.toY = toY;
+		this.tookPiece = null;
 	}
 
 	public Piece getPiece() {
@@ -64,51 +66,44 @@ public class Move {
 	}
 
 	public String getPrettyNotation() {
-		StringBuilder builder = new StringBuilder()
-			.append(piece.getColor())
-			.append(" ")
-			.append(getBasicNotation())
-			.append(" (")
-			.append(piece.getClass().getSimpleName())
-			.append(")");
+		StringBuilder builder = new StringBuilder().append(piece.getColor()).append(" ").append(getBasicNotation())
+				.append(" (").append(piece.getClass().getSimpleName()).append(")");
 		return builder.toString();
 	}
 
 	public String getBasicNotation() {
 		StringBuilder builder = new StringBuilder();
-		builder.append(convertXToChar(fromX))
-			.append(fromY + 1)
-			.append(isTaking() ? "x" : "-")
-			.append(convertXToChar(toX))
-			.append(toY + 1);
+		builder.append(convertXToChar(fromX)).append(fromY + 1).append(isTaking() ? "x" : "-")
+				.append(convertXToChar(toX)).append(toY + 1);
 		if (isChecking) {
 			builder.append("+");
 		}
 		return builder.toString();
 	}
 
-	public static Move fromBasicNotation(String notation, Color color) {
+	public static Move fromBasicNotation(String notation, Color color, Board board) {
 		if (notation == null || color == null) {
-			throw new IllegalArgumentException("Unexpected format for basic notation move: " + notation + " (" + color + ")");
+			throw new IllegalArgumentException(
+					"Unexpected format for basic notation move: " + notation + " (" + color + ")");
 		}
 
 		Move move;
-		if (notation.equalsIgnoreCase("0-0")) {
-			if (color == Color.WHITE) {
-				move = new CastlingMove(null, 4, 0, 6, 0, null, 7, 0, 5, 0);
-			} else {
-				move = new CastlingMove(null, 4, 7, 6, 7, null, 7, 7, 5, 7);
-			}
+		if (notation.contains("0-0-0")) {
+			int y = color == Color.WHITE ? 0 : 7;
+			Piece king = board.getPiece(4, y).orElseThrow(() -> new RuntimeException("There is no king at (4, " + y + ")"));
+			Piece rook = board.getPiece(0, y).orElseThrow(() -> new RuntimeException("There is no rook at (0, " + y + ")"));
+			move = new CastlingMove(king, 4, y, 2, y, rook, 0, y, 3, y);
+			
 			if (notation.indexOf('+') > -1) {
 				move.setChecking(true);
 			}
 			return move;
-		} else if (notation.equalsIgnoreCase("0-0-0")) {
-			if (color == Color.WHITE) {
-				move = new CastlingMove(null, 4, 0, 2, 0, null, 0, 0, 3, 0);
-			} else {
-				move = new CastlingMove(null, 4, 7, 2, 7, null, 0, 7, 3, 7);
-			}
+		} else if (notation.contains("0-0")) {
+			int y = color == Color.WHITE ? 0 : 7;
+			Piece king = board.getPiece(4, y).orElseThrow(() -> new RuntimeException("There is no king at (4, " + y + ")"));
+			Piece rook = board.getPiece(0, y).orElseThrow(() -> new RuntimeException("There is no rook at (7, " + y + ")"));
+			move = new CastlingMove(king, 4, y, 6, y, rook, 7, y, 5, y);
+
 			if (notation.indexOf('+') > -1) {
 				move.setChecking(true);
 			}
@@ -116,7 +111,7 @@ public class Move {
 		}
 
 		if (notation.length() < 5) {
-			//todo: improve with regex
+			// todo: improve with regex
 			throw new IllegalArgumentException("Unexpected format for basic notation move: " + notation);
 		}
 		char fromXChar = notation.charAt(0);
@@ -125,16 +120,19 @@ public class Move {
 		char toXChar = notation.charAt(3);
 		char toYChar = notation.charAt(4);
 
-		move = new Move(null, convertCharToX(fromXChar), Character.getNumericValue(fromYChar) - 1,
-				convertCharToX(toXChar), Character.getNumericValue(toYChar) - 1);
+		int toX = convertCharToX(toXChar);
+		int toY = Character.getNumericValue(toYChar) - 1;
+
+		move = new Move(null, convertCharToX(fromXChar), Character.getNumericValue(fromYChar) - 1, toX, toY);
 
 		if (notation.indexOf('+') > -1) {
 			move.setChecking(true);
 		}
 
 		if (takingChar == 'x') {
-			//fixme: do not know here what piece is on the board at this place but we must mark the move as taking
-			move.setTookPiece(new Pawn(color == Color.WHITE ? Color.BLACK : Color.WHITE));
+			// fixme: do not know here what piece is on the board at this place but we must
+			// mark the move as taking
+			move.setTookPiece(board.getPiece(toX, toY).orElse(new Pawn(color.opposite())));
 		}
 
 		return move;
@@ -157,11 +155,13 @@ public class Move {
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
 		Move move = (Move) o;
-		return equalsForPositions(move)
-			&& tookPiece == move.tookPiece && isChecking == move.isChecking && Objects.equals(piece, move.piece);
+		return equalsForPositions(move) && tookPiece == move.tookPiece && isChecking == move.isChecking
+				&& Objects.equals(piece, move.piece);
 	}
 
 	@Override

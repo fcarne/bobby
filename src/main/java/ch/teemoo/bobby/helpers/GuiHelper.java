@@ -3,7 +3,6 @@ package ch.teemoo.bobby.helpers;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.io.IOException;
-import java.util.Optional;
 import java.util.Properties;
 
 import org.slf4j.Logger;

@@ -6,8 +6,9 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import ch.teemoo.bobby.models.players.Player;
 import ch.teemoo.bobby.models.players.RandomBot;
 import ch.teemoo.bobby.services.MoveService;
-import org.junit.Before;
-import org.junit.Test;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
 public class MatchTest {
@@ -18,8 +19,8 @@ public class MatchTest {
 	@Mock
 	MoveService moveService;
 
-	@Before
-	public void setUp() {
+	@BeforeEach
+	public void setup() {
 		this.player1 = new RandomBot(moveService);
 		this.player2 = new RandomBot(moveService);
 		this.match = new Match(player1, player2);

@@ -6,9 +6,11 @@ import ch.teemoo.bobby.models.pieces.Knight;
 import ch.teemoo.bobby.models.pieces.Pawn;
 import ch.teemoo.bobby.models.pieces.Piece;
 import ch.teemoo.bobby.models.pieces.Queen;
-import org.junit.Test;
 
 import javax.swing.*;
+
+import org.junit.jupiter.api.Test;
+
 import java.awt.*;
 
 import static org.assertj.core.api.Assertions.assertThat;

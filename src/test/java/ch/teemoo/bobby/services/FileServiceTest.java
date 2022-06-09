@@ -17,8 +17,8 @@ import ch.teemoo.bobby.models.moves.Move;
 import ch.teemoo.bobby.models.pieces.Pawn;
 import ch.teemoo.bobby.models.players.Human;
 import org.assertj.core.api.ThrowableAssert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class FileServiceTest {
 
@@ -26,8 +26,8 @@ public class FileServiceTest {
 
 	private File file;
 
-	@Before
-	public void setUp() throws IOException {
+	@BeforeEach
+	public void setup() throws IOException {
 		file = File.createTempFile("temp", "tmp");
 		file.deleteOnExit();
 	}

@@ -32,7 +32,8 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 
 public class BoardView extends JFrame implements IBoardView {
-    private static final Border NO_BORDER = BorderFactory.createEmptyBorder();
+    private static final long serialVersionUID = -6991571483234510815L;
+	private static final Border NO_BORDER = BorderFactory.createEmptyBorder();
     private static final Border GREEN_BORDER = BorderFactory.createLineBorder(java.awt.Color.green, 3, true);
 
     private final boolean visible;

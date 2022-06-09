@@ -9,8 +9,9 @@ import ch.teemoo.bobby.models.pieces.Pawn;
 import ch.teemoo.bobby.models.pieces.Piece;
 import ch.teemoo.bobby.models.pieces.Queen;
 import ch.teemoo.bobby.models.players.Human;
-import org.junit.Before;
-import org.junit.Test;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
@@ -21,8 +22,8 @@ public class BoardTest {
     private Game game;
     private Board initialBoard;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    public void setup() {
         // The game board will have the default pieces positions, which will be used in the tests below
         this.game = new Game(new Human("Human"), new Human("Human2"));
         this.initialBoard = game.getBoard();
@@ -188,8 +189,8 @@ public class BoardTest {
         assertThat(board.getPiece(toX, fromY)).isPresent().get().isEqualTo(blackPawn);
 
         Move move = new Move(whitePawn, fromX, fromY, toX, toY);
+        move.setTookPiece(blackPawn);
         EnPassantMove enPassantMove = new EnPassantMove(move, toX, fromY);
-        enPassantMove.setTookPiece(blackPawn);
         board.doMove(enPassantMove);
         assertThat(board.getPiece(fromX, fromY)).isEmpty();
         assertThat(board.getPiece(toX, fromY)).isEmpty();
@@ -213,8 +214,9 @@ public class BoardTest {
         assertThat(board.getPiece(toX, toY)).isPresent().get().isEqualTo(whitePawn);
 
         Move move = new Move(whitePawn, fromX, fromY, toX, toY);
+        move.setTookPiece(blackPawn);
+        
         EnPassantMove enPassantMove = new EnPassantMove(move, toX, fromY);
-        enPassantMove.setTookPiece(blackPawn);
         board.undoMove(enPassantMove);
 
         assertThat(board.getPiece(fromX, fromY)).isPresent().get().isEqualTo(whitePawn);

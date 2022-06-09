@@ -1,86 +1,87 @@
 package ch.teemoo.bobby.models.pieces;
 
-import ch.teemoo.bobby.models.Color;
-import org.junit.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import ch.teemoo.bobby.models.Color;
+
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.params.provider.Arguments.arguments;;
 
 public class PieceTest {
 
-    @Test
-    public void testPawn() {
-        Piece whitePawn = new Pawn(Color.WHITE);
-        assertThat(whitePawn.getUnicode()).isEqualTo("♙");
-        Piece blackPawn = new Pawn(Color.BLACK);
-        assertThat(blackPawn.getUnicode()).isEqualTo("♟");
-        assertThat(blackPawn.getValue()).isEqualTo(whitePawn.getValue());
-        assertThat(blackPawn.getValue()).isEqualTo(1);
-    }
+	@ParameterizedTest
+	@MethodSource("providePieces")
+	public void pieceConstrucor_ok_returnsCorrectPiece(Piece piece, String unicode, int value) {
+		assertAll(
+				() -> assertThat(piece.getUnicode()).isEqualTo(unicode),
+				() -> assertThat(piece.getValue()).isEqualTo(value)
+		);
+	}
+	
+	@ParameterizedTest
+	@MethodSource("providePieces")
+	public void copy_ok_returnsEqual(Piece piece) {
+		Piece copy = piece.copy();
+		assertAll(
+				() -> assertThat(copy.color).isEqualTo(piece.color),
+				() -> assertThat(copy.getValue()).isEqualTo(piece.getValue())
+		);
+	}
 
-    @Test
-    public void testKnight() {
-        Piece whiteKnight = new Knight(Color.WHITE);
-        assertThat(whiteKnight.getUnicode()).isEqualTo("♘");
-        Piece blackKnight = new Knight(Color.BLACK);
-        assertThat(blackKnight.getUnicode()).isEqualTo("♞");
-        assertThat(blackKnight.getValue()).isEqualTo(whiteKnight.getValue());
-        assertThat(blackKnight.getValue()).isEqualTo(3);
-    }
+	private static Stream<Arguments> providePieces() {
+		return Stream.of(
+				arguments(new Bishop(Color.BLACK), "♝", 3),
+				arguments(new Bishop(Color.WHITE), "♗", 3),
+				arguments(new King(Color.BLACK), "♚", 100),
+				arguments(new King(Color.WHITE), "♔", 100),
+				arguments(new Knight(Color.BLACK), "♞", 3),
+				arguments(new Knight(Color.WHITE), "♘", 3),
+				arguments(new Pawn(Color.BLACK), "♟", 1),
+				arguments(new Pawn(Color.WHITE), "♙", 1),
+				arguments(new Rook(Color.BLACK), "♜", 5),
+				arguments(new Rook(Color.WHITE), "♖", 5),
+				arguments(new Queen(Color.BLACK), "♛", 10),
+				arguments(new Queen(Color.WHITE), "♕", 10));
+	}
+	
+	@ParameterizedTest
+	@MethodSource
+	public void fromUnicodeChar_correctChar_returnsCorrectPiece(char c, Class<?> clazz, Color color) {
+		assertThat(Piece.fromUnicodeChar(c)).isInstanceOf(clazz).hasFieldOrPropertyWithValue("color", color);
+	}
+	
+	private static Stream<Arguments> fromUnicodeChar_correctChar_returnsCorrectPiece() {
+		return Stream.of(
+				arguments('♝', Bishop.class, Color.BLACK),
+				arguments('♗', Bishop.class, Color.WHITE),
+				arguments('♚', King.class, Color.BLACK),
+				arguments('♔', King.class, Color.WHITE),
+				arguments('♞', Knight.class, Color.BLACK),
+				arguments('♘', Knight.class, Color.WHITE),
+				arguments('♟', Pawn.class, Color.BLACK),
+				arguments('♙', Pawn.class, Color.WHITE),
+				arguments('♜', Rook.class, Color.BLACK),
+				arguments('♖', Rook.class, Color.WHITE),
+				arguments('♛', Queen.class, Color.BLACK),
+				arguments('♕', Queen.class, Color.WHITE)
+				);
+	}
+	
+	@Test
+	public void fromUnicodeChar_unknownChar_throwsException() {
+		char c = 'a';
+		IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
+	           Piece.fromUnicodeChar(c);
+	  });
 
-    @Test
-    public void testBishop() {
-        Piece whiteBishop = new Bishop(Color.WHITE);
-        assertThat(whiteBishop.getUnicode()).isEqualTo("♗");
-        Piece blackBischop = new Bishop(Color.BLACK);
-        assertThat(blackBischop.getUnicode()).isEqualTo("♝");
-        assertThat(blackBischop.getValue()).isEqualTo(whiteBishop.getValue());
-        assertThat(blackBischop.getValue()).isEqualTo(3);
-    }
-
-    @Test
-    public void testRook() {
-        Piece whiteRook = new Rook(Color.WHITE);
-        assertThat(whiteRook.getUnicode()).isEqualTo("♖");
-        Piece blackRook = new Rook(Color.BLACK);
-        assertThat(blackRook.getUnicode()).isEqualTo("♜");
-        assertThat(blackRook.getValue()).isEqualTo(whiteRook.getValue());
-        assertThat(blackRook.getValue()).isEqualTo(5);
-    }
-
-    @Test
-    public void testQueen() {
-        Piece whiteQueen = new Queen(Color.WHITE);
-        assertThat(whiteQueen.getUnicode()).isEqualTo("♕");
-        Piece blackQueen = new Queen(Color.BLACK);
-        assertThat(blackQueen.getUnicode()).isEqualTo("♛");
-        assertThat(blackQueen.getValue()).isEqualTo(whiteQueen.getValue());
-        assertThat(blackQueen.getValue()).isEqualTo(10);
-    }
-
-    @Test
-    public void testKing() {
-        Piece whiteKing = new King(Color.WHITE);
-        assertThat(whiteKing.getUnicode()).isEqualTo("♔");
-        Piece blackKing = new King(Color.BLACK);
-        assertThat(blackKing.getUnicode()).isEqualTo("♚");
-        assertThat(blackKing.getValue()).isEqualTo(whiteKing.getValue());
-        assertThat(blackKing.getValue()).isEqualTo(100);
-    }
-
-    @Test
-    public void testFromUnicodeChar() {
-        assertThat(Piece.fromUnicodeChar('♜')).isInstanceOf(Rook.class).hasFieldOrPropertyWithValue("color", Color.BLACK);
-        assertThat(Piece.fromUnicodeChar('♞')).isInstanceOf(Knight.class).hasFieldOrPropertyWithValue("color", Color.BLACK);
-        assertThat(Piece.fromUnicodeChar('♝')).isInstanceOf(Bishop.class).hasFieldOrPropertyWithValue("color", Color.BLACK);
-        assertThat(Piece.fromUnicodeChar('♛')).isInstanceOf(Queen.class).hasFieldOrPropertyWithValue("color", Color.BLACK);
-        assertThat(Piece.fromUnicodeChar('♚')).isInstanceOf(King.class).hasFieldOrPropertyWithValue("color", Color.BLACK);
-        assertThat(Piece.fromUnicodeChar('♟')).isInstanceOf(Pawn.class).hasFieldOrPropertyWithValue("color", Color.BLACK);
-
-        assertThat(Piece.fromUnicodeChar('♖')).isInstanceOf(Rook.class).hasFieldOrPropertyWithValue("color", Color.WHITE);
-        assertThat(Piece.fromUnicodeChar('♘')).isInstanceOf(Knight.class).hasFieldOrPropertyWithValue("color", Color.WHITE);
-        assertThat(Piece.fromUnicodeChar('♗')).isInstanceOf(Bishop.class).hasFieldOrPropertyWithValue("color", Color.WHITE);
-        assertThat(Piece.fromUnicodeChar('♕')).isInstanceOf(Queen.class).hasFieldOrPropertyWithValue("color", Color.WHITE);
-        assertThat(Piece.fromUnicodeChar('♔')).isInstanceOf(King.class).hasFieldOrPropertyWithValue("color", Color.WHITE);
-        assertThat(Piece.fromUnicodeChar('♙')).isInstanceOf(Pawn.class).hasFieldOrPropertyWithValue("color", Color.WHITE);
-    }
+	  assertThat(thrown.getMessage()).isEqualTo("Unexpected piece unicode: " + c, thrown.getMessage());
+	}
 }

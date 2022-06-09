@@ -3,17 +3,19 @@ package ch.teemoo.bobby.models.pieces;
 import ch.teemoo.bobby.models.Color;
 
 public class King extends Piece {
-    public King(Color color) {
+    public King(final Color color) {
         super(color, 100);
     }
 
     @Override
     public String getUnicode() {
+    	String unicode;
         if (color == Color.WHITE) {
-            return "\u2654";
+            unicode = "\u2654";
         } else {
-            return "\u265A";
+        	unicode ="\u265A";
         }
+        return unicode;
     }
 
     @Override

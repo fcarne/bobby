@@ -6,7 +6,9 @@ import java.awt.*;
 
 class SideLabel extends JLabel {
 
-    SideLabel(String label) {
+    private static final long serialVersionUID = 8590128739177353193L;
+
+	SideLabel(String label) {
         super(label);
         setFont(new Font("Sans Serif", Font.PLAIN, 16));
         setOpaque(true);

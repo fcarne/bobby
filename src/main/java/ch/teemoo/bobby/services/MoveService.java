@@ -283,13 +283,13 @@ public class MoveService {
 		} else {
 			attackingRate = 1;
 		}
-		int[][] heatmapOpponentKing = getHeatmapAroundLocation(opponentKingPosition.getX(), opponentKingPosition.getY());
+		int[][] heatmapOpponentKing = getHeatmapAroundLocation(opponentKingPosition.getFile(), opponentKingPosition.getRank());
 		int myHeatScore = allMoves.stream().mapToInt(m ->
 			centerControllingRate * heatmapCenter[m.getToX()][m.getToY()]
 			+ attackingRate * heatmapOpponentKing[m.getToX()][m.getToY()]
 		).sum();
 		List<Move> allOpponentMoves = computeAllMoves(board, swap(color), history,false, true);
-		int[][] heatmapMyKing = getHeatmapAroundLocation(myKingPosition.getX(), myKingPosition.getY());
+		int[][] heatmapMyKing = getHeatmapAroundLocation(myKingPosition.getFile(), myKingPosition.getRank());
 		int opponentHeatScore = allOpponentMoves.stream().mapToInt(m ->
 			centerControllingRate * heatmapCenter[m.getToX()][m.getToY()]
 			+ attackingRate * heatmapMyKing[m.getToX()][m.getToY()]
@@ -393,8 +393,8 @@ public class MoveService {
 		piecePositions.sort((p1, p2) -> p2.getPiece().getValue() - p1.getPiece().getValue());
 
 		for (PiecePosition piecePosition: piecePositions) {
-			List<Move> pieceMoves = computeMoves(board, piecePosition.getPiece(), piecePosition.getPosition().getX(),
-				piecePosition.getPosition().getY(), history, withAdditionalInfo, takingMovesOnly);
+			List<Move> pieceMoves = computeMoves(board, piecePosition.getPiece(), piecePosition.getPosition().getFile(),
+				piecePosition.getPosition().getRank(), history, withAdditionalInfo, takingMovesOnly);
 			if (!pieceMoves.isEmpty() && returnFirstPieceMoves) {
 				return pieceMoves;
 			}
@@ -451,11 +451,12 @@ public class MoveService {
 			Move lastMove = history.get(history.size() - 1);
 			if (lastMove.getPiece() instanceof Pawn && lastMove.getFromY() - lastMove.getToY() == (2 * factor)
 				&& lastMove.getToY() == posY && (lastMove.getToX() == posX - 1 || lastMove.getToX() == posX + 1)) {
+				Move m = new Move(piece, posX, posY, lastMove.getToX(), posY + factor);
+				m.setTookPiece(board.getPiece(lastMove.getToX(), lastMove.getToY())
+						.orElseThrow(() -> new RuntimeException("En-passant move expects a piece here")));
 				EnPassantMove move =
-					new EnPassantMove(new Move(piece, posX, posY, lastMove.getToX(), posY + factor), lastMove.getToX(),
-						lastMove.getToY());
-				move.setTookPiece(board.getPiece(lastMove.getToX(), lastMove.getToY())
-					.orElseThrow(() -> new RuntimeException("En-passant move expects a piece here")));
+					new EnPassantMove(m, lastMove.getToX(),lastMove.getToY());
+				
 				moves.add(move);
 			}
 		}
@@ -705,7 +706,7 @@ public class MoveService {
 			// cannot eat king (would mean being checkmate)
 			return false;
 		}
-		if (Math.max(Math.abs(king1.get().getX() - king2.get().getX()), Math.abs(king1.get().getY() - king2.get().getY())) <= 1) {
+		if (Math.max(Math.abs(king1.get().getFile() - king2.get().getFile()), Math.abs(king1.get().getRank() - king2.get().getRank())) <= 1) {
 			return false;
 		}
 
@@ -714,14 +715,14 @@ public class MoveService {
 
 	boolean isInPawnCheck(Board board, Position kingPosition, Color color) {
 		int factor = color == Color.BLACK ? -1 : 1;
-		int y = kingPosition.getY() + factor;
+		int y = kingPosition.getRank() + factor;
 		if (y >= 0 && y <= MAX_MOVE) {
 			List<Piece> destinations = new ArrayList<>();
-			if (kingPosition.getX() >= 1) {
-				board.getPiece(kingPosition.getX() - 1, y).ifPresent(destinations::add);
+			if (kingPosition.getFile() >= 1) {
+				board.getPiece(kingPosition.getFile() - 1, y).ifPresent(destinations::add);
 			}
-			if (kingPosition.getX() < MAX_MOVE) {
-				board.getPiece(kingPosition.getX() + 1, y).ifPresent(destinations::add);
+			if (kingPosition.getFile() < MAX_MOVE) {
+				board.getPiece(kingPosition.getFile() + 1, y).ifPresent(destinations::add);
 			}
 			return destinations.stream()
 				.anyMatch(destination -> destination.getColor() != color && destination instanceof Pawn);
@@ -731,7 +732,7 @@ public class MoveService {
 
 	boolean isInLCheck(Board board, Position kingPosition, Color color) {
 		final Piece fakeKnight = new Knight(color);
-		return computeLShapeMoves(fakeKnight, kingPosition.getX(), kingPosition.getY(), board).stream()
+		return computeLShapeMoves(fakeKnight, kingPosition.getFile(), kingPosition.getRank(), board).stream()
 			.filter(Move::isTaking).anyMatch(move -> {
 			Piece takenPiece = board.getPiece(move.getToX(), move.getToY())
 				.orElseThrow(() -> new RuntimeException("Cannot take an empty piece!"));
@@ -741,7 +742,7 @@ public class MoveService {
 
 	boolean isInDiagonalCheck(Board board, Position kingPosition, Color color) {
 		final Piece fakeBishop = new Bishop(color);
-		return computeDiagonalMoves(fakeBishop, kingPosition.getX(), kingPosition.getY(), board).stream()
+		return computeDiagonalMoves(fakeBishop, kingPosition.getFile(), kingPosition.getRank(), board).stream()
 			.filter(Move::isTaking).anyMatch(move -> {
 			Piece takenPiece = board.getPiece(move.getToX(), move.getToY())
 				.orElseThrow(() -> new RuntimeException("Cannot take an empty piece!"));
@@ -751,7 +752,7 @@ public class MoveService {
 
 	boolean isInStraightCheck(Board board, Position kingPosition, Color color) {
 		Piece fakeRook = new Rook(color);
-		return computeStraightMoves(fakeRook, kingPosition.getX(), kingPosition.getY(), board).stream()
+		return computeStraightMoves(fakeRook, kingPosition.getFile(), kingPosition.getRank(), board).stream()
 			.filter(Move::isTaking).anyMatch(move -> {
 			Piece takenPiece = board.getPiece(move.getToX(), move.getToY())
 				.orElseThrow(() -> new RuntimeException("Cannot take an empty piece!"));

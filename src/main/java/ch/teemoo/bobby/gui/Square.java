@@ -8,7 +8,8 @@ import ch.teemoo.bobby.models.Position;
 import ch.teemoo.bobby.models.pieces.Piece;
 
 public class Square extends JLabel {
-    private Piece piece;
+    private static final long serialVersionUID = 3293244645639553936L;
+	private Piece piece;
     private final Position position;
 
     Square(Piece piece, Position position, Background background, Font font) {

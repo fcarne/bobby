@@ -324,7 +324,7 @@ public class GameController {
 				view.resetAllClickables();
 				markSquaresClickableByColor(game.getToPlay());
 			} else {
-				doMove(new Move(selectedSquare.getPiece(), selectedSquare.getPosition().getX(), selectedSquare.getPosition().getY(), square.getPosition().getX(), square.getPosition().getY()));
+				doMove(new Move(selectedSquare.getPiece(), selectedSquare.getPosition().getFile(), selectedSquare.getPosition().getRank(), square.getPosition().getFile(), square.getPosition().getRank()));
 				play();
 			}
 		} else {
@@ -336,8 +336,8 @@ public class GameController {
 					// Self piece is clickable so that it selection can be cancelled
 					markSquareClickable(square);
 					square.setBorder(RED_BORDER);
-					List<Move> moves = moveService.computeMoves(board, square.getPiece(), square.getPosition().getX(),
-						square.getPosition().getY(), game.getHistory(), true, false);
+					List<Move> moves = moveService.computeMoves(board, square.getPiece(), square.getPosition().getFile(),
+						square.getPosition().getRank(), game.getHistory(), true, false);
 					for (Move move : moves) {
 						Square destination = view.getSquares()[move.getToY()][move.getToX()];
 						destination.setBorder(BLUE_BORDER);
@@ -415,7 +415,7 @@ public class GameController {
 
 	void applyMovesFromBasicNotationFile(List<String> lines) {
 		for (String line: lines) {
-			Move move = Move.fromBasicNotation(line, game.getToPlay());
+			Move move = Move.fromBasicNotation(line, game.getToPlay(), game.getBoard());
 			Piece piece = board.getPiece(move.getFromX(), move.getFromY())
 					.orElseThrow(() -> new RuntimeException("Unexpected move, no piece at this location"));
 			doMove(new Move(piece, move.getFromX(), move.getFromY(), move.getToX(), move.getToY()));

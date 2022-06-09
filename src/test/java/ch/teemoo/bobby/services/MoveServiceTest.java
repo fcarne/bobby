@@ -9,9 +9,9 @@ import ch.teemoo.bobby.models.moves.Move;
 import ch.teemoo.bobby.models.pieces.*;
 import ch.teemoo.bobby.models.players.Human;
 import ch.teemoo.bobby.models.players.RandomBot;
-import org.assertj.core.util.Lists;
-import org.junit.Before;
-import org.junit.Test;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
@@ -23,8 +23,8 @@ public class MoveServiceTest {
 
     private MoveService moveService;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+	public void setup() {
         moveService = new MoveService();
     }
 
@@ -40,7 +40,7 @@ public class MoveServiceTest {
         Game game = new Game(new RandomBot(moveService), new RandomBot(moveService));
         Color colorToPlay = Color.WHITE;
         for (String notation: movesNotation) {
-            Move move = Move.fromBasicNotation(notation, colorToPlay);
+            Move move = Move.fromBasicNotation(notation, colorToPlay, game.getBoard());
             Piece piece = game.getBoard().getPiece(move.getFromX(), move.getFromY())
                     .orElseThrow(() -> new RuntimeException("Unexpected move, no piece at this location"));
             move = new Move(piece, move.getFromX(), move.getFromY(), move.getToX(), move.getToY());
@@ -74,7 +74,7 @@ public class MoveServiceTest {
         Game game = new Game(new RandomBot(moveService), new RandomBot(moveService));
         Color colorToPlay = Color.WHITE;
         for (String notation: movesNotation) {
-            Move move = Move.fromBasicNotation(notation, colorToPlay);
+            Move move = Move.fromBasicNotation(notation, colorToPlay, game.getBoard());
             Piece piece = game.getBoard().getPiece(move.getFromX(), move.getFromY())
                     .orElseThrow(() -> new RuntimeException("Unexpected move, no piece at this location"));
             move = new Move(piece, move.getFromX(), move.getFromY(), move.getToX(), move.getToY());
@@ -128,7 +128,7 @@ public class MoveServiceTest {
                 "♙ ♙ ♙ ♙     ♙ ♙ \n" +
                 "♖   ♗   ♔ ♗ ♘ ♖ \n"
         );
-        assertThat(moveService.getGameState(board, Color.BLACK, Lists.emptyList())).isEqualTo(GameState.IN_PROGRESS);
+        assertThat(moveService.getGameState(board, Color.BLACK, Collections.emptyList())).isEqualTo(GameState.IN_PROGRESS);
     }
 
     @Test
@@ -143,7 +143,7 @@ public class MoveServiceTest {
                 "♙ ♙ ♙ ♙     ♙ ♙ \n" +
                 "♖   ♗   ♔ ♗ ♘ ♖ \n"
         );
-        assertThat(moveService.getGameState(board, Color.BLACK, Lists.emptyList())).isEqualTo(GameState.LOSS);
+        assertThat(moveService.getGameState(board, Color.BLACK, Collections.emptyList())).isEqualTo(GameState.LOSS);
     }
 
     @Test
@@ -158,7 +158,7 @@ public class MoveServiceTest {
                 "♙ ♙ ♙         ♙ \n" +
                 "♖       ♔ ♗   ♖ \n"
         );
-        assertThat(moveService.getGameState(board, Color.BLACK, Lists.emptyList())).isEqualTo(GameState.DRAW_STALEMATE);
+        assertThat(moveService.getGameState(board, Color.BLACK, Collections.emptyList())).isEqualTo(GameState.DRAW_STALEMATE);
     }
 
     @Test
@@ -211,7 +211,7 @@ public class MoveServiceTest {
         List<Move> history = new ArrayList<>(movesBasicNotation.size());
         Color color = Color.WHITE;
         for (String notation: movesBasicNotation) {
-            history.add(Move.fromBasicNotation(notation, color));
+            history.add(Move.fromBasicNotation(notation, color, board));
             color = swap(color);
         }
         assertThat(moveService.getGameState(board, Color.BLACK, history)).isEqualTo(GameState.DRAW_THREEFOLD);
@@ -221,8 +221,8 @@ public class MoveServiceTest {
     public void testFindKingPosition() {
         // Initial positions board
         Game game = new Game(new RandomBot(moveService), new RandomBot(moveService));
-        assertThat(moveService.findKingPosition(game.getBoard(), Color.WHITE)).isPresent().get().hasFieldOrPropertyWithValue("x", 4).hasFieldOrPropertyWithValue("y", 0);
-        assertThat(moveService.findKingPosition(game.getBoard(), Color.BLACK)).isPresent().get().hasFieldOrPropertyWithValue("x", 4).hasFieldOrPropertyWithValue("y", 7);
+        assertThat(moveService.findKingPosition(game.getBoard(), Color.WHITE)).isPresent().get().hasFieldOrPropertyWithValue("file", 4).hasFieldOrPropertyWithValue("rank", 0);
+        assertThat(moveService.findKingPosition(game.getBoard(), Color.BLACK)).isPresent().get().hasFieldOrPropertyWithValue("file", 4).hasFieldOrPropertyWithValue("rank", 7);
 
         // Empty board
         Board emptyBoard = new Board(new Piece[8][8]);
@@ -540,8 +540,9 @@ public class MoveServiceTest {
         List<Move> history = Collections.singletonList(lastMove);
         Piece pawn = board.getPiece(3, 4).get();
         List<Move> moves = moveService.computePawnMoves(pawn, 3, 4, board, history, false);
-        EnPassantMove enPassantMove = new EnPassantMove(new Move(pawn, 3, 4, 4, 5), 4, 4);
-        enPassantMove.setTookPiece(blackPawn);
+        Move move = new Move(pawn, 3, 4, 4, 5);
+        move.setTookPiece(blackPawn);
+        EnPassantMove enPassantMove = new EnPassantMove(move, 4, 4);
         assertThat(moves).containsExactlyInAnyOrder(new Move(pawn, 3, 4, 3, 5), enPassantMove);
     }
 
@@ -1295,7 +1296,7 @@ public class MoveServiceTest {
     @Test
     public void testCenteredHeatmap() {
         int[][] heatmap = MoveService.generateCenteredHeatmap();
-        assertThat(heatmap).hasSize(8);
+        assertThat(heatmap).hasNumberOfRows(8);
         assertThat(heatmap[0]).hasSize(8);
         int[][] expected = new int[][] {
                 {0, 0, 0, 0, 0, 0, 0, 0},
@@ -1313,7 +1314,7 @@ public class MoveServiceTest {
     @Test
     public void testGetHeatmapAroundLocation() {
         int[][] heatmap = moveService.getHeatmapAroundLocation(7, 0);
-        assertThat(heatmap).hasSize(8);
+        assertThat(heatmap).hasNumberOfRows(8);
         assertThat(heatmap[0]).hasSize(8);
         int[][] expected = new int[][] {
                 {0, 0, 0, 0, 0, 0, 0, 0},
@@ -1343,6 +1344,6 @@ public class MoveServiceTest {
     private Move getMoveWithTookPiece(Piece piece, int fromX, int fromY, int toX, int toY, Piece tookPiece) {
         Move move = new Move(piece, fromX, fromY, toX, toY);
         move.setTookPiece(tookPiece);
-        return move;
-    }
+		return move;
+	}
 }

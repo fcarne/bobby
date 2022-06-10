@@ -210,8 +210,11 @@ public class MoveServiceTest {
                 "g8-g7+", "d7-d8", "g7-g8+", "d8-d7", "g8-g7+", "d7-d8", "g7-g8+");
         List<Move> history = new ArrayList<>(movesBasicNotation.size());
         Color color = Color.WHITE;
+        Game game = new Game(null, null);
         for (String notation: movesBasicNotation) {
-            history.add(Move.fromBasicNotation(notation, color, board));
+        	Move move = Move.fromBasicNotation(notation, color, game.getBoard());
+        	game.getBoard().doMove(move);
+        	history.add(move);
             color = swap(color);
         }
         assertThat(moveService.getGameState(board, Color.BLACK, history)).isEqualTo(GameState.DRAW_THREEFOLD);

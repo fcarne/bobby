@@ -79,7 +79,7 @@ public class OpeningService {
 			List<Move> moves = game.getHistory();
 			for (Move move : moves) {
 				Optional<Node> nextNodeOpt = currentNode.getNodeForMove(move);
-				if (nextNodeOpt.isEmpty()) {
+				if (!nextNodeOpt.isPresent()) {
 					Node node = new Node(move);
 					currentNode.addNode(node);
 					currentNode = node;

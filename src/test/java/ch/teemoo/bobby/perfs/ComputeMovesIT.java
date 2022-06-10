@@ -1,8 +1,10 @@
 package ch.teemoo.bobby.perfs;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringReader;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -41,14 +43,16 @@ public class ComputeMovesIT {
 			+ "11. c4 c6 12. cxb5 axb5 13. Nc3 Bb7 14. Bg5 b4 15. Nb1 h6 16. Bh4 c5 17. dxe5\n"
 			+ "Nxe4 18. Bxe7 Qxe7 19. exd6 Qf6 20. Nbd2 Nxd6 21. Nc4 Nxc4 22. Bxc4 Nb6";
 
-		Game game = portableGameNotationService.readPgnFile(pgn.lines().collect(Collectors.toList()));
+		BufferedReader reader = new BufferedReader(new StringReader(pgn));
+		
+		Game game = portableGameNotationService.readPgnFile(reader.lines().collect(Collectors.toList()));
 
 		measureComputation(game, "Mid game");
 	}
 
 	private void measureComputation(Game game, String testInfo) {
-		var stats = computeWithStats(game);
-		var prettyPrint = statsToString(stats);
+		DescriptiveStatistics stats = computeWithStats(game);
+		String prettyPrint = statsToString(stats);
 		logger.info("Stats for {}:\n{}", testInfo, prettyPrint);
 		saveToTempFile(prettyPrint, testInfo);
 	}

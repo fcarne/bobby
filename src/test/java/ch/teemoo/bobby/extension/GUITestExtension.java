@@ -1,4 +1,4 @@
-package ch.teemoo.bobby;
+package ch.teemoo.bobby.extension;
 
 import org.assertj.swing.junit.runner.FailureScreenshotTaker;
 import org.assertj.swing.junit.runner.ImageFolderCreator;

@@ -1,5 +1,7 @@
 package ch.teemoo.bobby.models.pieces;
 
+import java.util.Objects;
+
 import ch.teemoo.bobby.models.Color;
 
 public abstract class Piece {
@@ -72,4 +74,23 @@ public abstract class Piece {
 		}
 		return piece;
 	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(color, value);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Piece other = (Piece) obj;
+		return color == other.color;
+	}
+	
+	
 }

@@ -6,64 +6,68 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.notNull;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.Collections;
-
-import ch.teemoo.bobby.models.moves.CastlingMove;
-import ch.teemoo.bobby.models.Color;
-import ch.teemoo.bobby.models.games.Game;
-import ch.teemoo.bobby.models.moves.Move;
-import ch.teemoo.bobby.models.pieces.King;
-import ch.teemoo.bobby.models.pieces.Rook;
-import ch.teemoo.bobby.services.MoveService;
-import ch.teemoo.bobby.services.OpeningService;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import ch.teemoo.bobby.models.Color;
+import ch.teemoo.bobby.models.games.Game;
+import ch.teemoo.bobby.models.moves.Move;
+import ch.teemoo.bobby.models.pieces.Pawn;
+import ch.teemoo.bobby.services.MoveService;
+import ch.teemoo.bobby.services.OpeningService;
+
 @ExtendWith(MockitoExtension.class)
 public class ExperiencedBotTest {
-    @Mock
-    MoveService moveService;
+	@Mock
+	MoveService moveService;
 
-    @Mock
-    OpeningService openingService;
+	@Mock
+	OpeningService openingService;
 
-    @Mock
-    Game game;
+	@Mock
+	Game game;
 
-    @Test
-    public void testExperiencedBotProps() {
-        Player bot = new ExperiencedBot(0, null, moveService, openingService);
-        assertThat(bot.getName()).isEqualTo("Bobby");
-        assertThat(bot.getDescription()).isEqualTo("ExperiencedBot Bobby (level 0)");
-        assertThat(bot.isBot()).isTrue();
-    }
+	@Test
+	public void selectMove_noOpening_callSuperSelectMove() {
+		int level = 2;
+		Integer timeout = 3;
+		Bot bot = new ExperiencedBot(level, timeout, moveService, openingService);
 
-    @Test
-    public void testSelectMoveNoOpening() {
-        when(openingService.findPossibleMovesForHistory(any())).thenReturn(Collections.emptyList());
-        int level = 2;
-        Integer timeout = 3;
-        Bot bot = new ExperiencedBot(level, timeout, moveService, openingService);
-        bot.selectMove(game);
-        verify(moveService).selectMove(any(), eq(level), notNull());
-    }
+		when(openingService.findPossibleMovesForHistory(any())).thenReturn(Collections.emptyList());
 
-    @Test
-    public void testSelectMoveWithOpening() {
-        Move openingMove = new CastlingMove(new King(Color.WHITE), 4, 0, 2, 0, new Rook(Color.WHITE), 0, 0, 3, 0);
-        when(openingService.findPossibleMovesForHistory(any())).thenReturn(Collections.singletonList(openingMove));
-        int level = 2;
-        Integer timeout = 3;
-        Bot bot = new ExperiencedBot(level, timeout, moveService, openingService);
-        Move move = bot.selectMove(game);
-        verify(moveService, never()).selectMove(any(), anyInt(), any());
-        assertThat(move).isEqualTo(openingMove);
-    }
+		bot.selectMove(game);
+		verify(moveService, times(1)).selectMove(any(), eq(level), notNull());
+	}
+
+	@Test
+	public void selectMove_WithOpenings_returnRandomOpening() {
+		Move openingMove1 = new Move(new Pawn(Color.WHITE), 4, 1, 4, 3);
+		Move openingMove2 = new Move(new Pawn(Color.WHITE), 4, 1, 4, 3);
+		Move openingMove3 = new Move(new Pawn(Color.WHITE), 4, 1, 4, 3);
+		List<Move> moves = new ArrayList<>();
+		moves.add(openingMove1);
+		moves.add(openingMove2);
+		moves.add(openingMove3);
+
+		when(openingService.findPossibleMovesForHistory(any())).thenReturn(moves);
+
+		int level = 2;
+		Integer timeout = 3;
+		Bot bot = new ExperiencedBot(level, timeout, moveService, openingService);
+		Move move = bot.selectMove(game);
+
+		verify(moveService, never()).selectMove(any(), anyInt(), any());
+		assertThat(move).isIn(moves);
+	}
 
 }

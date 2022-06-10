@@ -31,47 +31,49 @@ public class BotFactoryTest {
 	}
 
 	@Test
-	public void testGetRandomBot() {
+	public void getRandomBot_returnsRandomBot() {
 		Bot bot = botFactory.getRandomBot();
 		assertThat(bot).isInstanceOf(RandomBot.class);
 	}
 
 	@Test
-	public void testGetTraditionalBot() {
+	public void getTraditionalBot_noError_returnsTraditionalWithLevel2() {
 		Bot bot = botFactory.getTraditionalBot(2, null);
 		assertThat(bot).isInstanceOf(TraditionalBot.class);
+		assertThat(bot.getDescription()).contains("level 2");
 	}
 
 	@Test
-	public void testGetTraditionalBotWrongLevel() {
+	public void getTraditionalBot_wrongLevel_throwsAssertionError() {
 		assertThatExceptionOfType(AssertionError.class).isThrownBy(() -> botFactory.getTraditionalBot(-1, null));
 		assertThatExceptionOfType(AssertionError.class).isThrownBy(() -> botFactory.getTraditionalBot(3, null));
 	}
 
 	@Test
-	public void testGetTraditionalBotWrongTimeout() {
+	public void getTraditionalBot_wrongTimeout_throwsAssertionError() {
 		assertThatExceptionOfType(AssertionError.class).isThrownBy(() -> botFactory.getTraditionalBot(1, 60));
 	}
 
 	@Test
-	public void testGetExperiencedBot() {
+	public void getExperiencedBot_noError_returnsExperiencedWithLevel2() {
 		Bot bot = botFactory.getExperiencedBot(2, null);
 		assertThat(bot).isInstanceOf(ExperiencedBot.class);
+		assertThat(bot.getDescription()).contains("level 2");
 	}
 
 	@Test
-	public void testGetExperiencedBotWrongLevel() {
+	public void getExperiencedBot_wrongLevel_throwsAssertionError() {
 		assertThatExceptionOfType(AssertionError.class).isThrownBy(() -> botFactory.getExperiencedBot(-1, null));
 		assertThatExceptionOfType(AssertionError.class).isThrownBy(() -> botFactory.getExperiencedBot(3, null));
 	}
 
 	@Test
-	public void testGetExperiencedBotWrongTimeout() {
+	public void getExperiencedBot_wrongTimeout_throwsAssertionError() {
 		assertThatExceptionOfType(AssertionError.class).isThrownBy(() -> botFactory.getExperiencedBot(1, 60));
 	}
 
 	@Test
-	public void testGetStrongestBot() {
+	public void getStrongestBot_returnsExperiencedBot() {
 		Bot bot = botFactory.getStrongestBot();
 		assertThat(bot).isInstanceOf(ExperiencedBot.class);
 	}

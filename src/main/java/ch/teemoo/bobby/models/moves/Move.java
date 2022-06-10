@@ -4,7 +4,6 @@ import java.util.Objects;
 
 import ch.teemoo.bobby.models.Board;
 import ch.teemoo.bobby.models.Color;
-import ch.teemoo.bobby.models.pieces.Pawn;
 import ch.teemoo.bobby.models.pieces.Piece;
 
 public class Move {
@@ -90,18 +89,22 @@ public class Move {
 		Move move;
 		if (notation.contains("0-0-0")) {
 			int y = color == Color.WHITE ? 0 : 7;
-			Piece king = board.getPiece(4, y).orElseThrow(() -> new RuntimeException("There is no king at (4, " + y + ")"));
-			Piece rook = board.getPiece(0, y).orElseThrow(() -> new RuntimeException("There is no rook at (0, " + y + ")"));
+			Piece king = board.getPiece(4, y)
+					.orElseThrow(() -> new RuntimeException("There is no king at (4, " + y + ")"));
+			Piece rook = board.getPiece(0, y)
+					.orElseThrow(() -> new RuntimeException("There is no rook at (0, " + y + ")"));
 			move = new CastlingMove(king, 4, y, 2, y, rook, 0, y, 3, y);
-			
+
 			if (notation.indexOf('+') > -1) {
 				move.setChecking(true);
 			}
 			return move;
 		} else if (notation.contains("0-0")) {
 			int y = color == Color.WHITE ? 0 : 7;
-			Piece king = board.getPiece(4, y).orElseThrow(() -> new RuntimeException("There is no king at (4, " + y + ")"));
-			Piece rook = board.getPiece(0, y).orElseThrow(() -> new RuntimeException("There is no rook at (7, " + y + ")"));
+			Piece king = board.getPiece(4, y)
+					.orElseThrow(() -> new RuntimeException("There is no king at (4, " + y + ")"));
+			Piece rook = board.getPiece(7, y)
+					.orElseThrow(() -> new RuntimeException("There is no rook at (7, " + y + ")"));
 			move = new CastlingMove(king, 4, y, 6, y, rook, 7, y, 5, y);
 
 			if (notation.indexOf('+') > -1) {
@@ -120,10 +123,15 @@ public class Move {
 		char toXChar = notation.charAt(3);
 		char toYChar = notation.charAt(4);
 
+		int fromX = convertCharToX(fromXChar);
+		int fromY = Character.getNumericValue(fromYChar) - 1;
 		int toX = convertCharToX(toXChar);
 		int toY = Character.getNumericValue(toYChar) - 1;
 
-		move = new Move(null, convertCharToX(fromXChar), Character.getNumericValue(fromYChar) - 1, toX, toY);
+		Piece moved = board.getPiece(fromX, fromY).orElseThrow(() -> new RuntimeException(
+				"There should be a piece at (" + fromX + "," + fromY + ") but there is none!"));
+
+		move = new Move(moved, fromX, fromY, toX, toY);
 
 		if (notation.indexOf('+') > -1) {
 			move.setChecking(true);
@@ -132,7 +140,8 @@ public class Move {
 		if (takingChar == 'x') {
 			// fixme: do not know here what piece is on the board at this place but we must
 			// mark the move as taking
-			move.setTookPiece(board.getPiece(toX, toY).orElse(new Pawn(color.opposite())));
+			move.setTookPiece(board.getPiece(toX, toY).orElseThrow(() -> new RuntimeException(
+					"There should be a piece at (" + toX + "," + toY + ") but there is none!")));
 		}
 
 		return move;

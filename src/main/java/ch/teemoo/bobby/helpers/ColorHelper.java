@@ -10,6 +10,7 @@ public class ColorHelper {
         if (color == Color.WHITE) {
             return Color.BLACK;
         } else {
+        	assert color == Color.BLACK;
             return Color.WHITE;
         }
     }

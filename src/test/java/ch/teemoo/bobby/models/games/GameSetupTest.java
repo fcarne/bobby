@@ -10,16 +10,16 @@ import ch.teemoo.bobby.models.players.Player;
 public class GameSetupTest {
 
 	@Test
-	public void testGameSetup() {
+	public void constructor_ok_returnSetup() {
 		// given
-		Player player1 = new Human("Test");
-		Player player2 = new Human("Test2");
+		Player white = new Human("White");
+		Player black = new Human("Black");
 
 		// when
-		GameSetup gameSetup = new GameSetup(player1, player2);
+		GameSetup gameSetup = new GameSetup(white, black);
 
 		// then
-		assertThat(gameSetup.getWhitePlayer()).isEqualTo(player1);
-		assertThat(gameSetup.getBlackPlayer()).isEqualTo(player2);
+		assertThat(gameSetup.getWhitePlayer()).isEqualTo(white);
+		assertThat(gameSetup.getBlackPlayer()).isEqualTo(black);
 	}
 }

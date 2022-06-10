@@ -10,11 +10,12 @@ import ch.teemoo.bobby.models.moves.Move;
 
 public class Node {
 	private final Move move;
-	private final Map<String, Node> children = new HashMap<>();
+	private final Map<String, Node> children;
 	private String openingName;
 
 	public Node(Move move) {
 		this.move = move;
+		children = new HashMap<>();
 	}
 
 	public Move getMove() {

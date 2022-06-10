@@ -26,7 +26,7 @@ public class TournamentTest {
 	MoveService moveService;
 
 	@BeforeEach
-	public void setUp() {
+	public void setup() {
 		player1 = new RandomBot(moveService);
 		player2 = new RandomBot(moveService);
 		player3 = new RandomBot(moveService);
@@ -35,33 +35,37 @@ public class TournamentTest {
 	}
 
 	@Test
-	public void testInitWithMatchesGeneration() {
+	public void constructor_newTournament_matchesGenerated() {
 		List<Match> matches = tournament.getMatches();
 		assertThat(matches).hasSize(3);
-		assertThat(matches.stream().filter(m -> m.getPlayer1() == player1 || m.getPlayer2() == player1).collect(
-			Collectors.toList())).hasSize(participants.size() - 1);
-		assertThat(matches.stream().filter(m -> m.getPlayer1() == player2 || m.getPlayer2() == player2).collect(
-			Collectors.toList())).hasSize(participants.size() - 1);
-		assertThat(matches.stream().filter(m -> m.getPlayer1() == player3 || m.getPlayer2() == player3).collect(
-			Collectors.toList())).hasSize(participants.size() - 1);
+		assertThat(matches.stream().filter(m -> m.getPlayer1() == player1 || m.getPlayer2() == player1)
+				.collect(Collectors.toList())).hasSize(participants.size() - 1);
+		assertThat(matches.stream().filter(m -> m.getPlayer1() == player2 || m.getPlayer2() == player2)
+				.collect(Collectors.toList())).hasSize(participants.size() - 1);
+		assertThat(matches.stream().filter(m -> m.getPlayer1() == player3 || m.getPlayer2() == player3)
+				.collect(Collectors.toList())).hasSize(participants.size() - 1);
 	}
 
 	@Test
-	public void testGetParticipantScores() {
-		Map<Player, Float> participantScores = tournament.getParticipantScores();
-		assertThat(participantScores).hasSize(participants.size());
-		assertThat(new ArrayList<>(participantScores.keySet())).containsExactlyInAnyOrderElementsOf(participants);
-		assertThat(participantScores.values().stream().allMatch(score -> score == 0f)).isTrue();
+	public void getParticipantScores_newTournament_return0ForAll() {
+		Map<Player, Float> scores = tournament.getParticipantScores();
+
+		assertThat(scores).hasSize(participants.size());
+		assertThat(new ArrayList<>(scores.keySet())).containsExactlyInAnyOrderElementsOf(participants);
+		assertThat(scores.values().stream().allMatch(score -> score == 0f)).isTrue();
 	}
 
 	@Test
-	public void testGetScoreboard() {
-		assertThat(tournament.getScoreboard()).contains(player1.getDescription()).contains(player2.getDescription())
-			.contains(player3.getDescription());
+	public void getScoreboard_newTournament_allParticipantArePresent() {
+		assertThat(tournament.getScoreboard())
+				.contains(player1.getDescription())
+				.contains(player2.getDescription())
+				.contains(player3.getDescription())
+				.contains("1.", "2.", "3.");
 	}
 
 	@Test
-	public void testToString() {
+	public void toString_newTournament_returnScoreboard() {
 		assertThat(tournament.toString()).isEqualTo(tournament.getScoreboard());
 	}
 }

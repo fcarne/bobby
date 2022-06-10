@@ -13,7 +13,9 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<java.release.version>11</java.release.version>
-
+		<maven.compiler.target>1.8</maven.compiler.target>
+	    <maven.compiler.source>1.8</maven.compiler.source>
+	
 		<skipUnitTests>false</skipUnitTests>
 
 		<timestamp>${maven.build.timestamp}</timestamp>
@@ -196,7 +198,7 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>${maven.plugin.compiler.version}</version>
 				<configuration>
-					<release>${java.release.version}</release>
+					<!-- <release>${java.release.version}</release> -->
 				</configuration>
 			</plugin>
 
@@ -241,26 +243,6 @@
 				<artifactId>maven-project-info-reports-plugin</artifactId>
 				<version>${maven.plugin.project-info-reports.version}</version>
 			</plugin>
-
-			<!-- <plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>${maven.plugin.jacoco.version}</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>prepare-agent</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>report</id>
-						<phase>prepare-package</phase>
-						<goals>
-							<goal>report</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin> -->
 
 			<plugin>
 				<groupId>org.pitest</groupId>
@@ -337,7 +319,7 @@
 					<linkXref>true</linkXref>
 					<sourceEncoding>utf-8</sourceEncoding>
 					<minimumTokens>100</minimumTokens>
-					<targetJdk>${java.release.version}</targetJdk>
+					<targetJdk>${maven.compiler.target}</targetJdk>
 					<excludes>
 						<exclude>**/*Bean.java</exclude>
 						<exclude>**/generated/*.java</exclude>

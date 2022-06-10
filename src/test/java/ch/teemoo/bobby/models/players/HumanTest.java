@@ -7,11 +7,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class HumanTest {
 
     @Test
-    public void testHumanProps() {
-        final String name = "Micael";
+    public void constructor_ok_returnHuman() {
+        String name = "Player's Name";
         Player human = new Human(name);
+        
         assertThat(human.getName()).isEqualTo(name);
-        assertThat(human.getDescription()).isEqualTo("Human Micael");
+        assertThat(human.getDescription()).isEqualTo("Human Player's Name");
         assertThat(human.isBot()).isFalse();
     }
 }

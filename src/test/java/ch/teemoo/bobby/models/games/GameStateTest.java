@@ -1,38 +1,47 @@
 package ch.teemoo.bobby.models.games;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.EnumSource.Mode;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class GameStateTest {
 
-    @Test
-    public void testIsDraw() {
-        assertThat(GameState.DRAW_50_MOVES.isDraw()).isTrue();
-        assertThat(GameState.DRAW_STALEMATE.isDraw()).isTrue();
-        assertThat(GameState.DRAW_THREEFOLD.isDraw()).isTrue();
-        assertThat(GameState.DRAW_AGREEMENT.isDraw()).isTrue();
-        assertThat(GameState.IN_PROGRESS.isDraw()).isFalse();
-        assertThat(GameState.LOSS.isDraw()).isFalse();
-    }
+	@ParameterizedTest
+	@EnumSource(value = GameState.class, mode = Mode.EXCLUDE, names = { "IN_PROGRESS", "LOSS" })
+	public void isDraw_drawState_returnTrue(GameState state) {
+		assertThat(state.isDraw()).isTrue();
+	}
 
-    @Test
-    public void testIsLost() {
-        assertThat(GameState.DRAW_50_MOVES.isLost()).isFalse();
-        assertThat(GameState.DRAW_STALEMATE.isLost()).isFalse();
-        assertThat(GameState.DRAW_THREEFOLD.isLost()).isFalse();
-        assertThat(GameState.DRAW_AGREEMENT.isLost()).isFalse();
-        assertThat(GameState.IN_PROGRESS.isLost()).isFalse();
-        assertThat(GameState.LOSS.isLost()).isTrue();
-    }
+	@ParameterizedTest
+	@EnumSource(value = GameState.class, mode = Mode.INCLUDE, names = { "IN_PROGRESS", "LOSS" })
+	public void isDraw_notDrawState_returnFalse(GameState state) {
+		assertThat(state.isDraw()).isFalse();
+	}
+	
+	@ParameterizedTest
+	@EnumSource(value = GameState.class, mode = Mode.INCLUDE, names = { "LOSS" })
+	public void isLost_lossState_returnTrue(GameState state) {
+		assertThat(state.isLost()).isTrue();
+	}
 
-    @Test
-    public void testIsInProgress() {
-        assertThat(GameState.DRAW_50_MOVES.isInProgress()).isFalse();
-        assertThat(GameState.DRAW_STALEMATE.isInProgress()).isFalse();
-        assertThat(GameState.DRAW_THREEFOLD.isInProgress()).isFalse();
-        assertThat(GameState.DRAW_AGREEMENT.isLost()).isFalse();
-        assertThat(GameState.IN_PROGRESS.isInProgress()).isTrue();
-        assertThat(GameState.LOSS.isInProgress()).isFalse();
-    }
+	@ParameterizedTest
+	@EnumSource(value = GameState.class, mode = Mode.EXCLUDE, names = { "LOSS" })
+	public void isLost_notLossState_returnFalse(GameState state) {
+		assertThat(state.isLost()).isFalse();
+	}
+
+	@ParameterizedTest
+	@EnumSource(value = GameState.class, mode = Mode.INCLUDE, names = { "IN_PROGRESS" })
+	public void isInProgress_inProgressState_returnTrue(GameState state) {
+		assertThat(state.isInProgress()).isTrue();
+	}
+	
+	@ParameterizedTest
+	@EnumSource(value = GameState.class, mode = Mode.EXCLUDE, names = { "IN_PROGRESS" })
+	public void isInProgress_notInProgressState_returnFalse(GameState state) {
+		assertThat(state.isInProgress()).isFalse();
+	}
+
 }

@@ -3,6 +3,7 @@ package ch.teemoo.bobby.helpers;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 import org.slf4j.Logger;
@@ -11,12 +12,14 @@ import org.slf4j.LoggerFactory;
 public class GuiHelper {
 	private final static Logger logger = LoggerFactory.getLogger(GuiHelper.class);
 
-	private final Font pieceFont = loadPieceFont();
-	private final Properties properties = loadProperties();
+	private Font pieceFont;
+	private Properties properties;
 
 	public GuiHelper() {
+		pieceFont = loadPieceFont();
+		properties = loadProperties();
 	}
-
+	
 	public Font getPieceFont() {
 		return pieceFont;
 	}
@@ -31,11 +34,11 @@ public class GuiHelper {
 
 	private Font loadPieceFont() {
 		try {
-			var inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("fonts/FreeSerif.ttf");
+			InputStream inputStream = getResource("fonts/FreeSerif.ttf");
 			if (inputStream == null) {
 				throw new IOException("Cannot load font from resource");
 			}
-			var font = Font.createFont(Font.TRUETYPE_FONT, inputStream);
+			Font font = Font.createFont(Font.TRUETYPE_FONT, inputStream);
 			return font.deriveFont(Font.PLAIN, 72);
 		} catch (IOException | FontFormatException e) {
 			logger.warn("Unable to use embedded font, using fallback", e);
@@ -45,8 +48,7 @@ public class GuiHelper {
 
 	private Properties loadProperties() {
 		Properties properties = new Properties();
-		try {
-			var inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("bobby.properties");
+		try (InputStream inputStream = getResource("bobby.properties")) {
 			if (inputStream == null) {
 				throw new IOException("Cannot load properties from resources");
 			}
@@ -55,6 +57,10 @@ public class GuiHelper {
 			logger.warn("Unable to read properties", e);
 		}
 		return properties;
+	}
+	
+	protected InputStream getResource(String filename) {
+		return Thread.currentThread().getContextClassLoader().getResourceAsStream(filename);
 	}
 
 }

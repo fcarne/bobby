@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 public class SideLabelTest {
 
     @Test
-    public void testSideLabel() {
+    public void constructor_newLabel_hasDefault() {
         SideLabel sideLabel = new SideLabel("A");
         assertThat(sideLabel.getText()).isEqualTo("A");
         assertThat(sideLabel.getHorizontalAlignment()).isEqualTo(SwingConstants.CENTER);

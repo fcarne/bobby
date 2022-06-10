@@ -23,7 +23,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import ch.teemoo.bobby.GUITestExtension;
+import ch.teemoo.bobby.extension.GUITestExtension;
 import ch.teemoo.bobby.helpers.GuiHelper;
 import ch.teemoo.bobby.models.Color;
 import ch.teemoo.bobby.models.pieces.Piece;

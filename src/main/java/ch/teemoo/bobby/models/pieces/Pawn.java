@@ -22,4 +22,6 @@ public class Pawn extends Piece {
     public Piece copy() {
         return new Pawn(color);
 	}
+    
+    
 }

@@ -133,7 +133,7 @@ public class PortableGameNotationService {
 		movesContent = movesContent.replaceAll("\\d+\\.{1,3}", "");
 
 		// Skip unnecessary spaces
-		movesContent = movesContent.stripLeading().stripTrailing();
+		movesContent = movesContent.trim();//.stripLeading().stripTrailing();
 		return movesContent;
 	}
 

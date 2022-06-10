@@ -13,22 +13,22 @@ public class GameFactoryTest {
 	private GameFactory gameFactory = new GameFactory();
 
 	@Test
-	public void testCreateGame() {
+	public void createGame_withSetup_returnSamePlayers() {
 		// given
-		Player player1 = new Human("Test");
-		Player player2 = new Human("Test2");
-		GameSetup gameSetup = new GameSetup(player1, player2);
+		Player whitePlayer = new Human("White");
+		Player blackPlayer = new Human("Black");
+		GameSetup gameSetup = new GameSetup(whitePlayer, blackPlayer);
 
 		// when
 		Game game = gameFactory.createGame(gameSetup);
 
 		// then
-		assertThat(game.getWhitePlayer()).isEqualTo(player1);
-		assertThat(game.getBlackPlayer()).isEqualTo(player2);
+		assertThat(game.getWhitePlayer()).isEqualTo(whitePlayer);
+		assertThat(game.getBlackPlayer()).isEqualTo(blackPlayer);
 	}
 
 	@Test
-	public void testEmptyGame() {
+	public void emptyGame_newGame_nullPlayers() {
 		// given
 
 		// when

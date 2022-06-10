@@ -2,35 +2,31 @@ package ch.teemoo.bobby.models.moves;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.when;
 
-import org.junit.jupiter.api.BeforeEach;
+import java.util.Optional;
+
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import ch.teemoo.bobby.models.Board;
 import ch.teemoo.bobby.models.Color;
+import ch.teemoo.bobby.models.pieces.King;
 import ch.teemoo.bobby.models.pieces.Pawn;
 import ch.teemoo.bobby.models.pieces.Piece;
 import ch.teemoo.bobby.models.pieces.Rook;
 
+@ExtendWith(MockitoExtension.class)
 class MoveTest {
 
-	Board b;
-	
-	@BeforeEach
-	public void setupBoard() {
-		b = new Board("" +
-                "♜       ♚   ♕ ♜ \n" +
-                "                \n" +
-                "♟               \n" +
-                "            ♟   \n" +
-                "        ♘   ♙ ♟ \n" +
-                "        ♙     ♘ \n" +
-                "♙ ♙ ♙ ♗       ♙ \n" +
-                "♖       ♔ ♗   ♖ \n");
-	}
-	
+	@Mock
+	Board board;
+
 	@Test
 	public void moveConstructor_ok_returnsCorrect() {
 		Piece rook = new Rook(Color.WHITE);
@@ -209,7 +205,11 @@ class MoveTest {
 	@CsvSource({ "a1-a6,0,0,0,5,false,false", "a1-a6+,0,0,0,5,false,true", "a1xa6,0,0,0,5,true,false" })
 	public void fromBasicNotation_normalMove_returnsCorrect(String notation, int fromX, int fromY, int toX, int toY,
 			boolean isTaking, boolean isChecking) {
-		Move move = Move.fromBasicNotation(notation, Color.WHITE, b);
+		
+		if (isTaking)
+			when(board.getPiece(anyInt(), anyInt())).thenReturn(Optional.of(new Pawn(Color.BLACK)));
+
+		Move move = Move.fromBasicNotation(notation, Color.WHITE, board);
 
 		assertThat(move.getBasicNotation()).isEqualTo(notation);
 		assertThat(move.isChecking()).isEqualTo(isChecking);
@@ -227,7 +227,11 @@ class MoveTest {
 			"0-0-0+,WHITE,4,0,2,0,0,0,3,0,true", "0-0-0,BLACK,4,7,2,7,0,7,3,7,false" })
 	public void fromBasicNotation_CastlingMove_returnsCastlingMove(String notation, Color color, int fromX, int fromY,
 			int toX, int toY, int rookFromX, int rookFromY, int rookToX, int rookToY, boolean isChecking) {
-		Move move = Move.fromBasicNotation(notation, color, b);
+
+		when(board.getPiece(fromX, fromY)).thenReturn(Optional.of(new King(color)));
+		when(board.getPiece(rookFromX, rookFromY)).thenReturn(Optional.of(new Rook(color)));
+
+		Move move = Move.fromBasicNotation(notation, color, board);
 
 		assertThat(move).isInstanceOf(CastlingMove.class);
 		assertThat(move.getBasicNotation()).isEqualTo(notation);
@@ -246,13 +250,13 @@ class MoveTest {
 
 	@Test
 	public void fromBasicNotation_nullNotationOrColor_throwsIllegalArgument() {
-		assertThatIllegalArgumentException().isThrownBy(() -> Move.fromBasicNotation(null, Color.WHITE, b));
-		assertThatIllegalArgumentException().isThrownBy(() -> Move.fromBasicNotation("a1-a6+", null, b));
+		assertThatIllegalArgumentException().isThrownBy(() -> Move.fromBasicNotation(null, Color.WHITE, board));
+		assertThatIllegalArgumentException().isThrownBy(() -> Move.fromBasicNotation("a1-a6+", null, board));
 	}
 
 	@Test
 	public void fromBasicNotation_tooShortNotation_throwsIllegalArgument() {
-		assertThatIllegalArgumentException().isThrownBy(() -> Move.fromBasicNotation("a1-", Color.WHITE, b));
+		assertThatIllegalArgumentException().isThrownBy(() -> Move.fromBasicNotation("a1-", Color.WHITE, board));
 	}
 
 }

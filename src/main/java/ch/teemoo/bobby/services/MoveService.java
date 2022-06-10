@@ -643,7 +643,7 @@ public class MoveService {
 			}
 		}
 		Optional<Piece> kingOpt = board.getPiece(posX, posY);
-		if (kingOpt.isEmpty() || !(kingOpt.get() instanceof King) || kingOpt.get().getColor() != color) {
+		if (!kingOpt.isPresent() || !(kingOpt.get() instanceof King) || kingOpt.get().getColor() != color) {
 			return false;
 		}
 		return !isInCheck(board, color);

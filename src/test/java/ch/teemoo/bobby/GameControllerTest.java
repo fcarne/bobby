@@ -121,7 +121,7 @@ public class GameControllerTest {
 
 	@Test
 	public void testDoMoveUnauthorized() {
-		var move = new Move(new Queen(Color.WHITE), 3, 0, 3, 1);
+		Move move = new Move(new Queen(Color.WHITE), 3, 0, 3, 1);
 
 		when(game.getPlayerByColor(eq(Color.WHITE))).thenReturn(new Human("test"));
 		when(moveService.computeMoves(any(), any(), anyInt(), anyInt(), anyList(), anyBoolean(), anyBoolean()))
@@ -133,8 +133,8 @@ public class GameControllerTest {
 
 	@Test
 	public void testDoMove() {
-		var move = new Move(new Queen(Color.WHITE), 3, 0, 3, 1);
-		var computedMove = new Move(new Queen(Color.WHITE), move.getFromX(), move.getFromY(), move.getToX(),
+		Move move = new Move(new Queen(Color.WHITE), 3, 0, 3, 1);
+		Move computedMove = new Move(new Queen(Color.WHITE), move.getFromX(), move.getFromY(), move.getToX(),
 				move.getToY());
 		Player player = new Human("test");
 		when(game.getWhitePlayer()).thenReturn(player);
@@ -155,12 +155,12 @@ public class GameControllerTest {
 	@Test
 	public void testGetAllowedMove() {
 		// given
-		var move = new Move(new Queen(Color.WHITE), 3, 0, 3, 1);
-		var computedMove = new Move(new Queen(Color.WHITE), move.getFromX(), move.getFromY(), move.getToX(),
+		Move move = new Move(new Queen(Color.WHITE), 3, 0, 3, 1);
+		Move computedMove = new Move(new Queen(Color.WHITE), move.getFromX(), move.getFromY(), move.getToX(),
 				move.getToY());
 
 		// when
-		var allowedMove = controller.getAllowedMove(move, null, Collections.singletonList(computedMove));
+		Move allowedMove = controller.getAllowedMove(move, null, Collections.singletonList(computedMove));
 
 		// then
 		assertThat(allowedMove).isEqualTo(computedMove);
@@ -169,7 +169,7 @@ public class GameControllerTest {
 	@Test
 	public void testGetAllowedMoveUnauthorized() {
 		// given
-		var move = new Move(new Queen(Color.WHITE), 3, 0, 3, 1);
+		Move move = new Move(new Queen(Color.WHITE), 3, 0, 3, 1);
 
 		// when
 		ThrowableAssert.ThrowingCallable callable = () -> controller.getAllowedMove(move, null,
@@ -183,10 +183,10 @@ public class GameControllerTest {
 	@Test
 	public void testGetAllowedMoveAmbiguous() {
 		// given
-		var move = new Move(new Queen(Color.WHITE), 3, 0, 3, 1);
-		var computedMove1 = new Move(new Queen(Color.WHITE), move.getFromX(), move.getFromY(), move.getToX(),
+		Move move = new Move(new Queen(Color.WHITE), 3, 0, 3, 1);
+		Move computedMove1 = new Move(new Queen(Color.WHITE), move.getFromX(), move.getFromY(), move.getToX(),
 				move.getToY());
-		var computedMove2 = new Move(new Queen(Color.WHITE), move.getFromX(), move.getFromY(), move.getToX(),
+		Move computedMove2 = new Move(new Queen(Color.WHITE), move.getFromX(), move.getFromY(), move.getToX(),
 				move.getToY());
 
 		// when
@@ -200,13 +200,13 @@ public class GameControllerTest {
 	@Test
 	public void testGetAllowedMovePromotionHuman() {
 		// given
-		var move = new Move(new Pawn(Color.WHITE), 3, 6, 3, 7);
-		var computedMove = new Move(new Pawn(Color.WHITE), move.getFromX(), move.getFromY(), move.getToX(),
+		Move move = new Move(new Pawn(Color.WHITE), 3, 6, 3, 7);
+		Move computedMove = new Move(new Pawn(Color.WHITE), move.getFromX(), move.getFromY(), move.getToX(),
 				move.getToY());
-		var computedMovePromotionQ = new PromotionMove(computedMove, new Queen(Color.WHITE));
-		var computedMovePromotionR = new PromotionMove(computedMove, new Rook(Color.WHITE));
-		var computedMovePromotionK = new PromotionMove(computedMove, new Knight(Color.WHITE));
-		var computedMovePromotionB = new PromotionMove(computedMove, new Bishop(Color.WHITE));
+		PromotionMove computedMovePromotionQ = new PromotionMove(computedMove, new Queen(Color.WHITE));
+		PromotionMove computedMovePromotionR = new PromotionMove(computedMove, new Rook(Color.WHITE));
+		PromotionMove computedMovePromotionK = new PromotionMove(computedMove, new Knight(Color.WHITE));
+		PromotionMove computedMovePromotionB = new PromotionMove(computedMove, new Bishop(Color.WHITE));
 		Player player = new Human("Player 1");
 		when(view.promotionDialog(any())).thenReturn(new Knight(Color.WHITE));
 
@@ -223,13 +223,13 @@ public class GameControllerTest {
 	@Test
 	public void testGetAllowedMovePromotionBot() {
 		// given
-		var move = new Move(new Pawn(Color.WHITE), 3, 6, 3, 7);
-		var computedMove = new Move(new Pawn(Color.WHITE), move.getFromX(), move.getFromY(), move.getToX(),
+		Move move = new Move(new Pawn(Color.WHITE), 3, 6, 3, 7);
+		Move computedMove = new Move(new Pawn(Color.WHITE), move.getFromX(), move.getFromY(), move.getToX(),
 				move.getToY());
-		var computedMovePromotionQ = new PromotionMove(computedMove, new Queen(Color.WHITE));
-		var computedMovePromotionR = new PromotionMove(computedMove, new Rook(Color.WHITE));
-		var computedMovePromotionK = new PromotionMove(computedMove, new Knight(Color.WHITE));
-		var computedMovePromotionB = new PromotionMove(computedMove, new Bishop(Color.WHITE));
+		PromotionMove computedMovePromotionQ = new PromotionMove(computedMove, new Queen(Color.WHITE));
+		PromotionMove computedMovePromotionR = new PromotionMove(computedMove, new Rook(Color.WHITE));
+		PromotionMove computedMovePromotionK = new PromotionMove(computedMove, new Knight(Color.WHITE));
+		PromotionMove computedMovePromotionB = new PromotionMove(computedMove, new Bishop(Color.WHITE));
 		Player player = new RandomBot(moveService);
 
 		// when
@@ -246,13 +246,13 @@ public class GameControllerTest {
 	@Test
 	public void testGetAllowedMovePromotionAlreadySet() {
 		// given
-		var move = new PromotionMove(new Move(new Pawn(Color.WHITE), 3, 6, 3, 7), new Knight(Color.WHITE));
-		var computedMove = new Move(new Pawn(Color.WHITE), move.getFromX(), move.getFromY(), move.getToX(),
+		PromotionMove move = new PromotionMove(new Move(new Pawn(Color.WHITE), 3, 6, 3, 7), new Knight(Color.WHITE));
+		Move computedMove = new Move(new Pawn(Color.WHITE), move.getFromX(), move.getFromY(), move.getToX(),
 				move.getToY());
-		var computedMovePromotionQ = new PromotionMove(computedMove, new Queen(Color.WHITE));
-		var computedMovePromotionR = new PromotionMove(computedMove, new Rook(Color.WHITE));
-		var computedMovePromotionK = new PromotionMove(computedMove, new Knight(Color.WHITE));
-		var computedMovePromotionB = new PromotionMove(computedMove, new Bishop(Color.WHITE));
+		PromotionMove computedMovePromotionQ = new PromotionMove(computedMove, new Queen(Color.WHITE));
+		PromotionMove computedMovePromotionR = new PromotionMove(computedMove, new Rook(Color.WHITE));
+		PromotionMove computedMovePromotionK = new PromotionMove(computedMove, new Knight(Color.WHITE));
+		PromotionMove computedMovePromotionB = new PromotionMove(computedMove, new Bishop(Color.WHITE));
 		Player player = new Human("Player 1");
 
 		// when
@@ -268,7 +268,7 @@ public class GameControllerTest {
 
 	@Test
 	public void testUndoLastMove() {
-		var move = new Move(new Queen(Color.WHITE), 3, 0, 3, 1);
+		Move move = new Move(new Queen(Color.WHITE), 3, 0, 3, 1);
 		when(game.getPlayerByColor(eq(Color.WHITE))).thenReturn(new Human("test"));
 		controller.undoLastMove(move);
 		verify(view).cleanSquaresBorder();
@@ -283,7 +283,7 @@ public class GameControllerTest {
 	public void testDisplayGameInfoInProgressNoCheckNoOutput() throws Exception {
 		Player player = new Human("test");
 		when(game.getWhitePlayer()).thenReturn(player);
-		var move = new Move(new Queen(Color.WHITE), 3, 0, 3, 1);
+		Move move = new Move(new Queen(Color.WHITE), 3, 0, 3, 1);
 		when(moveService.getGameState(any(), any(), any())).thenReturn(GameState.IN_PROGRESS);
 		assertNothingWrittenToSystemOut(() -> {
 			controller.displayGameInfo(move);
@@ -295,7 +295,7 @@ public class GameControllerTest {
 	public void testDisplayGameInfoInProgressCheck() throws Exception {
 		Player player = new Human("test");
 		when(game.getWhitePlayer()).thenReturn(player);
-		var move = new Move(new Queen(Color.WHITE), 3, 0, 3, 1);
+		Move move = new Move(new Queen(Color.WHITE), 3, 0, 3, 1);
 		move.setChecking(true);
 		when(moveService.getGameState(any(), any(), any())).thenReturn(GameState.IN_PROGRESS);
 
@@ -309,7 +309,7 @@ public class GameControllerTest {
 	public void testDisplayGameInfoDrawThreefold() throws Exception {
 		Player player = new Human("test");
 		when(game.getWhitePlayer()).thenReturn(player);
-		var move = new Move(new Queen(Color.WHITE), 3, 0, 3, 1);
+		Move move = new Move(new Queen(Color.WHITE), 3, 0, 3, 1);
 		when(moveService.getGameState(any(), any(), any())).thenReturn(GameState.DRAW_THREEFOLD);
 		when(game.getHistory()).thenReturn(Collections.emptyList());
 		String text = tapSystemOut(() -> {
@@ -322,7 +322,7 @@ public class GameControllerTest {
 	public void testDisplayGameInfoDraw50Moves() throws Exception {
 		Player player = new Human("test");
 		when(game.getWhitePlayer()).thenReturn(player);
-		var move = new Move(new Queen(Color.WHITE), 3, 0, 3, 1);
+		Move move = new Move(new Queen(Color.WHITE), 3, 0, 3, 1);
 		when(moveService.getGameState(any(), any(), any())).thenReturn(GameState.DRAW_50_MOVES);
 		when(game.getHistory()).thenReturn(Collections.emptyList());
 		String text = tapSystemOut(() -> {
@@ -335,7 +335,7 @@ public class GameControllerTest {
 	public void testDisplayGameInfoDrawStalemate() throws Exception {
 		Player player = new Human("test");
 		when(game.getWhitePlayer()).thenReturn(player);
-		var move = new Move(new Queen(Color.WHITE), 3, 0, 3, 1);
+		Move move = new Move(new Queen(Color.WHITE), 3, 0, 3, 1);
 		when(moveService.getGameState(any(), any(), any())).thenReturn(GameState.DRAW_STALEMATE);
 		when(game.getHistory()).thenReturn(Collections.emptyList());
 
@@ -349,7 +349,7 @@ public class GameControllerTest {
 	public void testDisplayGameInfoLoss() throws Exception {
 		Player player = new Human("test");
 		when(game.getWhitePlayer()).thenReturn(player);
-		var move = new Move(new Queen(Color.WHITE), 3, 0, 3, 1);
+		Move move = new Move(new Queen(Color.WHITE), 3, 0, 3, 1);
 		when(moveService.getGameState(any(), any(), any())).thenReturn(GameState.LOSS);
 		when(game.getHistory()).thenReturn(Collections.emptyList());
 		when(game.getPlayerByColor(eq(Color.WHITE))).thenReturn(player);
@@ -363,7 +363,7 @@ public class GameControllerTest {
 	public void testDisplayGameInfoWin() throws Exception {
 		Player player = new Human("test");
 		when(game.getWhitePlayer()).thenReturn(player);
-		var move = new Move(new Queen(Color.BLACK), 3, 0, 3, 1);
+		Move move = new Move(new Queen(Color.BLACK), 3, 0, 3, 1);
 		when(moveService.getGameState(any(), any(), any())).thenReturn(GameState.LOSS);
 		when(game.getHistory()).thenReturn(Collections.emptyList());
 		when(game.getPlayerByColor(eq(Color.BLACK))).thenReturn(player);
@@ -496,7 +496,7 @@ public class GameControllerTest {
 		Square[][] squares = new Square[8][8];
 		for (int i = 0; i < 8; i++) {
 			for (int j = 0; j < 8; j++) {
-				var square = mock(Square.class);
+				Square square = mock(Square.class);
 				squares[i][j] = square;
 			}
 		}

@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 public class GameResultTest {
 
 	@Test
-	public void testGameResult() {
+	public void constructor_ok_returnResult() {
 		// given
 		int moves = 34;
 		GameResult.Result result = GameResult.Result.BLACK_WINS;

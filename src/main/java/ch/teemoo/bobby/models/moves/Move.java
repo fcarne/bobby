@@ -128,8 +128,7 @@ public class Move {
 		int toX = convertCharToX(toXChar);
 		int toY = Character.getNumericValue(toYChar) - 1;
 
-		Piece moved = board.getPiece(fromX, fromY).orElseThrow(() -> new RuntimeException(
-				"There should be a piece at (" + fromX + "," + fromY + ") but there is none!"));
+		Piece moved = board.getPiece(fromX, fromY).orElseThrow(() -> new RuntimeException("There should be a piece at (" + fromX + "," + fromY + ") but there is none!"));
 
 		move = new Move(moved, fromX, fromY, toX, toY);
 
@@ -140,8 +139,7 @@ public class Move {
 		if (takingChar == 'x') {
 			// fixme: do not know here what piece is on the board at this place but we must
 			// mark the move as taking
-			move.setTookPiece(board.getPiece(toX, toY).orElseThrow(() -> new RuntimeException(
-					"There should be a piece at (" + toX + "," + toY + ") but there is none!")));
+			move.setTookPiece(board.getPiece(toX, toY).orElseThrow(() -> new RuntimeException("There should be a piece at (" + toX + "," + toY + ") but there is none!")));
 		}
 
 		return move;
@@ -163,6 +161,11 @@ public class Move {
 	}
 
 	@Override
+	public int hashCode() {
+		return Objects.hash(fromX, fromY, isChecking, piece, toX, toY, tookPiece);
+	}
+
+	@Override
 	public boolean equals(Object o) {
 		if (this == o)
 			return true;
@@ -171,11 +174,6 @@ public class Move {
 		Move move = (Move) o;
 		return equalsForPositions(move) && tookPiece == move.tookPiece && isChecking == move.isChecking
 				&& Objects.equals(piece, move.piece);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(piece, fromX, fromY, toX, toY, tookPiece, isChecking);
 	}
 
 	@Override

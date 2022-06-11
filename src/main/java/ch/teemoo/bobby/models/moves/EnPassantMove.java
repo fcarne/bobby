@@ -33,25 +33,13 @@ public class EnPassantMove extends Move {
 	}
 
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + Objects.hash(tookPiecePosX, tookPiecePosY);
-		return result;
+	public boolean equals(Object o) {
+		return super.equals(o);
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		EnPassantMove other = (EnPassantMove) obj;
-		return tookPiecePosX == other.tookPiecePosX && tookPiecePosY == other.tookPiecePosY;
+	public int hashCode() {
+		return super.hashCode();
 	}
-	
-	
 
 }

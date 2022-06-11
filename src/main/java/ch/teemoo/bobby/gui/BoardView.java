@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.ListIterator;
 import java.util.Optional;
 import java.util.stream.IntStream;
@@ -28,19 +29,18 @@ import ch.teemoo.bobby.models.pieces.Queen;
 import ch.teemoo.bobby.models.pieces.Rook;
 import ch.teemoo.bobby.models.players.Human;
 import ch.teemoo.bobby.models.players.Player;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 
 public class BoardView extends JFrame implements IBoardView {
     private static final long serialVersionUID = -6991571483234510815L;
-	private static final Border NO_BORDER = BorderFactory.createEmptyBorder();
-    private static final Border GREEN_BORDER = BorderFactory.createLineBorder(java.awt.Color.green, 3, true);
+	protected static final Border NO_BORDER = BorderFactory.createEmptyBorder();
+	protected static final Border GREEN_BORDER = BorderFactory.createLineBorder(java.awt.Color.green, 3, true);
 
     private final boolean visible;
     private final Container contentPane;
     private final Icon logoIcon;
     private final GuiHelper guiHelper;
-    private Square[][] squares = new Square[SIZE][SIZE];
+    private Square[][] squares;
 
     private JMenuItem itemNew;
     private JMenuItem itemSave;
@@ -57,6 +57,7 @@ public class BoardView extends JFrame implements IBoardView {
 
     public BoardView(String title, GuiHelper guiHelper, boolean visible) {
         this.guiHelper = guiHelper;
+        this.squares = new Square[SIZE][SIZE];
         setTitle(title);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.visible = visible;
@@ -71,10 +72,8 @@ public class BoardView extends JFrame implements IBoardView {
         setMenu();
     }
 
-    //fixme: do not expose squares array (mutable internal representation)
-    @SuppressFBWarnings("EI_EXPOSE_REP")
     public Square[][] getSquares() {
-        return squares;
+        return squares.clone();
     }
 
     public void setItemNewActionListener(ActionListener actionListener) {
@@ -106,7 +105,9 @@ public class BoardView extends JFrame implements IBoardView {
     }
 
     public void display(Piece[][] positions, boolean isReversed) {
-        java.util.List<Component> components = new ArrayList<>((SIZE + 2) ^ 2);
+    	assert positions.length == SIZE && positions[0].length == SIZE;
+    	
+    	List<Component> components = new ArrayList<>((SIZE + 2) ^ 2);
         addFilesLabels(components);
         Background background;
         for (int i = positions.length - 1; i >= 0; i--) {
@@ -196,7 +197,9 @@ public class BoardView extends JFrame implements IBoardView {
         JLabel colorLabel = new JLabel("Your color");
         setBoldAndBorder(colorLabel);
         JRadioButton whiteRadioButton = new JRadioButton("White", true);
+        whiteRadioButton.setName("whiteRadioButton");
         JRadioButton blackRadioButton = new JRadioButton("Black", false);
+        blackRadioButton.setName("blackRadioButton");
         ButtonGroup colorButtonGroup = new ButtonGroup();
         colorButtonGroup.add(whiteRadioButton);
         colorButtonGroup.add(blackRadioButton);
@@ -205,8 +208,11 @@ public class BoardView extends JFrame implements IBoardView {
         setBoldAndBorder(computerLabel);
         JSlider levelSlider = getLevelSlider();
         JCheckBox openingsCheckBox = new JCheckBox("Use openings", true);
+        openingsCheckBox.setName("openingsCheckBox");
         JCheckBox timeoutCheckBox = new JCheckBox("Limit computation time to (seconds)", false);
+        timeoutCheckBox.setName("timeoutCheckBox");
         JSpinner timeoutSpinner = new JSpinner(new SpinnerNumberModel(5, 1, 30, 1));
+        timeoutSpinner.setName("timeoutSpinner");
         timeoutSpinner.setEnabled(timeoutCheckBox.isSelected());
         timeoutCheckBox.addActionListener(e -> timeoutSpinner.setEnabled(timeoutCheckBox.isSelected()));
 
@@ -268,9 +274,14 @@ public class BoardView extends JFrame implements IBoardView {
         JLabel promoteLabel = new JLabel("Promote pawn to");
         setBoldAndBorder(promoteLabel);
         JRadioButton queenRadioButton = new JRadioButton("♕ Queen", true);
+        queenRadioButton.setName("queenRadioButton");
         JRadioButton rookRadioButton = new JRadioButton("♖ Rook", false);
+        rookRadioButton.setName("rookRadioButton");
         JRadioButton bishopRadioButton = new JRadioButton("♗ Bishop", false);
+        bishopRadioButton.setName("bishopRadioButton");
         JRadioButton knightRadioButton = new JRadioButton("♘ Knight", false);
+        knightRadioButton.setName("knightRadioButton");
+        
         ButtonGroup buttonGroup = new ButtonGroup();
         buttonGroup.add(queenRadioButton);
         buttonGroup.add(rookRadioButton);
@@ -319,6 +330,7 @@ public class BoardView extends JFrame implements IBoardView {
 
     private JSlider getLevelSlider() {
         JSlider levelSlider = new JSlider(JSlider.HORIZONTAL, 0, 3, 3);
+        levelSlider.setName("levelSlider");
         levelSlider.setMajorTickSpacing(1);
         levelSlider.setPaintTicks(true);
         levelSlider.setPaintLabels(true);
@@ -337,7 +349,7 @@ public class BoardView extends JFrame implements IBoardView {
 
         JMenu fileMenu = new JMenu("File");
         menuBar.add(fileMenu);
-
+        
         JMenuItem itemExit = new JMenuItem("Exit");
         fileMenu.add(itemExit);
         itemExit.addActionListener(actionEvent -> exit());
@@ -395,6 +407,7 @@ public class BoardView extends JFrame implements IBoardView {
         if (background == Background.DARK) {
             return Background.LIGHT;
         } else {
+        	assert background == Background.LIGHT;
             return Background.DARK;
         }
     }

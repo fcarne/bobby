@@ -32,19 +32,19 @@ public class OpeningServiceTest {
 	}
 
 	@Test
-	public void testPrettyPrintTree() {
+	public void prettyPrintTree_treeBuilt_treePrinted() {
 		// given
 
 		// when
 		String tree = openingService.prettyPrintTree();
 
 		// then
-		assertThat(tree).isNotEmpty();
-		System.out.println(tree);
+		assertThat(tree).isNotEmpty().startsWith("<START>").endsWith("BLACK c7-c5 (Pawn) [Sicilian defense]");
+		assertThat(tree.split("\n")).hasSize(36);
 	}
 
 	@Test
-	public void testBuildTreeIOExceptionCaught() throws IOException {
+	public void buildTree_fileNotFound_exceptionCaught() throws IOException {
 		// given
 		FileService fileServiceMock = mock(FileService.class);
 		PortableGameNotationService portableGameNotationServiceMock = mock(PortableGameNotationService.class);
@@ -57,23 +57,25 @@ public class OpeningServiceTest {
 		// then
 		String tree = openingServiceWithException.prettyPrintTree();
 		assertThat(tree).isNotEmpty();
-		assertThat(tree.split("\n")).hasSize(1);
+		assertThat(tree.split("\n")).hasSize(1).containsExactly("<START>");
 	}
 
 	@Test
-	public void testFindPossibleMovesForHistory() {
+	public void findPossibleMovesForHistory_treeBuilt_movesFound() {
 		// given
 		List<Move> history = Arrays.asList(new Move(new Pawn(Color.WHITE), 4, 1, 4, 3));
 
 		// when
 		List<Move> moves = openingService.findPossibleMovesForHistory(history);
 
+		moves.forEach(System.out::println);
 		// then
-		assertThat(moves).hasSizeGreaterThan(0);
+		assertThat(moves).hasSize(2).containsExactlyInAnyOrder(new Move(new Pawn(Color.BLACK), 4, 6, 4, 4),
+				new Move(new Pawn(Color.BLACK), 2, 6, 2, 4));
 	}
 
 	@Test
-	public void testFindPossibleMovesForHistoryEmpty() {
+	public void findPossibleMovesForHistory_unknownMove_emptySuggestions() {
 		// given
 		List<Move> history = Arrays.asList(new Move(new Pawn(Color.WHITE), 0, 1, 0, 3));
 

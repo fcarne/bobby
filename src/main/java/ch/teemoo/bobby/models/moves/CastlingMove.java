@@ -65,25 +65,13 @@ public class CastlingMove extends Move {
 	}
 
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + Objects.hash(rook, rookFromX, rookFromY, rookToX, rookToY);
-		return result;
+	public boolean equals(Object o) {
+		return super.equals(o);
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		CastlingMove other = (CastlingMove) obj;
-		return Objects.equals(rook, other.rook) && rookFromX == other.rookFromX && rookFromY == other.rookFromY
-				&& rookToX == other.rookToX && rookToY == other.rookToY;
+	public int hashCode() {
+		return super.hashCode();
 	}
-	
-	
+
 }

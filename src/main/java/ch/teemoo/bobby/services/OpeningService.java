@@ -16,23 +16,10 @@ import org.slf4j.LoggerFactory;
 
 public class OpeningService {
 	private final static Logger logger = LoggerFactory.getLogger(OpeningService.class);
-	private final static List<String> OPENINGS_PGN_FILES = Arrays.asList(
-		"bogoindiandefense.pgn",
-		"englishopening.pgn",
-		"friedliverattack.pgn",
-		"grunfelddefense.pgn",
-		"italiangame.pgn",
-		"kingsgambit.pgn",
-		"londonsystem.pgn",
-		"nimzoindiandefense.pgn",
-		"queensgambit.pgn",
-		"retiopening.pgn",
-		"ruylopezopening.pgn",
-		"scotchgame.pgn",
-		"siciliandefense.pgn",
-		"slavdefense.pgn",
-		"trompowskyattack.pgn"
-	);
+	private final static List<String> OPENINGS_PGN_FILES = Arrays.asList("bogoindiandefense.pgn", "englishopening.pgn",
+			"friedliverattack.pgn", "grunfelddefense.pgn", "italiangame.pgn", "kingsgambit.pgn", "londonsystem.pgn",
+			"nimzoindiandefense.pgn", "queensgambit.pgn", "retiopening.pgn", "ruylopezopening.pgn", "scotchgame.pgn",
+			"siciliandefense.pgn", "slavdefense.pgn", "trompowskyattack.pgn");
 
 	private final PortableGameNotationService portableGameNotationService;
 	private final FileService fileService;
@@ -46,7 +33,7 @@ public class OpeningService {
 
 	public List<Move> findPossibleMovesForHistory(List<Move> history) {
 		Node currentNode = openingsTree;
-		for (Move move: history) {
+		for (Move move : history) {
 			Optional<Node> nodeOpt = currentNode.getNodeForMove(move);
 			if (nodeOpt.isPresent()) {
 				currentNode = nodeOpt.get();
@@ -58,15 +45,15 @@ public class OpeningService {
 	}
 
 	public String prettyPrintTree() {
-		return prettyPrintNode(openingsTree, 0);
+		return prettyPrintNode(openingsTree, 0).trim();
 	}
 
 	private Node buildTree() {
 		List<Game> games = new ArrayList<>();
-		for (String fileName: OPENINGS_PGN_FILES) {
+		for (String fileName : OPENINGS_PGN_FILES) {
 			try {
 				games.add(portableGameNotationService
-					.readPgnFile(fileService.readFileFromResourceFolder("openings", fileName)));
+						.readPgnFile(fileService.readFileFromResourceFolder("openings", fileName)));
 			} catch (IOException e) {
 				logger.error("Opening could not be read from file {}", fileName, e);
 			}
@@ -79,12 +66,12 @@ public class OpeningService {
 			List<Move> moves = game.getHistory();
 			for (Move move : moves) {
 				Optional<Node> nextNodeOpt = currentNode.getNodeForMove(move);
-				if (!nextNodeOpt.isPresent()) {
+				if (nextNodeOpt.isPresent()) {
+					currentNode = nextNodeOpt.get();
+				} else {
 					Node node = new Node(move);
 					currentNode.addNode(node);
 					currentNode = node;
-				} else {
-					currentNode = nextNodeOpt.get();
 				}
 				if (move.equals(moves.get(moves.size() - 1))) {
 					// last move
@@ -111,8 +98,8 @@ public class OpeningService {
 			result += " [" + node.getOpeningName() + "]";
 		}
 		result += "\n";
-		List<String> subTrees =
-			node.getChildren().stream().map(child -> prettyPrintNode(child, level + 1)).collect(Collectors.toList());
+		List<String> subTrees = node.getChildren().stream().map(child -> prettyPrintNode(child, level + 1))
+				.collect(Collectors.toList());
 		for (String subTree : subTrees) {
 			result += subTree;
 		}

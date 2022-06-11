@@ -28,29 +28,16 @@ public class PromotionMove extends Move {
 	public String getPrettyNotation() {
 		return super.getPrettyNotation() + " (promoted to " + getPromotedPiece().getClass().getSimpleName() + ")";
 	}
+	 
+	@Override
+	public boolean equals(Object o) {
+		return super.equals(o);
+	}
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + Objects.hash(promotedPiece);
-		return result;
+		return super.hashCode();
 	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		PromotionMove other = (PromotionMove) obj;
-		return Objects.equals(promotedPiece, other.promotedPiece);
-	}
-	
-	 
-
 	
 	
 }

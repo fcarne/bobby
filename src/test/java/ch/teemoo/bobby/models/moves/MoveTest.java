@@ -2,15 +2,19 @@ package ch.teemoo.bobby.models.moves;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -66,99 +70,62 @@ class MoveTest {
 	@Test
 	public void equalsForPosition_equals_returnTrue() {
 		Move move = new Move(new Rook(Color.WHITE), 0, 0, 0, 5);
-		Move move2 = new Move(new Rook(Color.BLACK), move.getFromX(), move.getFromY(), move.getToX(), move.getToY());
-		assertThat(move.equalsForPositions(move2)).isTrue();
-		assertThat(move.equals(move2)).isFalse();
+		Move other = new Move(new Rook(Color.BLACK), move.getFromX(), move.getFromY(), move.getToX(), move.getToY());
+		assertThat(move.equalsForPositions(other)).isTrue();
+		assertThat(move.equals(other)).isFalse();
 	}
 
-	@Test
-	public void equalsForPosition_differentFromX_returnFalse() {
+	@ParameterizedTest
+	@CsvSource({ "1,0,0,5", "0,1,0,5", "0,0,1,5", "0,0,0,6" })
+	public void equalsForPosition_differentCoordinate_returnFalse(int fromX, int fromY, int toX, int toY) {
 		Move move = new Move(new Rook(Color.WHITE), 0, 0, 0, 5);
-		Move move2 = new Move(new Rook(Color.BLACK), 1, 0, 0, 5);
-		assertThat(move.equalsForPositions(move2)).isFalse();
+		Move other = new Move(new Rook(Color.BLACK), fromX, fromY, toX, toY);
+		assertThat(move.equalsForPositions(other)).isFalse();
 	}
 
-	@Test
-	public void equalsForPosition_differentFromY_returnFalse() {
-		Move move = new Move(new Rook(Color.WHITE), 0, 0, 0, 5);
-		Move move2 = new Move(new Rook(Color.BLACK), 0, 1, 0, 5);
-		assertThat(move.equalsForPositions(move2)).isFalse();
+	@ParameterizedTest
+	@MethodSource
+	public void equals_equalOrSame_returnTrue(Move move, Move other) {
+		assertThat(move).isEqualTo(other).hasSameHashCodeAs(other);
 	}
 
-	@Test
-	public void equalsForPosition_differentToX_returnFalse() {
-		Move move = new Move(new Rook(Color.WHITE), 0, 0, 0, 5);
-		Move move2 = new Move(new Rook(Color.BLACK), 0, 0, 1, 5);
-		assertThat(move.equalsForPositions(move2)).isFalse();
+	private static Stream<Arguments> equals_equalOrSame_returnTrue() {
+		Piece rook = new Rook(Color.WHITE);
+		Move move = new Move(rook, 0, 0, 0, 5);
+		Move other = new Move(rook, 0, 0, 0, 5);
+		return Stream.of(arguments(move, other), arguments(move, move));
 	}
 
-	@Test
-	public void equalsForPosition_differentToY_returnFalse() {
-		Move move = new Move(new Rook(Color.WHITE), 0, 0, 0, 5);
-		Move move2 = new Move(new Rook(Color.BLACK), 0, 0, 0, 6);
-		assertThat(move.equalsForPositions(move2)).isFalse();
+	@ParameterizedTest
+	@MethodSource
+	public void equals_nullOrDifferent_returnFalse(Move move, Object other) {
+		assertThat(move).isNotEqualTo(other);
+		if (other != null)
+			assertThat(move).doesNotHaveSameHashCodeAs(other);
 	}
 
-	@Test
-	public void equals_equalMove_returnTrue() {
-		Piece rook1 = new Rook(Color.WHITE);
-		Move move = new Move(rook1, 0, 0, 0, 5);
-		Move move2 = new Move(rook1, move.getFromX(), move.getFromY(), move.getToX(), move.getToY());
-		assertThat(move.equals(move2)).isTrue();
-		assertThat(move).hasSameHashCodeAs(move2);
-	}
-
-	@Test
-	public void equals_sameMove_returnTrue() {
-		Piece rook1 = new Rook(Color.WHITE);
-		Move move = new Move(rook1, 0, 0, 0, 5);
-		assertThat(move.equals(move)).isTrue();
-	}
-
-	@Test
-	public void equals_null_returnFalse() {
-		Piece rook1 = new Rook(Color.WHITE);
-		Move move = new Move(rook1, 0, 0, 0, 5);
-		assertThat(move.equals(null)).isFalse();
-	}
-
-	@Test
-	public void equals_differentClass_returnFalse() {
-		Piece rook1 = new Rook(Color.WHITE);
-		Move move = new Move(rook1, 0, 0, 0, 5);
-		assertThat(move.equals(new Object())).isFalse();
-	}
-
-	@Test
-	public void equals_differentPosition_returnFalse() {
-		Piece rook1 = new Rook(Color.WHITE);
-		Move move = new Move(rook1, 0, 0, 0, 5);
-		Move move2 = new Move(rook1, 0, 0, 1, 5);
-
-		assertThat(move.equals(move2)).isFalse();
-		assertThat(move).doesNotHaveSameHashCodeAs(move2);
-	}
-
-	@Test
-	public void equals_differentTookPiece_returnFalse() {
-		Piece rook1 = new Rook(Color.WHITE);
-		Move move = new Move(rook1, 0, 0, 0, 5);
-		move.setTookPiece(rook1);
-		Move move2 = new Move(rook1, 0, 0, 0, 5);
-
-		assertThat(move.equals(move2)).isFalse();
-		assertThat(move).doesNotHaveSameHashCodeAs(move2);
-	}
-
-	@Test
-	public void equals_differentChecking_returnFalse() {
-		Piece rook1 = new Rook(Color.WHITE);
-		Move move = new Move(rook1, 0, 0, 0, 5);
-		move.setChecking(true);
-		Move move2 = new Move(rook1, 0, 0, 0, 5);
-
-		assertThat(move.equals(move2)).isFalse();
-		assertThat(move).doesNotHaveSameHashCodeAs(move2);
+	private static Stream<Arguments> equals_nullOrDifferent_returnFalse() {
+		Piece rook = new Rook(Color.WHITE);
+		Move move = new Move(rook, 0, 0, 0, 5);
+		
+		Move differentPosition = new Move(rook, 7, 0, 7, 5);
+		
+		Move differentTookPiece = new Move(rook, 0, 0, 0, 5);
+		differentTookPiece.setTookPiece(new Pawn(Color.BLACK));
+		
+		Move differentChecking = new Move(rook, 0, 0, 0, 5);
+		differentChecking.setChecking(true);
+		
+		Move differentPiece = new Move(new Pawn(Color.WHITE),0,0,0,5);
+		
+		return Stream.of(
+				arguments(move, null), 
+				arguments(move, new Object()), 
+				arguments(move, differentPosition),
+				arguments(move, differentTookPiece),
+				arguments(move, differentChecking),
+				arguments(move, differentPiece)
+				);
 	}
 
 	@Test
@@ -205,17 +172,20 @@ class MoveTest {
 	@CsvSource({ "a1-a6,0,0,0,5,false,false", "a1-a6+,0,0,0,5,false,true", "a1xa6,0,0,0,5,true,false" })
 	public void fromBasicNotation_normalMove_returnsCorrect(String notation, int fromX, int fromY, int toX, int toY,
 			boolean isTaking, boolean isChecking) {
-		
-		if (isTaking)
-			when(board.getPiece(anyInt(), anyInt())).thenReturn(Optional.of(new Pawn(Color.BLACK)));
+
+		when(board.getPiece(anyInt(), anyInt())).thenReturn(Optional.of(new Pawn(Color.BLACK)));
 
 		Move move = Move.fromBasicNotation(notation, Color.WHITE, board);
 
 		assertThat(move.getBasicNotation()).isEqualTo(notation);
 		assertThat(move.isChecking()).isEqualTo(isChecking);
 		assertThat(move.isTaking()).isEqualTo(isTaking);
+
 		if (!isTaking)
-			assertThat(move.getPiece()).isNull();
+			assertThat(move.getTookPiece()).isNull();
+		else
+			assertThat(move.getTookPiece()).isNotNull();
+
 		assertThat(move.getFromX()).isEqualTo(fromX);
 		assertThat(move.getFromY()).isEqualTo(fromY);
 		assertThat(move.getToX()).isEqualTo(toX);

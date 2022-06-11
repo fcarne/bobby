@@ -11,10 +11,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import ch.teemoo.bobby.helpers.ColorHelper;
-import ch.teemoo.bobby.models.moves.CastlingMove;
 import ch.teemoo.bobby.models.Color;
 import ch.teemoo.bobby.models.games.Game;
+import ch.teemoo.bobby.models.moves.CastlingMove;
+import ch.teemoo.bobby.models.moves.EnPassantMove;
 import ch.teemoo.bobby.models.moves.Move;
 import ch.teemoo.bobby.models.moves.PromotionMove;
 import ch.teemoo.bobby.models.pieces.Bishop;
@@ -26,8 +30,6 @@ import ch.teemoo.bobby.models.pieces.Queen;
 import ch.teemoo.bobby.models.pieces.Rook;
 import ch.teemoo.bobby.models.players.Human;
 import ch.teemoo.bobby.models.players.Player;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class PortableGameNotationService {
 	private final static Logger logger = LoggerFactory.getLogger(PortableGameNotationService.class);
@@ -60,7 +62,7 @@ public class PortableGameNotationService {
 		List<Move> moves = new ArrayList<>();
 		Color color = Color.WHITE;
 
-		for (String word: movesWords) {
+		for (String word : movesWords) {
 			if (!(word.equals("1-0") || word.equals("0-1") || word.equals("1/2-1/2") || word.equals("*"))) {
 				Move move = getMove(color, word);
 				moves.add(move);
@@ -68,8 +70,11 @@ public class PortableGameNotationService {
 			}
 		}
 
-		for (Move move: moves) {
-			final List<Move> allowedMoves = moveService.computeAllMoves(game.getBoard(), game.getToPlay(), game.getHistory(),true);
+		for (Move readMove : moves) {
+			final List<Move> allowedMoves = moveService.computeAllMoves(game.getBoard(), game.getToPlay(),
+					game.getHistory(), true);
+
+			Move move = toEnPassant(readMove, game);
 
 			final Predicate<Move> fromXCond = m -> move.getFromX() < 0 || m.getFromX() == move.getFromX();
 			final Predicate<Move> fromYCond = m -> move.getFromY() < 0 || m.getFromY() == move.getFromY();
@@ -79,13 +84,12 @@ public class PortableGameNotationService {
 			final Predicate<Move> isTakingCond = m -> move.isTaking() == m.isTaking();
 			final Predicate<Move> isCheckingCond = m -> move.isChecking() == m.isChecking();
 			final Predicate<Move> moveTypeCond = m -> move.getClass().equals(m.getClass());
-			final Predicate<Move> promotionCond =
-				m -> !(move instanceof PromotionMove) || ((m instanceof PromotionMove) && ((PromotionMove) move)
-					.getPromotedPiece().getClass().equals(((PromotionMove) m).getPromotedPiece().getClass()));
+			final Predicate<Move> promotionCond = m -> !(move instanceof PromotionMove)
+					|| ((m instanceof PromotionMove) && ((PromotionMove) move).getPromotedPiece().getClass()
+							.equals(((PromotionMove) m).getPromotedPiece().getClass()));
 
-			List<Move> matchingMoves =
-				allowedMoves.stream().filter(fromXCond).filter(fromYCond).filter(toXCond).filter(toYCond)
-					.filter(pieceCond).filter(isTakingCond).filter(isCheckingCond).filter(moveTypeCond)
+			List<Move> matchingMoves = allowedMoves.stream().filter(fromXCond).filter(fromYCond).filter(toXCond)
+					.filter(toYCond).filter(pieceCond).filter(isTakingCond).filter(isCheckingCond).filter(moveTypeCond)
 					.filter(promotionCond).collect(Collectors.toList());
 			if (matchingMoves.size() < 1) {
 				logger.error("Move {} is not allowed here. Allowed moves are {}", move, allowedMoves);
@@ -106,10 +110,22 @@ public class PortableGameNotationService {
 		return game;
 	}
 
+	private Move toEnPassant(Move move, Game game) {
+		if (!move.isTaking() || !(move.getPiece() instanceof Pawn))
+			return move;
+
+		if (!game.getBoard().getPiece(move.getToX(), move.getToY()).isPresent()) {
+			List<Move> history = game.getHistory();
+			Move lastMove = history.get(history.size() - 1);
+			return new EnPassantMove(move, lastMove.getToX(), lastMove.getToY());
+		} else
+			return move;
+	}
+
 	private Map<String, String> getHeadersMap(String headersContent) {
 		Map<String, String> headers = new HashMap<>();
 		final Pattern headerPattern = Pattern.compile("^\\[(\\w+)\\s\"(.+)\"\\]$");
-		for (String line: headersContent.split("\n")) {
+		for (String line : headersContent.split("\n")) {
 			Matcher headerMatcher = headerPattern.matcher(line);
 			if (headerMatcher.matches()) {
 				headers.put(headerMatcher.group(1), headerMatcher.group(2));
@@ -133,7 +149,7 @@ public class PortableGameNotationService {
 		movesContent = movesContent.replaceAll("\\d+\\.{1,3}", "");
 
 		// Skip unnecessary spaces
-		movesContent = movesContent.trim();//.stripLeading().stripTrailing();
+		movesContent = movesContent.trim();// .stripLeading().stripTrailing();
 		return movesContent;
 	}
 
@@ -162,7 +178,7 @@ public class PortableGameNotationService {
 		final Pattern lineFromPattern = Pattern.compile("^([12345678])[xabcdefgh].*$");
 		final Pattern columnLineFromPattern = Pattern.compile("^([abcdefgh])([12345678])[xabcdefgh].*$");
 		final Pattern columnLineToPattern = Pattern.compile("^([abcdefgh])([12345678]).*$");
-		final Pattern promotionPattern = Pattern.compile("^=([QBNR])$");
+		final Pattern promotionPattern = Pattern.compile("^=([QBNR])[+]?$");
 
 		Move move;
 		String remaining = word;
@@ -197,7 +213,8 @@ public class PortableGameNotationService {
 		}
 
 		if (remaining.startsWith("x")) {
-			//fixme: do not know here what piece is on the board at this place but we must mark the move as taking
+			// fixme: do not know here what piece is on the board at this place but we must
+			// mark the move as taking
 			tookPiece = new Pawn(color == Color.WHITE ? Color.BLACK : Color.WHITE);
 			remaining = remaining.substring(1);
 		}
@@ -234,10 +251,9 @@ public class PortableGameNotationService {
 			piece = new Bishop(color);
 		} else if (remaining.startsWith("N")) {
 			piece = new Knight(color);
-		} else if (remaining.startsWith("R")) {
-			piece = new Rook(color);
 		} else {
-			throw new RuntimeException("Could not define moving piece");
+			assert remaining.startsWith("R");
+			piece = new Rook(color);
 		}
 		return piece;
 	}

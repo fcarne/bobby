@@ -19,7 +19,7 @@ public enum GameState {
 		assert isDraw();
 		switch (this) {
 		case DRAW_STALEMATE:
-			return "stalemate";
+			return "Stalemate";
 		case DRAW_50_MOVES:
 			return "50 moves";
 		case DRAW_AGREEMENT:

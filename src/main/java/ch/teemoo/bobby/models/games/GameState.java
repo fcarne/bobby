@@ -23,7 +23,7 @@ public enum GameState {
 		case DRAW_50_MOVES:
 			return "50 moves";
 		case DRAW_AGREEMENT:
-			return "aggreement";
+			return "agreement";
 		default:
 			assert this == DRAW_THREEFOLD;
 			return "threefold";

@@ -2,7 +2,11 @@ package ch.teemoo.bobby.gui;
 
 import static ch.teemoo.bobby.models.Board.SIZE;
 
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Cursor;
+import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
@@ -13,15 +17,32 @@ import java.util.Optional;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JRadioButton;
+import javax.swing.JSeparator;
+import javax.swing.JSlider;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
 import ch.teemoo.bobby.helpers.BotFactory;
 import ch.teemoo.bobby.helpers.GuiHelper;
+import ch.teemoo.bobby.models.Position;
 import ch.teemoo.bobby.models.games.GameSetup;
 import ch.teemoo.bobby.models.moves.Move;
-import ch.teemoo.bobby.models.Position;
 import ch.teemoo.bobby.models.pieces.Bishop;
 import ch.teemoo.bobby.models.pieces.Knight;
 import ch.teemoo.bobby.models.pieces.Piece;

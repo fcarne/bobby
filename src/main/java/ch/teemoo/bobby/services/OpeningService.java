@@ -8,11 +8,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import ch.teemoo.bobby.models.games.Game;
 import ch.teemoo.bobby.models.moves.Move;
 import ch.teemoo.bobby.models.openings.Node;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class OpeningService {
 	private final static Logger logger = LoggerFactory.getLogger(OpeningService.class);

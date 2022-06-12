@@ -6,7 +6,7 @@ import ch.teemoo.bobby.models.moves.CastlingMove;
 import ch.teemoo.bobby.models.moves.EnPassantMove;
 import ch.teemoo.bobby.models.moves.Move;
 import ch.teemoo.bobby.models.moves.PromotionMove;
-import ch.teemoo.bobby.models.pieces.*;
+import ch.teemoo.bobby.models.pieces.Piece;
 
 public class Board {
     public final static int SIZE = 8;

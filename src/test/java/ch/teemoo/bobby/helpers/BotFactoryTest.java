@@ -3,17 +3,16 @@ package ch.teemoo.bobby.helpers;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+
 import ch.teemoo.bobby.models.players.Bot;
 import ch.teemoo.bobby.models.players.ExperiencedBot;
 import ch.teemoo.bobby.models.players.RandomBot;
 import ch.teemoo.bobby.models.players.TraditionalBot;
 import ch.teemoo.bobby.services.MoveService;
 import ch.teemoo.bobby.services.OpeningService;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import org.mockito.Mock;
 
 public class BotFactoryTest {
 

@@ -17,6 +17,8 @@ import java.util.stream.Stream;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import org.assertj.swing.core.BasicRobot;
 import org.assertj.swing.core.GenericTypeMatcher;
@@ -61,7 +63,9 @@ public class BoardViewSwingTest {
 	}
 
 	@BeforeEach
-	protected void setup() {
+	protected void setup() throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
+		UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+
 		Robot robot = BasicRobot.robotWithNewAwtHierarchy();
 		frame = GuiActionRunner.execute(() -> new BoardView("Test board", new GuiHelper(), true));
 		window = new FrameFixture(robot, frame);
@@ -91,7 +95,7 @@ public class BoardViewSwingTest {
 
 		// then
 		DialogFixture dialog = window.dialog();
-		dialog.radioButton(name).click();
+		dialog.radioButton(name).focus().click();
 		dialog.label(new GenericTypeMatcher<JLabel>(JLabel.class) {
 			@Override
 			protected boolean isMatching(JLabel label) {
@@ -218,9 +222,16 @@ public class BoardViewSwingTest {
 		window.menuItem(new GenericTypeMatcher<JMenuItem>(JMenuItem.class) {
 			@Override
 			protected boolean isMatching(JMenuItem menuItem) {
-				return "About".equals(menuItem.getText());
+				return "Help".equals(menuItem.getText());
 			}
 		}).click();
+		
+		window.menuItem(new GenericTypeMatcher<JMenuItem>(JMenuItem.class) {
+			@Override
+			protected boolean isMatching(JMenuItem menuItem) {
+				return "About".equals(menuItem.getText());
+			}
+		}).focus().click();
 
 		window.dialog(new GenericTypeMatcher<Dialog>(Dialog.class) {
 			@Override
@@ -233,12 +244,20 @@ public class BoardViewSwingTest {
 	@Test
 	public void exit_clickMenuItem_disposed() throws Exception {
 		int statusCode = catchSystemExit(() -> {
+			
+			window.menuItem(new GenericTypeMatcher<JMenuItem>(JMenuItem.class) {
+				@Override
+				protected boolean isMatching(JMenuItem menuItem) {
+					return "File".equals(menuItem.getText());
+				}
+			}).focus().click();
+			
 			window.menuItem(new GenericTypeMatcher<JMenuItem>(JMenuItem.class) {
 				@Override
 				protected boolean isMatching(JMenuItem menuItem) {
 					return "Exit".equals(menuItem.getText());
 				}
-			}).click();
+			}).focus().click();
 		});
 		assertEquals(0, statusCode);
 	}
@@ -259,15 +278,15 @@ public class BoardViewSwingTest {
 			}
 		});
 
-		dialog.checkBox("timeoutCheckBox").check(timeoutSelected);
+		dialog.checkBox("timeoutCheckBox").focus().check(timeoutSelected);
 		if (timeoutSelected)
 			dialog.spinner("timeoutSpinner").select(timeoutValue);
-
+		
 		dialog.slider("levelSlider").slideTo(sliderLevel);
 		dialog.checkBox("openingsCheckBox").check(openings);
 
 		dialog.radioButton(white ? "whiteRadioButton" : "blackRadioButton").click();
-
+		
 		if (okOption)
 			dialog.button("OptionPane.button").click();
 		else

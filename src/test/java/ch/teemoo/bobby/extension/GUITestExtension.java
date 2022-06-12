@@ -1,16 +1,16 @@
 package ch.teemoo.bobby.extension;
 
+import static org.assertj.swing.annotation.GUITestFinder.isGUITest;
+import static org.assertj.swing.junit.runner.Formatter.testNameFrom;
+
+import java.lang.reflect.Method;
+
 import org.assertj.swing.junit.runner.FailureScreenshotTaker;
 import org.assertj.swing.junit.runner.ImageFolderCreator;
 import org.junit.jupiter.api.extension.Extension;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.InvocationInterceptor;
 import org.junit.jupiter.api.extension.ReflectiveInvocationContext;
-
-import java.lang.reflect.Method;
-
-import static org.assertj.swing.annotation.GUITestFinder.isGUITest;
-import static org.assertj.swing.junit.runner.Formatter.testNameFrom;
 
 /**
  * Understands a JUnit 5 extension that takes a screenshot of a failed GUI test.

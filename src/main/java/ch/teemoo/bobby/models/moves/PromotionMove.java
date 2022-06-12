@@ -1,7 +1,5 @@
 package ch.teemoo.bobby.models.moves;
 
-import java.util.Objects;
-
 import ch.teemoo.bobby.models.pieces.King;
 import ch.teemoo.bobby.models.pieces.Pawn;
 import ch.teemoo.bobby.models.pieces.Piece;

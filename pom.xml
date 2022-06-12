@@ -14,8 +14,8 @@
 
 		<java.release.version>11</java.release.version>
 		<maven.compiler.target>1.8</maven.compiler.target>
-	    <maven.compiler.source>1.8</maven.compiler.source>
-	
+		<maven.compiler.source>1.8</maven.compiler.source>
+
 		<skipUnitTests>false</skipUnitTests>
 
 		<timestamp>${maven.build.timestamp}</timestamp>
@@ -197,9 +197,6 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>${maven.plugin.compiler.version}</version>
-				<configuration>
-					<!-- <release>${java.release.version}</release> -->
-				</configuration>
 			</plugin>
 
 			<plugin>
@@ -225,9 +222,6 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>${maven.plugin.surefire.version}</version>
 				<configuration>
-					<argLine>
-                        --illegal-access=permit
-                    </argLine>
 					<skipTests>${skipUnitTests}</skipTests>
 				</configuration>
 			</plugin>
@@ -248,6 +242,26 @@
 				<groupId>org.pitest</groupId>
 				<artifactId>pitest-maven</artifactId>
 				<version>${pitest.version}</version>
+			</plugin>
+
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>${maven.plugin.jacoco.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 
 		</plugins>
@@ -273,9 +287,6 @@
 								</goals>
 								<configuration>
 									<skipTests>false</skipTests>
-									<argLine>
-                      					--illegal-access=permit
-                    				</argLine>
 								</configuration>
 							</execution>
 						</executions>

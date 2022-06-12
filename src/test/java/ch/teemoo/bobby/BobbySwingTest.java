@@ -1,10 +1,8 @@
 package ch.teemoo.bobby;
 
-import static com.github.stefanbirkner.systemlambda.SystemLambda.catchSystemExit;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.swing.finder.WindowFinder.findFrame;
 import static org.assertj.swing.launcher.ApplicationLauncher.application;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.awt.Dialog;
 import java.awt.Frame;
@@ -64,46 +62,7 @@ public class BobbySwingTest {
 
 	@Test
 	@GUITest
-	public void testFileExitMenu() {
-		int statusCode = -1;
-		try {
-			statusCode = catchSystemExit(() -> {
-
-				frame.menuItem(new GenericTypeMatcher<JMenuItem>(JMenuItem.class) {
-					@Override
-					protected boolean isMatching(JMenuItem menuItem) {
-						return "Exit".equals(menuItem.getText());
-					}
-				}).click();
-			});
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		assertEquals(0, statusCode);
-	}
-
-	@Test
-	@GUITest
-	public void testHelpAboutMenu() {
-		frame.menuItem(new GenericTypeMatcher<JMenuItem>(JMenuItem.class) {
-			@Override
-			protected boolean isMatching(JMenuItem menuItem) {
-				return "About".equals(menuItem.getText());
-			}
-		}).click();
-
-		frame.dialog(new GenericTypeMatcher<Dialog>(Dialog.class) {
-			@Override
-			protected boolean isMatching(Dialog dialog) {
-				return "About Bobby".equals(dialog.getTitle());
-			}
-		}).close();
-	}
-
-	@Test
-	@GUITest
-	public void testNewGameMenuWithSetupClose() {
+	public void newGameDialog_clickClose_dialogAppears() {
 		frame.menuItem(new GenericTypeMatcher<JMenuItem>(JMenuItem.class) {
 			@Override
 			protected boolean isMatching(JMenuItem menuItem) {
@@ -121,7 +80,7 @@ public class BobbySwingTest {
 
 	@Test
 	@GUITest
-	public void testNewGameMenuOk() {
+	public void newGameDialog_clickOk_dialogAppears() {
 		frame.menuItem(new GenericTypeMatcher<JMenuItem>(JMenuItem.class) {
 			@Override
 			protected boolean isMatching(JMenuItem menuItem) {
@@ -146,7 +105,7 @@ public class BobbySwingTest {
 
 	@Test
 	@GUITest
-	public void testLoadGameMenu() {
+	public void loadGameDialog_click_dialogAppears() {
 		frame.menuItem(new GenericTypeMatcher<JMenuItem>(JMenuItem.class) {
 			@Override
 			protected boolean isMatching(JMenuItem menuItem) {
@@ -154,17 +113,12 @@ public class BobbySwingTest {
 			}
 		}).click();
 
-		frame.dialog(new GenericTypeMatcher<Dialog>(Dialog.class) {
-			@Override
-			protected boolean isMatching(Dialog dialog) {
-				return true;
-			}
-		}).close();
+		frame.fileChooser().cancel();
 	}
 
 	@Test
 	@GUITest
-	public void testSaveGameMenu() {
+	public void saveGameDialog_click_dialogAppears() {
 		frame.menuItem(new GenericTypeMatcher<JMenuItem>(JMenuItem.class) {
 			@Override
 			protected boolean isMatching(JMenuItem menuItem) {
@@ -172,17 +126,12 @@ public class BobbySwingTest {
 			}
 		}).click();
 
-		frame.dialog(new GenericTypeMatcher<Dialog>(Dialog.class) {
-			@Override
-			protected boolean isMatching(Dialog dialog) {
-				return true;
-			}
-		}).close();
+		frame.fileChooser().cancel();
 	}
 
 	@Test
 	@GUITest
-	public void testSelectWhiteKingPiece() throws Exception {
+	public void run_selectWhiteKing_borderAdded() throws Exception {
 		JLabelFixture whiteKing = frame.label(new GenericTypeMatcher<JLabel>(JLabel.class) {
 			@Override
 			protected boolean isMatching(JLabel label) {

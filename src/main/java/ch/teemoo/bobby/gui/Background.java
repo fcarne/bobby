@@ -1,6 +1,6 @@
 package ch.teemoo.bobby.gui;
 
-import java.awt.*;
+import java.awt.Color;
 
 public enum Background {
     DARK(new Color(139, 69, 19)), LIGHT(new Color(222, 184, 135));

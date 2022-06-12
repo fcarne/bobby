@@ -3,6 +3,11 @@ package ch.teemoo.bobby;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.formdev.flatlaf.FlatIntelliJLaf;
+
 import ch.teemoo.bobby.gui.BoardView;
 import ch.teemoo.bobby.gui.IBoardView;
 import ch.teemoo.bobby.helpers.BotFactory;
@@ -14,9 +19,6 @@ import ch.teemoo.bobby.services.FileService;
 import ch.teemoo.bobby.services.MoveService;
 import ch.teemoo.bobby.services.OpeningService;
 import ch.teemoo.bobby.services.PortableGameNotationService;
-import com.formdev.flatlaf.FlatIntelliJLaf;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class Bobby implements Runnable {
     private final static Logger logger = LoggerFactory.getLogger(Bobby.class);

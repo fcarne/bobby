@@ -1,7 +1,8 @@
 package ch.teemoo.bobby.gui;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Font;
+
+import javax.swing.JLabel;
 
 
 class SideLabel extends JLabel {

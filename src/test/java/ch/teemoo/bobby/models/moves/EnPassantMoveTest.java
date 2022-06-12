@@ -1,6 +1,7 @@
 package ch.teemoo.bobby.models.moves;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.Test;
 
 import ch.teemoo.bobby.models.Color;

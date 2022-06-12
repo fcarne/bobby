@@ -22,6 +22,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.border.Border;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import ch.teemoo.bobby.gui.IBoardView;
 import ch.teemoo.bobby.gui.Square;
 import ch.teemoo.bobby.helpers.BotFactory;
@@ -30,6 +33,7 @@ import ch.teemoo.bobby.models.Board;
 import ch.teemoo.bobby.models.Color;
 import ch.teemoo.bobby.models.games.Game;
 import ch.teemoo.bobby.models.games.GameResult;
+import ch.teemoo.bobby.models.games.GameResult.Result;
 import ch.teemoo.bobby.models.games.GameSetup;
 import ch.teemoo.bobby.models.games.GameState;
 import ch.teemoo.bobby.models.moves.Move;
@@ -41,8 +45,6 @@ import ch.teemoo.bobby.models.players.Player;
 import ch.teemoo.bobby.services.FileService;
 import ch.teemoo.bobby.services.MoveService;
 import ch.teemoo.bobby.services.PortableGameNotationService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class GameController {
 	private final static Logger logger = LoggerFactory.getLogger(GameController.class);
@@ -66,7 +68,7 @@ public class GameController {
 	private Square selectedSquare = null;
 
 	public GameController(IBoardView view, GameFactory gameFactory, BotFactory botFactory, MoveService moveService,
-		FileService fileService, PortableGameNotationService portableGameNotationService) {
+			FileService fileService, PortableGameNotationService portableGameNotationService) {
 		this.moveService = moveService;
 		this.fileService = fileService;
 		this.portableGameNotationService = portableGameNotationService;
@@ -80,7 +82,8 @@ public class GameController {
 	void initView(Board board) {
 		refreshBoardView(board);
 		view.setItemNewActionListener(actionEvent -> {
-			newGame(null, false, r -> {});
+			newGame(null, false, r -> {
+			});
 		});
 		view.setItemLoadActionListener(actionEvent -> loadGame());
 		view.setItemSaveActionListener(actionEvent -> saveGame());
@@ -162,10 +165,11 @@ public class GameController {
 		}
 
 		List<Move> matchingMoves = moveService
-			.computeMoves(board, move.getPiece(), move.getFromX(), move.getFromY(), game.getHistory(), true, false)
-			.stream().filter(m -> m.equalsForPositions(move)).collect(Collectors.toList());
+				.computeMoves(board, move.getPiece(), move.getFromX(), move.getFromY(), game.getHistory(), true, false)
+				.stream().filter(m -> m.equalsForPositions(move)).collect(Collectors.toList());
 		Move allowedMove = getAllowedMove(move, player, matchingMoves);
-		// We use allowedMove instead of given move since it contains additional info like taking and check
+		// We use allowedMove instead of given move since it contains additional info
+		// like taking and check
 		board.doMove(allowedMove);
 		view.refresh(board.getBoard());
 		view.addBorderToLastMoveSquares(allowedMove);
@@ -189,8 +193,8 @@ public class GameController {
 				}
 			}
 			allowedMoves = matchingMoves.stream()
-				.filter(m -> ((PromotionMove) m).getPromotedPiece().getClass().equals(promotedPiece.getClass()))
-				.collect(Collectors.toList());
+					.filter(m -> ((PromotionMove) m).getPromotedPiece().getClass().equals(promotedPiece.getClass()))
+					.collect(Collectors.toList());
 		} else {
 			allowedMoves = matchingMoves;
 		}
@@ -198,9 +202,8 @@ public class GameController {
 			throw new RuntimeException("Unauthorized move: " + move.getBasicNotation());
 		}
 		if (allowedMoves.size() > 1) {
-			throw new RuntimeException(
-				"Ambiguous move: " + move.getBasicNotation() + ". Multiple moves possible here: " + allowedMoves
-					.toString());
+			throw new RuntimeException("Ambiguous move: " + move.getBasicNotation() + ". Multiple moves possible here: "
+					+ allowedMoves.toString());
 		}
 		return allowedMoves.get(0);
 	}
@@ -229,51 +232,50 @@ public class GameController {
 			state = moveService.getGameState(game.getBoard(), game.getToPlay(), game.getHistory());
 		}
 		switch (state) {
-			case LOSS:
-				Color winningColor = move.getPiece().getColor();
-				Player winner = game.getPlayerByColor(winningColor);
-				if (winningColor == Color.WHITE) {
-					info("1-0" + getNbMovesInfo(game), false);
-					gameResultConsumer.accept(new GameResult(game.getHistory().size(), GameResult.Result.WHITE_WINS));
-				} else {
-					info("0-1" + getNbMovesInfo(game), false);
-					gameResultConsumer.accept(new GameResult(game.getHistory().size(), GameResult.Result.BLACK_WINS));
-				}
-				if (winner.isBot()) {
-					info("Checkmate! Ha ha, not even Spassky could beat me!", showPopup);
-				} else {
-					info(
-						"Checkmated?!? Noooo! How is this possible?\nCongrats, not everybody is able to beat the genius Bobby!",
+		case LOSS:
+			Color winningColor = move.getPiece().getColor();
+			Player winner = game.getPlayerByColor(winningColor);
+
+			String points;
+			GameResult.Result result;
+
+			if (winningColor == Color.WHITE) {
+				points = "1-0";
+				result = Result.WHITE_WINS;
+			} else {
+				points = "0-1";
+				result = Result.BLACK_WINS;
+			}
+
+			info(points + getNbMovesInfo(game), false);
+			gameResultConsumer.accept(getResult(game, result));
+
+			if (winner.isBot()) {
+				info("Checkmate! Ha ha, not even Spassky could beat me!", showPopup);
+			} else {
+				info("Checkmated?!? Noooo! How is this possible?\nCongrats, not everybody is able to beat the genius Bobby!",
 						showPopup);
-				}
-				break;
-			case DRAW_STALEMATE:
-				info("1/2-1/2" + getNbMovesInfo(game), false);
-				info("Draw (Stalemate). The game is over.", showPopup);
-				gameResultConsumer.accept(new GameResult(game.getHistory().size(), GameResult.Result.DRAW));
-				break;
-			case DRAW_50_MOVES:
-				info("1/2-1/2" + getNbMovesInfo(game), false);
-				info("Draw (50 moves). The game is over.", showPopup);
-				gameResultConsumer.accept(new GameResult(game.getHistory().size(), GameResult.Result.DRAW));
-				break;
-			case DRAW_THREEFOLD:
-				info("1/2-1/2" + getNbMovesInfo(game), false);
-				info("Draw (threefold). The game is over.", showPopup);
-				gameResultConsumer.accept(new GameResult(game.getHistory().size(), GameResult.Result.DRAW));
-				break;
-			case DRAW_AGREEMENT:
-				info("1/2-1/2" + getNbMovesInfo(game), false);
-				info("Draw (agreement). The game is over.", showPopup);
-				gameResultConsumer.accept(new GameResult(game.getHistory().size(), GameResult.Result.DRAW));
-				break;
-			case IN_PROGRESS:
-			default:
-				if (move.isChecking()) {
-					info("Check!", showPopup);
-				}
-				break;
+			}
+			break;
+		case DRAW_STALEMATE:
+		case DRAW_50_MOVES:
+		case DRAW_THREEFOLD:
+		case DRAW_AGREEMENT:
+			info("1/2-1/2" + getNbMovesInfo(game), false);
+			info("Draw (" + state.getDrawDescription() + "). The game is over.", showPopup);
+			gameResultConsumer.accept(getResult(game, Result.DRAW));
+			break;
+		case IN_PROGRESS:
+		default:
+			if (move.isChecking()) {
+				info("Check!", showPopup);
+			}
+			break;
 		}
+	}
+
+	protected GameResult getResult(Game game, GameResult.Result result) {
+		return new GameResult(game.getHistory().size(), result);
 	}
 
 	private String getNbMovesInfo(Game game) {
@@ -324,7 +326,9 @@ public class GameController {
 				view.resetAllClickables();
 				markSquaresClickableByColor(game.getToPlay());
 			} else {
-				doMove(new Move(selectedSquare.getPiece(), selectedSquare.getPosition().getFile(), selectedSquare.getPosition().getRank(), square.getPosition().getFile(), square.getPosition().getRank()));
+				doMove(new Move(selectedSquare.getPiece(), selectedSquare.getPosition().getFile(),
+						selectedSquare.getPosition().getRank(), square.getPosition().getFile(),
+						square.getPosition().getRank()));
 				play();
 			}
 		} else {
@@ -336,8 +340,9 @@ public class GameController {
 					// Self piece is clickable so that it selection can be cancelled
 					markSquareClickable(square);
 					square.setBorder(RED_BORDER);
-					List<Move> moves = moveService.computeMoves(board, square.getPiece(), square.getPosition().getFile(),
-						square.getPosition().getRank(), game.getHistory(), true, false);
+					List<Move> moves = moveService.computeMoves(board, square.getPiece(),
+							square.getPosition().getFile(), square.getPosition().getRank(), game.getHistory(), true,
+							false);
 					for (Move move : moves) {
 						Square destination = view.getSquares()[move.getToY()][move.getToX()];
 						destination.setBorder(BLUE_BORDER);
@@ -408,13 +413,14 @@ public class GameController {
 			}
 		}
 	}
+
 	void applyMovesFromPortableGameNotationFile(List<String> lines) {
 		Game loadedGame = portableGameNotationService.readPgnFile(lines);
 		loadedGame.getHistory().forEach(this::doMove);
 	}
 
 	void applyMovesFromBasicNotationFile(List<String> lines) {
-		for (String line: lines) {
+		for (String line : lines) {
 			Move move = Move.fromBasicNotation(line, game.getToPlay(), game.getBoard());
 			Piece piece = board.getPiece(move.getFromX(), move.getFromY())
 					.orElseThrow(() -> new RuntimeException("Unexpected move, no piece at this location"));

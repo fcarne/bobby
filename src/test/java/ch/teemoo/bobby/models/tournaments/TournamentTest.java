@@ -8,12 +8,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+
 import ch.teemoo.bobby.models.players.Player;
 import ch.teemoo.bobby.models.players.RandomBot;
 import ch.teemoo.bobby.services.MoveService;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.mockito.Mock;
 
 public class TournamentTest {
 	private Player player1;

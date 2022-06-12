@@ -1,9 +1,8 @@
 package ch.teemoo.bobby.services;
 
-import static java.util.stream.Collectors.toList;
-
 import static ch.teemoo.bobby.helpers.ColorHelper.swap;
 import static ch.teemoo.bobby.models.Board.SIZE;
+import static java.util.stream.Collectors.toList;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -17,12 +16,15 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import ch.teemoo.bobby.models.Board;
 import ch.teemoo.bobby.models.Color;
-import ch.teemoo.bobby.models.games.Game;
-import ch.teemoo.bobby.models.games.GameState;
 import ch.teemoo.bobby.models.MoveAnalysis;
 import ch.teemoo.bobby.models.Position;
+import ch.teemoo.bobby.models.games.Game;
+import ch.teemoo.bobby.models.games.GameState;
 import ch.teemoo.bobby.models.moves.CastlingMove;
 import ch.teemoo.bobby.models.moves.EnPassantMove;
 import ch.teemoo.bobby.models.moves.Move;
@@ -34,8 +36,6 @@ import ch.teemoo.bobby.models.pieces.Pawn;
 import ch.teemoo.bobby.models.pieces.Piece;
 import ch.teemoo.bobby.models.pieces.Queen;
 import ch.teemoo.bobby.models.pieces.Rook;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class MoveService {
 	private final static Logger logger = LoggerFactory.getLogger(MoveService.class);

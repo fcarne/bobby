@@ -9,14 +9,15 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import ch.teemoo.bobby.models.games.Game;
-import ch.teemoo.bobby.models.players.Human;
-import ch.teemoo.bobby.services.MoveService;
-import ch.teemoo.bobby.services.PortableGameNotationService;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import ch.teemoo.bobby.models.games.Game;
+import ch.teemoo.bobby.models.players.Human;
+import ch.teemoo.bobby.services.MoveService;
+import ch.teemoo.bobby.services.PortableGameNotationService;
 
 public class ComputeMovesIT {
 	private final static Logger logger = LoggerFactory.getLogger(ComputeMovesIT.class);

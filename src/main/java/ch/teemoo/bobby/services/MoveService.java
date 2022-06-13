@@ -453,8 +453,8 @@ public class MoveService {
 		// en-passant moves
 		if (!history.isEmpty()) {
 			Move lastMove = history.get(history.size() - 1);
-			if (lastMove.getPiece() instanceof Pawn && lastMove.getFromY() - lastMove.getToY() == (2 * factor)
-					&& lastMove.getToY() == posY && (lastMove.getToX() == posX - 1 || lastMove.getToX() == posX + 1)) {
+			
+			if (lastMove.getPiece() instanceof Pawn && lastMove.getFromY() - lastMove.getToY() == (2 * factor) && lastMove.getToY() == posY && Math.abs(lastMove.getToX() - posX) == 1) {
 				Move m = new Move(piece, posX, posY, lastMove.getToX(), posY + factor);
 				m.setTookPiece(board.getPiece(lastMove.getToX(), lastMove.getToY())
 						.orElseThrow(() -> new RuntimeException("En-passant move expects a piece here")));
@@ -748,6 +748,7 @@ public class MoveService {
 				.filter(Move::isTaking).anyMatch(move -> {
 					Piece takenPiece = board.getPiece(move.getToX(), move.getToY())
 							.orElseThrow(() -> new RuntimeException("Cannot take an empty piece!"));
+										
 					return takenPiece instanceof Bishop || takenPiece instanceof Queen;
 				});
 	}
@@ -758,6 +759,7 @@ public class MoveService {
 				.filter(Move::isTaking).anyMatch(move -> {
 					Piece takenPiece = board.getPiece(move.getToX(), move.getToY())
 							.orElseThrow(() -> new RuntimeException("Cannot take an empty piece!"));
+
 					return takenPiece instanceof Rook || takenPiece instanceof Queen;
 				});
 	}

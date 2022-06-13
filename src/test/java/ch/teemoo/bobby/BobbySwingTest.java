@@ -1,8 +1,10 @@
 package ch.teemoo.bobby;
 
+import static com.github.stefanbirkner.systemlambda.SystemLambda.tapSystemOutNormalized;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.swing.finder.WindowFinder.findFrame;
 import static org.assertj.swing.launcher.ApplicationLauncher.application;
+import static org.awaitility.Awaitility.await;
 
 import java.awt.Dialog;
 import java.awt.Frame;
@@ -11,7 +13,6 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 
-import org.assertj.swing.annotation.GUITest;
 import org.assertj.swing.core.BasicRobot;
 import org.assertj.swing.core.GenericTypeMatcher;
 import org.assertj.swing.core.Robot;
@@ -27,6 +28,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import ch.teemoo.bobby.extension.GUITestExtension;
+import ch.teemoo.bobby.gui.Square;
+import ch.teemoo.bobby.models.Color;
+import ch.teemoo.bobby.models.Position;
+import ch.teemoo.bobby.models.pieces.Pawn;
 
 @ExtendWith(GUITestExtension.class)
 public class BobbySwingTest {
@@ -61,8 +66,7 @@ public class BobbySwingTest {
 	}
 
 	@Test
-	@GUITest
-	public void newGameDialog_clickClose_dialogAppears() {
+	public void newGameDialog_clickClose_dialogAppears() throws InterruptedException {
 		frame.menuItem(new GenericTypeMatcher<JMenuItem>(JMenuItem.class) {
 			@Override
 			protected boolean isMatching(JMenuItem menuItem) {
@@ -79,7 +83,6 @@ public class BobbySwingTest {
 	}
 
 	@Test
-	@GUITest
 	public void newGameDialog_clickOk_dialogAppears() {
 		frame.menuItem(new GenericTypeMatcher<JMenuItem>(JMenuItem.class) {
 			@Override
@@ -104,7 +107,80 @@ public class BobbySwingTest {
 	}
 
 	@Test
-	@GUITest
+	public void suggestMoveDialog_initialBoard_suggestedIsC4OrE4() {
+		frame.menuItem(new GenericTypeMatcher<JMenuItem>(JMenuItem.class) {
+			@Override
+			protected boolean isMatching(JMenuItem menuItem) {
+				return "Suggest move".equals(menuItem.getText());
+			}
+		}).click();
+
+		DialogFixture dialog = frame.dialog(new GenericTypeMatcher<Dialog>(Dialog.class) {
+			@Override
+			protected boolean isMatching(Dialog dialog) {
+				return "Info".equals(dialog.getTitle());
+			}
+		});
+
+		dialog.label(new GenericTypeMatcher<JLabel>(JLabel.class) {
+			@Override
+			protected boolean isMatching(JLabel label) {
+				return label.getText() != null && label.getText().contains("Brilliantly, I recommend you to play:");
+			}
+		});
+		dialog.requireVisible().close();
+	}
+
+	@Test
+	public void proposeDrawDialog_initialBoard_drawRefused() {
+		frame.menuItem(new GenericTypeMatcher<JMenuItem>(JMenuItem.class) {
+			@Override
+			protected boolean isMatching(JMenuItem menuItem) {
+				return "Propose draw".equals(menuItem.getText());
+			}
+		}).click();
+
+		DialogFixture dialog = frame.dialog(new GenericTypeMatcher<Dialog>(Dialog.class) {
+			@Override
+			protected boolean isMatching(Dialog dialog) {
+				return "Info".equals(dialog.getTitle());
+			}
+		});
+		dialog.label(new GenericTypeMatcher<JLabel>(JLabel.class) {
+			@Override
+			protected boolean isMatching(JLabel label) {
+				return "Are you kidding me? A champion like me can't accept such proposal (at least not now)."
+						.equals(label.getText());
+			}
+		});
+
+		dialog.requireVisible().close();
+	}
+
+	@Test
+	public void printToConsole_initialBoard_boardLogged() throws Exception {
+		
+
+		String text = tapSystemOutNormalized(() -> 
+			frame.menuItem(new GenericTypeMatcher<JMenuItem>(JMenuItem.class) {
+				@Override
+				protected boolean isMatching(JMenuItem menuItem) {
+					return "Print to console".equals(menuItem.getText());
+				}
+			}).click());
+		
+		assertThat(text).contains(" - Current board: \n"
+				+ "♜ ♞ ♝ ♛ ♚ ♝ ♞ ♜ \n"
+				+ "♟ ♟ ♟ ♟ ♟ ♟ ♟ ♟ \n"
+				+ "                \n"
+				+ "                \n"
+				+ "                \n"
+				+ "                \n"
+				+ "♙ ♙ ♙ ♙ ♙ ♙ ♙ ♙ \n"
+				+ "♖ ♘ ♗ ♕ ♔ ♗ ♘ ♖ \n");
+	}
+
+	@Test
 	public void loadGameDialog_click_dialogAppears() {
 		frame.menuItem(new GenericTypeMatcher<JMenuItem>(JMenuItem.class) {
 			@Override
@@ -117,7 +193,6 @@ public class BobbySwingTest {
 	}
 
 	@Test
-	@GUITest
 	public void saveGameDialog_click_dialogAppears() {
 		frame.menuItem(new GenericTypeMatcher<JMenuItem>(JMenuItem.class) {
 			@Override
@@ -130,18 +205,64 @@ public class BobbySwingTest {
 	}
 
 	@Test
-	@GUITest
-	public void run_selectWhiteKing_borderAdded() throws Exception {
-		JLabelFixture whiteKing = frame.label(new GenericTypeMatcher<JLabel>(JLabel.class) {
+	public void boardClick_moveWhitePawn_pawnMoved() throws Exception {
+		JLabelFixture whitePawn = frame.label(new GenericTypeMatcher<Square>(Square.class) {
 			@Override
-			protected boolean isMatching(JLabel label) {
-				return "♔".equals(label.getText());
+			protected boolean isMatching(Square square) {
+				Position position = square.getPosition();
+				return position.getFile() == 4 && position.getRank() == 1;
 			}
 		});
-		//assertThat(whiteKing.target().getBorder()).isNull();
-		whiteKing.click();
-		Thread.sleep(1000);
-		assertThat(whiteKing.target().getBorder()).isNotNull();
+		whitePawn.click();
+
+		JLabelFixture emptySquare = frame.label(new GenericTypeMatcher<Square>(Square.class) {
+			@Override
+			protected boolean isMatching(Square square) {
+				Position position = square.getPosition();
+				return position.getFile() == 4 && position.getRank() == 3;
+			}
+		});
+
+		assertThat(whitePawn.target().getText()).isEqualTo(new Pawn(Color.WHITE).getUnicode());
+		assertThat(whitePawn.target().getBorder()).isNotNull();
+		assertThat(emptySquare.target().getText()).isEmpty();
+
+		emptySquare.click();
+		
+		await().untilAsserted(() -> assertThat(emptySquare.target().getText()).isEqualTo(new Pawn(Color.WHITE).getUnicode()));
+		await().untilAsserted(() -> assertThat(whitePawn.target().getText()).isEmpty());
+	}
+
+	@Test
+	public void undeMoveClick_pawnToC4_boardRestored() throws Exception {
+		JLabelFixture originalSquare = frame.label(new GenericTypeMatcher<Square>(Square.class) {
+			@Override
+			protected boolean isMatching(Square square) {
+				Position position = square.getPosition();
+				return position.getFile() == 2 && position.getRank() == 1;
+			}
+		});
+
+		JLabelFixture toSquare = frame.label(new GenericTypeMatcher<Square>(Square.class) {
+			@Override
+			protected boolean isMatching(Square square) {
+				Position position = square.getPosition();
+				return position.getFile() == 2 && position.getRank() == 3;
+			}
+		});
+
+		originalSquare.click();
+		toSquare.click();
+
+		frame.menuItem(new GenericTypeMatcher<JMenuItem>(JMenuItem.class) {
+			@Override
+			protected boolean isMatching(JMenuItem menuItem) {
+				return "Undo move".equals(menuItem.getText());
+			}
+		}).click();
+
+		assertThat(originalSquare.target().getText()).isEqualTo(new Pawn(Color.WHITE).getUnicode());
+		assertThat(toSquare.target().getText()).isEmpty();
 	}
 
 }

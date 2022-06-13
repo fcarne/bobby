@@ -65,15 +65,13 @@ public class TournamentOrganizer implements Runnable {
 			rounds = ROUNDS_PER_MATCH;
 		}
 		logger.info("{} players has registered", players.size());
-		logger.info("There will be {} rounds per match, participants play against each other", players.size());
+		logger.info("There will be {} rounds per match, participants play against each other", rounds);
 
 		logger.info("Tournament is open!");
 		Tournament tournament = new Tournament(players);
 		for (Match match : tournament.getMatches()) {
 			for (int i = 0; i < rounds; i++) {
-
 				playRound(controller, match, i % 2 == 0);
-
 			}
 		}
 

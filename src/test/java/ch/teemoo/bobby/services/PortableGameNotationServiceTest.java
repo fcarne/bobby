@@ -180,23 +180,24 @@ public class PortableGameNotationServiceTest {
 		assertThat(game.getHistory().get(0).getPiece()).isInstanceOf(Pawn.class);
 		assertThat(game.getHistory().get(0).getPiece().getColor()).isEqualTo(Color.WHITE);
 		assertThat(game.getHistory().get(0).getToY()).isEqualTo(3);
-
+		
 		assertThat(game.getHistory().get(1).getPiece()).isInstanceOf(Pawn.class);
 		assertThat(game.getHistory().get(1).getPiece().getColor()).isEqualTo(Color.BLACK);
 		assertThat(game.getHistory().get(1).getToY()).isEqualTo(4);
-
+		
 		assertThat(game.getHistory().get(8)).isInstanceOf(CastlingMove.class);
 		assertThat(game.getHistory().get(8).getToX()).isEqualTo(6);
-
+		
 		assertThat(game.getHistory().get(34).getPiece()).isInstanceOf(Bishop.class);
 		assertThat(game.getHistory().get(34).getPiece().getColor()).isEqualTo(Color.WHITE);
 		assertThat(game.getHistory().get(34).isTaking()).isTrue();
-
+		
 		assertThat(game.getHistory().get(49).getPiece()).isInstanceOf(Rook.class);
 		assertThat(game.getHistory().get(49).getPiece().getColor()).isEqualTo(Color.BLACK);
 		assertThat(game.getHistory().get(49).isTaking()).isTrue();
 		assertThat(game.getHistory().get(49).isChecking()).isTrue();
 	}
+
 
 	@Test
 	public void readPgnFile_longGame_returnBoardCurrentSituation() throws IOException {

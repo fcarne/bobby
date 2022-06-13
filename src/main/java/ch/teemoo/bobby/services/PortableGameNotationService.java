@@ -78,8 +78,8 @@ public class PortableGameNotationService {
 
 			final Predicate<Move> fromXCond = m -> move.getFromX() < 0 || m.getFromX() == move.getFromX();
 			final Predicate<Move> fromYCond = m -> move.getFromY() < 0 || m.getFromY() == move.getFromY();
-			final Predicate<Move> toXCond = m -> move.getToX() < 0 || m.getToX() == move.getToX();
-			final Predicate<Move> toYCond = m -> move.getToY() < 0 || m.getToY() == move.getToY();
+			final Predicate<Move> toXCond = m -> /* move.getToX() < 0 || */ m.getToX() == move.getToX();
+			final Predicate<Move> toYCond = m -> /* move.getToY() < 0 || */ m.getToY() == move.getToY();
 			final Predicate<Move> pieceCond = m -> move.getPiece().getClass().equals(m.getPiece().getClass());
 			final Predicate<Move> isTakingCond = m -> move.isTaking() == m.isTaking();
 			final Predicate<Move> isCheckingCond = m -> move.isChecking() == m.isChecking();

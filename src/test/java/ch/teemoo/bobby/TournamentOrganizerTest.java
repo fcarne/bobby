@@ -36,6 +36,7 @@ import ch.teemoo.bobby.services.PortableGameNotationService;
 public class TournamentOrganizerTest {
 
 	TournamentOrganizer tournamentOrganizer;
+	final MoveService moveService = new MoveService();
 
 	@BeforeEach
 	public void setup() {
@@ -63,7 +64,6 @@ public class TournamentOrganizerTest {
 	@CsvSource({ "WHITE_WINS,1,0", "BLACK_WINS,0,1", "DRAW,0.5,0.5" })
 	public void playRound_newMatch_pointsCorrectlyAssigned(GameResult.Result result, float whitePoints,
 			float blackPoints) throws InterruptedException, ExecutionException {
-		final MoveService moveService = new MoveService();
 		final FileService fileService = new FileService();
 		final PortableGameNotationService portableGameNotationService = new PortableGameNotationService(moveService);
 		final OpeningService openingService = new OpeningService(portableGameNotationService, fileService);
@@ -93,6 +93,20 @@ public class TournamentOrganizerTest {
 		});
 		assertThat(text).contains("2 players has registered")
 				.contains("There will be 2 rounds per match, participants play against each other")
+				.contains("Tournament is open!").contains("Tournament is over!").contains("Here is the scoreboard");
+	}
+
+	@Test
+	public void run_longTournament_resultsLogged() throws Exception {
+		TournamentOrganizer organizer = spy(new TournamentOrganizer(false));
+
+		doReturn(organizer.getOnlyTwoFastPlayers()).when(organizer).getAllPlayers();
+
+		String text = tapSystemOutNormalized(() -> {
+			organizer.run();
+		});
+
+		assertThat(text).contains("There will be 4 rounds per match, participants play against each other")
 				.contains("Tournament is open!").contains("Tournament is over!").contains("Here is the scoreboard");
 	}
 }

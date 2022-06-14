@@ -253,7 +253,8 @@ public class MoveService {
 					// I am checkmate, that is the worst move to do!
 					gameStateScore = WORST;
 				}
-			} else if (gameState.isDraw()) {
+			} else {
+				assert gameState.isDraw();
 				// Let us be aggressive, a draw is not a good move, we want to win
 				gameStateScore += DRAW_PENALTY;
 			}
@@ -267,7 +268,7 @@ public class MoveService {
 		return 10 * piecesScore + heatScore + developmentScore;
 	}
 
-	private int getPiecesScore(Board board, Color color) {
+	int getPiecesScore(Board board, Color color) {
 		// Basically, taking a piece improves your situation
 		int piecesValue = getPiecesValueSum(board, color);
 		int opponentPiecesValue = getPiecesValueSum(board, swap(color));
@@ -585,13 +586,13 @@ public class MoveService {
 		getCastlingMove(board, piece, posX, posY, 2, 0, 3, history).ifPresent(moves::add);
 		// Kingside castling theoretical positions
 		getCastlingMove(board, piece, posX, posY, 6, 7, 5, history).ifPresent(moves::add);
-
+		
 		return moves;
 	}
 
 	Optional<Move> getCastlingMove(Board board, Piece piece, int kingFromX, int kingFromY, int kingToX, int rookFromX,
 			int rookToX, List<Move> history) {
-
+		
 		if (history.stream().anyMatch(m -> (m.getFromX() == kingFromX && m.getFromY() == kingFromY)
 				|| (m.getFromX() == rookFromX && m.getFromY() == kingFromY))) {
 			return Optional.empty();

@@ -31,7 +31,7 @@ public class BoardViewTest {
 	private GuiHelper guiHelper = new GuiHelper();
 
 	private BoardView view;
-
+	
 	@BeforeEach
 	public void setup() {
 		view = new BoardView("Test board", guiHelper, false);

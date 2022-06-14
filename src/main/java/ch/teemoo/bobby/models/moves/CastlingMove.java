@@ -1,5 +1,6 @@
 package ch.teemoo.bobby.models.moves;
 
+import ch.teemoo.bobby.models.Color;
 import ch.teemoo.bobby.models.pieces.King;
 import ch.teemoo.bobby.models.pieces.Piece;
 import ch.teemoo.bobby.models.pieces.Rook;
@@ -18,7 +19,8 @@ public class CastlingMove extends Move {
 		assert king instanceof King : "First moving piece must be a King";
 		assert rook instanceof Rook : "Second moving piece must be a Rook";
 		assert king.getColor() == rook.getColor() : "King & Rook must be of the same color";
-
+		assert king.getColor() == Color.WHITE && fromY == 0 || king.getColor() == Color.BLACK && fromY == 7;
+		
 		this.rook = rook;
 		this.rookFromX = rookFromX;
 		this.rookFromY = rookFromY;

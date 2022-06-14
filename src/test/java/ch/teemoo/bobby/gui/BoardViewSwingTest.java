@@ -58,14 +58,13 @@ public class BoardViewSwingTest {
 	private FrameFixture window;
 
 	@BeforeAll
-	static void setupOnce() {
+	static void setupOnce() throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException  {
 		FailOnThreadViolationRepaintManager.install();
+		UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());		
 	}
 
 	@BeforeEach
-	protected void setup() throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
-		UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-
+	protected void setup() {
 		Robot robot = BasicRobot.robotWithNewAwtHierarchy();
 		frame = GuiActionRunner.execute(() -> new BoardView("Test board", new GuiHelper(), true));
 		window = new FrameFixture(robot, frame);

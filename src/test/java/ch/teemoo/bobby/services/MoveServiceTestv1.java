@@ -2,35 +2,21 @@ package ch.teemoo.bobby.services;
 
 import static ch.teemoo.bobby.helpers.ColorHelper.swap;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import ch.teemoo.bobby.models.Board;
 import ch.teemoo.bobby.models.Color;
-import ch.teemoo.bobby.models.MoveAnalysis;
-import ch.teemoo.bobby.models.Position;
 import ch.teemoo.bobby.models.games.Game;
 import ch.teemoo.bobby.models.games.GameState;
-import ch.teemoo.bobby.models.moves.CastlingMove;
-import ch.teemoo.bobby.models.moves.EnPassantMove;
 import ch.teemoo.bobby.models.moves.Move;
-import ch.teemoo.bobby.models.pieces.Bishop;
-import ch.teemoo.bobby.models.pieces.King;
-import ch.teemoo.bobby.models.pieces.Knight;
-import ch.teemoo.bobby.models.pieces.Pawn;
 import ch.teemoo.bobby.models.pieces.Piece;
-import ch.teemoo.bobby.models.pieces.Queen;
-import ch.teemoo.bobby.models.pieces.Rook;
 import ch.teemoo.bobby.models.players.Human;
 import ch.teemoo.bobby.models.players.RandomBot;
 
@@ -108,27 +94,6 @@ public class MoveServiceTestv1 {
         game.getBoard().doMove(bestMove);
         game.addMoveToHistory(bestMove);
         assertThat(moveService.getGameState(game.getBoard(), swap(colorToPlay), game.getHistory())).isNotEqualTo(GameState.LOSS);
-    }
-
-    @Test
-    public void testComputeAllMoves() {
-        Game game = new Game(new RandomBot(moveService), new RandomBot(moveService));
-        Board initialBoard = game.getBoard();
-        // Each player has 20 possible moves in initial position
-        assertThat(moveService.computeAllMoves(initialBoard, Color.WHITE, game.getHistory(), false)).hasSize(20);
-        assertThat(moveService.computeAllMoves(initialBoard, Color.BLACK, game.getHistory(),false)).hasSize(20);
-    }
-
-    @Test
-    public void testComputeMoves() {
-        Game game = new Game(new RandomBot(moveService), new RandomBot(moveService));
-        Board initialBoard = game.getBoard();
-        // White rook cannot move in initial position
-        assertThat(moveService.computeMoves(initialBoard, initialBoard.getPiece(0, 0).get(), 0, 0, game.getHistory(),false, false)).isEmpty();
-        // White knight has two possible moves
-        assertThat(moveService.computeMoves(initialBoard, initialBoard.getPiece(1, 0).get(), 1, 0, game.getHistory(),false, false)).hasSize(2);
-        // Any pawn has two possible moves
-        assertThat(moveService.computeMoves(initialBoard, initialBoard.getPiece(5, 1).get(), 5, 1, game.getHistory(),false, false)).hasSize(2);
     }
 
     @Test
@@ -233,279 +198,6 @@ public class MoveServiceTestv1 {
             color = swap(color);
         }
         assertThat(moveService.getGameState(board, Color.BLACK, history)).isEqualTo(GameState.DRAW_THREEFOLD);
-    }
-
-
-    @Test
-    public void testEvaluateBoardLoss() {
-        assertThat(moveService.evaluateBoard(null, Color.BLACK, Color.WHITE, GameState.LOSS, null, null, Collections.emptyList())).isEqualTo(MoveService.WORST);
-    }
-
-    @Test
-    public void testEvaluateBoardWin() {
-        assertThat(moveService.evaluateBoard(null, Color.BLACK, Color.BLACK, GameState.LOSS, null, null, Collections.emptyList())).isEqualTo(MoveService.BEST);
-    }
-
-    @Test
-    public void testEvaluateBoardDraw() {
-        assertThat(moveService.evaluateBoard(null, Color.BLACK, Color.BLACK, GameState.DRAW_STALEMATE, null, null, Collections.emptyList())).isEqualTo(-20);
-    }
-
-    @Test
-    public void testEvaluateBoardInitialPosition() {
-        Game game = new Game(new RandomBot(moveService), new RandomBot(moveService));
-        assertThat(moveService.evaluateBoard(game.getBoard(), Color.WHITE, Color.BLACK, GameState.IN_PROGRESS, new Position(4, 7), new Position(4, 0), game.getHistory())).isEqualTo(0);
-    }
-
-    @Test
-    public void testGetPiecesValueSum() {
-        Board board = new Board("" +
-                "                \n" +
-                "                \n" +
-                "        ♚       \n" +
-                "            ♟ ♕ \n" +
-                "    ♗     ♙     \n" +
-                "          ♘     \n" +
-                "♛           ♙ ♙ \n" +
-                "    ♖   ♔       \n"
-        );
-        assertThat(moveService.getPiecesValueSum(board, Color.BLACK)).isEqualTo(111);
-        assertThat(moveService.getPiecesValueSum(board, Color.WHITE)).isEqualTo(124);
-    }
-
-    @Test
-    public void testGetPiecesValueSumInitialPosition() {
-        // Initial positions board
-        Game game = new Game(new RandomBot(moveService), new RandomBot(moveService));
-        Board board = game.getBoard();
-        assertThat(moveService.getPiecesValueSum(board, Color.WHITE)).isEqualTo(
-                8 * (new Pawn(Color.WHITE)).getValue()
-                + 2 * (new Knight(Color.WHITE)).getValue()
-                + 2 * (new Bishop(Color.WHITE)).getValue()
-                + 2 * (new Rook(Color.WHITE)).getValue()
-                + (new Queen(Color.WHITE)).getValue()
-                + (new King(Color.WHITE)).getValue()
-                );
-
-        assertThat(moveService.getPiecesValueSum(board, Color.WHITE)).isEqualTo(moveService.getPiecesValueSum(board, Color.BLACK));
-    }
-
-    @Test
-    public void testGetDevelopmentBonusNormal() {
-        assertThat(moveService.getDevelopmentBonus(Collections.emptyList())).isEqualTo(0);
-    }
-
-    @Test
-    public void testGetDevelopmentBonusQueenMoveInOpening() {
-        List<Move> moves = Arrays.asList(
-            new Move(new Pawn(Color.WHITE), 3, 1, 3, 3),
-            new Move(new Queen(Color.WHITE), 3, 0, 3, 2)
-        );
-        assertThat(moveService.getDevelopmentBonus(moves)).isEqualTo(-5);
-    }
-
-    @Test
-    public void testGetDevelopmentBonusTwicePieceMovedInOpening() {
-        Piece knight = new Knight(Color.WHITE);
-        List<Move> moves = Arrays.asList(
-            new Move(knight, 1, 0, 2, 2),
-            new Move(knight, 2, 2, 3, 4)
-        );
-        assertThat(moveService.getDevelopmentBonus(moves)).isEqualTo(-5);
-    }
-
-    @Test
-    public void testGetDevelopmentBonusCastling() {
-        Piece king = new King(Color.WHITE);
-        List<Move> moves = Arrays.asList(
-            new CastlingMove(king, 4, 0, 2, 0, new Rook(Color.WHITE), 0, 0, 3, 0)
-        );
-        assertThat(moveService.getDevelopmentBonus(moves)).isEqualTo(15);
-    }
-
-    @Test
-    public void testGetDevelopmentBonusKingShouldNotMoveBeforeCastling() {
-        List<Move> moves = Arrays.asList(
-            new Move(new Pawn(Color.WHITE), 3, 1, 3, 2),
-            new Move(new Pawn(Color.WHITE), 3, 2, 3, 3),
-            new Move(new Pawn(Color.WHITE), 3, 3, 3, 4),
-            new Move(new Pawn(Color.WHITE), 3, 4, 3, 5),
-            new Move(new Pawn(Color.WHITE), 3, 5, 3, 6),
-            new Move(new King(Color.WHITE), 4, 0, 4, 1)
-            );
-        assertThat(moveService.getDevelopmentBonus(moves)).isEqualTo(-10);
-    }
-
-    @Test
-    public void testGetBestMove() {
-        Map<MoveAnalysis, Integer> map = new HashMap<>();
-        map.put(new MoveAnalysis(new Move(new Bishop(Color.BLACK), 4, 5, 5, 6)), 60);
-        map.put(new MoveAnalysis(new Move(new Bishop(Color.BLACK), 4, 5, 3, 4)), 23);
-        map.put(new MoveAnalysis(new Move(new Bishop(Color.BLACK), 4, 5, 6, 7)), 45);
-        map.put(new MoveAnalysis(new Move(new Knight(Color.BLACK), 2, 3, 4, 4)), -56);
-        map.put(new MoveAnalysis(new Move(new Knight(Color.BLACK), 2, 3, 1, 5)), 20);
-        map.put(new MoveAnalysis(new Move(new Knight(Color.BLACK), 2, 3, 0, 4)), 59);
-        MoveAnalysis bestMove = new MoveAnalysis(new Move(new Queen(Color.BLACK), 6, 6, 6, 7));
-        map.put(bestMove, 65);
-        assertThat(moveService.getBestMove(map)).isEqualTo(bestMove);
-    }
-
-    @Test
-    public void testGetBestMoveEmpty() {
-        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> moveService.getBestMove(new HashMap<>()));
-    }
-
-    @Test
-    public void testGetMaxScoreWithRandomChoice() {
-        Map<MoveAnalysis, Integer> map = new HashMap<>();
-        map.put(new MoveAnalysis(new Move(new Bishop(Color.WHITE), 4, 5, 5, 6)), -2);
-        map.put(new MoveAnalysis(new Move(new Bishop(Color.WHITE), 4, 5, 3, 4)), 5);
-        map.put(new MoveAnalysis(new Move(new Bishop(Color.WHITE), 4, 5, 6, 7)), 8);
-        map.put(new MoveAnalysis(new Move(new Knight(Color.WHITE), 2, 3, 4, 4)), 8);
-        map.put(new MoveAnalysis(new Move(new Knight(Color.WHITE), 2, 3, 1, 5)), 7);
-        map.put(new MoveAnalysis(new Move(new Knight(Color.WHITE), 2, 3, 0, 4)), -2);
-        Optional<MoveAnalysis> bestmove = moveService.getMaxScoreWithRandomChoice(map);
-        assertThat(bestmove).isPresent();
-        assertThat(map.get(bestmove.get())).isEqualTo(8);
-
-    }
-
-    @Test
-    public void testGetMaxScoreWithRandomChoiceSingleElement() {
-        Map<MoveAnalysis, Integer> map = new HashMap<>(1);
-        MoveAnalysis moveAnalysis = new MoveAnalysis(new Move(new Bishop(Color.WHITE), 4, 5, 5, 6));
-        map.put(moveAnalysis, 0);
-        assertThat(moveService.getMaxScoreWithRandomChoice(map)).isPresent().get().isEqualTo(moveAnalysis);
-    }
-
-    @Test
-    public void testGetMaxScoreWithRandomChoiceEmpty() {
-        assertThat(moveService.getMaxScoreWithRandomChoice(new HashMap<>())).isEmpty();
-    }
-
-    @Test
-    public void testCanMoveInitialPosition() {
-        // Initial positions board
-        Game game = new Game(new RandomBot(moveService), new RandomBot(moveService));
-        Board board = game.getBoard();
-        assertThat(moveService.canMove(board, Color.WHITE, game.getHistory())).isTrue();
-        assertThat(moveService.canMove(board, Color.BLACK, game.getHistory())).isTrue();
-    }
-
-    @Test
-    public void testCanMoveCheckMate() {
-        Board board = new Board("" +
-                "♜ ♞ ♝ ♛ ♚ ♝ ♞ ♜ \n" +
-                "♟ ♟ ♟ ♟ ♟     ♟ \n" +
-                "          ♟     \n" +
-                "            ♟ ♕ \n" +
-                "          ♙     \n" +
-                "        ♙       \n" +
-                "♙ ♙ ♙ ♙     ♙ ♙ \n" +
-                "♖ ♘ ♗   ♔ ♗ ♘ ♖ \n"
-        );
-        assertThat(moveService.canMove(board, Color.BLACK, Collections.emptyList())).isFalse();
-    }
-
-    @Test
-    public void testComputeMovesBoardInitialPositions() {
-        // Initial positions board
-        Game game = new Game(new RandomBot(moveService), new RandomBot(moveService));
-        Board board = game.getBoard();
-        List<Move> whiteMovesStart = moveService.computeBoardMoves(board, Color.WHITE, game.getHistory(),false, false, false);
-        assertThat(whiteMovesStart).containsExactlyInAnyOrder(
-                // Pawns
-                new Move(board.getPiece(0, 1).get(), 0, 1, 0, 2),
-                new Move(board.getPiece(0, 1).get(), 0, 1, 0, 3),
-                new Move(board.getPiece(1, 1).get(), 1, 1, 1, 2),
-                new Move(board.getPiece(1, 1).get(), 1, 1, 1, 3),
-                new Move(board.getPiece(2, 1).get(), 2, 1, 2, 2),
-                new Move(board.getPiece(2, 1).get(), 2, 1, 2, 3),
-                new Move(board.getPiece(3, 1).get(), 3, 1, 3, 2),
-                new Move(board.getPiece(3, 1).get(), 3, 1, 3, 3),
-                new Move(board.getPiece(4, 1).get(), 4, 1, 4, 2),
-                new Move(board.getPiece(4, 1).get(), 4, 1, 4, 3),
-                new Move(board.getPiece(5, 1).get(), 5, 1, 5, 2),
-                new Move(board.getPiece(5, 1).get(), 5, 1, 5, 3),
-                new Move(board.getPiece(6, 1).get(), 6, 1, 6, 2),
-                new Move(board.getPiece(6, 1).get(), 6, 1, 6, 3),
-                new Move(board.getPiece(7, 1).get(), 7, 1, 7, 2),
-                new Move(board.getPiece(7, 1).get(), 7, 1, 7, 3),
-                // Knights
-                new Move(board.getPiece(1, 0).get(), 1, 0, 0, 2),
-                new Move(board.getPiece(1, 0).get(), 1, 0, 2, 2),
-                new Move(board.getPiece(6, 0).get(), 6, 0, 5, 2),
-                new Move(board.getPiece(6, 0).get(), 6, 0, 7, 2)
-        );
-    }
-
-    @Test
-    public void testComputeMovesBoardInitialPositionsReturnAtFirstPieceHavingMoves() {
-        // Initial positions board
-        Game game = new Game(new RandomBot(moveService), new RandomBot(moveService));
-        Board board = game.getBoard();
-        List<Move> whiteMovesStart = moveService.computeBoardMoves(board, Color.WHITE, game.getHistory(),false, true, false);
-        assertThat(whiteMovesStart).containsExactlyInAnyOrder(
-                new Move(board.getPiece(1, 0).get(), 1, 0, 0, 2),
-                new Move(board.getPiece(1, 0).get(), 1, 0, 2, 2)
-        );
-    }
-        
-    @Test
-    public void testComputeCastlingMovesBothSides() {
-        Board board = new Board("" +
-                "♜       ♚     ♜ \n" +
-                "♟ ♟ ♟ ♛   ♟ ♟ ♟ \n" +
-                "    ♞ ♟         \n" +
-                "        ♟       \n" +
-                "        ♙       \n" +
-                "          ♙     \n" +
-                "♙ ♙ ♙ ♙     ♙ ♙ \n" +
-                "♖     ♔   ♗ ♘ ♖ \n"
-        );
-        Piece blackKing = board.getPiece(4, 7).get();
-        assertThat(moveService.computeCastlingMoves(blackKing, 4, 7, board, Collections.emptyList())).hasSize(2);
-        Piece whiteKing = board.getPiece(3, 0).get();
-        assertThat(moveService.computeCastlingMoves(whiteKing, 4, 0, board, Collections.emptyList())).hasSize(0);
-    }
-
-    @Test
-    public void testComputeCastlingMovesDeniedByHistory() {
-        Board board = new Board("" +
-                "♜       ♚     ♜ \n" +
-                "♟ ♟ ♟ ♛   ♟ ♟ ♟ \n" +
-                "    ♞ ♟         \n" +
-                "        ♟       \n" +
-                "        ♙       \n" +
-                "          ♙     \n" +
-                "♙ ♙ ♙ ♙     ♙ ♙ \n" +
-                "♖       ♔ ♗ ♘ ♖ \n"
-        );
-        Piece whiteKing = board.getPiece(4, 0).get();
-        List<Move> history = Collections.singletonList(new Move(whiteKing, 4, 0, 3, 0));
-        assertThat(moveService.computeCastlingMoves(whiteKing, 4, 0, board, history)).hasSize(0);
-    }
-
-    
-
-    
-
-    @Test
-    public void testGetHeatmapAroundLocation() {
-        int[][] heatmap = moveService.getHeatmapAroundLocation(7, 0);
-        assertThat(heatmap).hasNumberOfRows(8);
-        assertThat(heatmap[0]).hasSize(8);
-        int[][] expected = new int[][] {
-                {0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0},
-                {1, 1, 1, 0, 0, 0, 0, 0},
-                {2, 2, 1, 0, 0, 0, 0, 0},
-                {3, 2, 1, 0, 0, 0, 0, 0},
-        };
-        assertThat(heatmap).isEqualTo(expected);
     }
 
     @Test

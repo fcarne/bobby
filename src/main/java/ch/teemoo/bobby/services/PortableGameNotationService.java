@@ -32,7 +32,7 @@ import ch.teemoo.bobby.models.players.Human;
 import ch.teemoo.bobby.models.players.Player;
 
 public class PortableGameNotationService {
-	private final static Logger logger = LoggerFactory.getLogger(PortableGameNotationService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PortableGameNotationService.class);
 
 	private final MoveService moveService;
 
@@ -92,10 +92,10 @@ public class PortableGameNotationService {
 					.filter(toYCond).filter(pieceCond).filter(isTakingCond).filter(isCheckingCond).filter(moveTypeCond)
 					.filter(promotionCond).collect(Collectors.toList());
 			if (matchingMoves.size() < 1) {
-				logger.error("Move {} is not allowed here. Allowed moves are {}", move, allowedMoves);
+				LOGGER.error("Move {} is not allowed here. Allowed moves are {}", move, allowedMoves);
 				throw new RuntimeException("Unexpected move: " + move);
 			} else if (matchingMoves.size() > 1) {
-				logger.error("Move {} is ambiguous here. Allowed moves are {}", move, allowedMoves);
+				LOGGER.error("Move {} is ambiguous here. Allowed moves are {}", move, allowedMoves);
 				throw new RuntimeException("Ambiguous move: " + move);
 			}
 			Move matchingMove = matchingMoves.get(0);
@@ -105,21 +105,23 @@ public class PortableGameNotationService {
 			game.addMoveToHistory(matchingMove);
 		}
 
-		logger.info("PGN game successfully loaded ({} moves, opening {})", game.getHistory().size(), game.getOpening());
+		LOGGER.info("PGN game successfully loaded ({} moves, opening {})", game.getHistory().size(), game.getOpening());
 
 		return game;
 	}
 
 	private Move toEnPassant(Move move, Game game) {
-		if (!move.isTaking() || !(move.getPiece() instanceof Pawn))
+		if (!move.isTaking() || !(move.getPiece() instanceof Pawn)) {
 			return move;
-
+		}
+		
 		if (!game.getBoard().getPiece(move.getToX(), move.getToY()).isPresent()) {
 			List<Move> history = game.getHistory();
 			Move lastMove = history.get(history.size() - 1);
 			return new EnPassantMove(move, lastMove.getToX(), lastMove.getToY());
-		} else
+		} else {
 			return move;
+		}
 	}
 
 	private Map<String, String> getHeadersMap(String headersContent) {
@@ -149,7 +151,7 @@ public class PortableGameNotationService {
 		movesContent = movesContent.replaceAll("\\d+\\.{1,3}", "");
 
 		// Skip unnecessary spaces
-		movesContent = movesContent.trim();// .stripLeading().stripTrailing();
+		movesContent = movesContent.trim();
 		return movesContent;
 	}
 

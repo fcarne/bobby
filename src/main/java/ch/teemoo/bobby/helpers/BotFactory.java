@@ -27,7 +27,7 @@ public class BotFactory {
 	public Bot getTraditionalBot(int level, Integer timeout) {
 		checkLevel(level);
 		checkTimeout(timeout);
-		return new TraditionalBot(level,timeout, moveService);
+		return new TraditionalBot(level, timeout, moveService);
 	}
 
 	public Bot getExperiencedBot(int level, Integer timeout) {

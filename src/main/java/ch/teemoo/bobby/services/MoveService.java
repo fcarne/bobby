@@ -4,6 +4,7 @@ import static ch.teemoo.bobby.helpers.ColorHelper.swap;
 import static ch.teemoo.bobby.models.Board.SIZE;
 import static java.util.stream.Collectors.toList;
 
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,7 +12,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Random;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -38,22 +38,22 @@ import ch.teemoo.bobby.models.pieces.Queen;
 import ch.teemoo.bobby.models.pieces.Rook;
 
 public class MoveService {
-	private final static Logger logger = LoggerFactory.getLogger(MoveService.class);
-	private final static Random RANDOM = new Random();
+	private static final Logger LOGGER = LoggerFactory.getLogger(MoveService.class);
+	private static final SecureRandom RANDOM = new SecureRandom();
 
-	public final static int WORST = -1000;
-	public final static int BEST = 1000;
-	public final static int NEUTRAL = 0;
-	public final static int DRAW_PENALTY = -20;
+	public static final int WORST = -1000;
+	public static final int BEST = 1000;
+	public static final int NEUTRAL = 0;
+	public static final int DRAW_PENALTY = -20;
 
-	public final static int OPENING_MOVES_COUNT = 5;
-	public final static int MID_GAME_MOVES_COUNT = 20;
-	public final static int OPENING_MISTAKE_PENALTY = -5;
-	public final static int KING_MOVE_MISTAKE_PENALTY = -10;
-	public final static int CASTLING_BONUS = 15;
+	public static final int OPENING_MOVES_COUNT = 5;
+	public static final int MID_GAME_MOVES_COUNT = 20;
+	public static final int OPENING_MISTAKE_PENALTY = -5;
+	public static final int KING_MOVE_MISTAKE_PENALTY = -10;
+	public static final int CASTLING_BONUS = 15;
 
-	private final static int MAX_MOVE = SIZE - 1;
-	private final static int[][] heatmapCenter = generateCenteredHeatmap();
+	private static final int MAX_MOVE = SIZE - 1;
+	private static final int[][] heatmapCenter = generateCenteredHeatmap();
 
 	public List<Move> computeAllMoves(Board board, Color color, List<Move> history, boolean withAdditionalInfo) {
 		return computeAllMoves(board, color, history, withAdditionalInfo, false);
@@ -130,7 +130,7 @@ public class MoveService {
 		}
 
 		if (history.size() >= 50) {
-			List<Move> last50Moves = history.subList(history.size() - 50, history.size() - 1);
+			List<Move> last50Moves = history.subList(history.size() - 50, history.size());
 			if (last50Moves.stream().noneMatch(move -> move.isTaking() || move.getPiece() instanceof Pawn)) {
 				// 50-move (no pawn moved, no capture)
 				return GameState.DRAW_50_MOVES;
@@ -153,6 +153,7 @@ public class MoveService {
 		int score = evaluateBoard(board, color, color, gameState, opponentKingPosition, kingPosition, history);
 		int opponentScore = evaluateBoard(board, opponentColor, color, gameState, kingPosition, opponentKingPosition,
 				history);
+		
 		return opponentScore + DRAW_PENALTY > score;
 	}
 
@@ -181,7 +182,7 @@ public class MoveService {
 				.collect(Collectors.toMap(Function.identity(), MoveAnalysis::getScore));
 
 		if (isTopDepth) {
-			logger.debug(moveScores.entrySet().stream().sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+			LOGGER.debug(moveScores.entrySet().stream().sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
 					.map(e -> e.getKey().getMove().toString() + "=" + e.getValue().toString())
 					.collect(Collectors.joining(", ")));
 		}

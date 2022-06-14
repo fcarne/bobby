@@ -16,8 +16,8 @@ import ch.teemoo.bobby.models.moves.Move;
 import ch.teemoo.bobby.models.openings.Node;
 
 public class OpeningService {
-	private final static Logger logger = LoggerFactory.getLogger(OpeningService.class);
-	private final static List<String> OPENINGS_PGN_FILES = Arrays.asList("bogoindiandefense.pgn", "englishopening.pgn",
+	private static final Logger LOGGER = LoggerFactory.getLogger(OpeningService.class);
+	private static final List<String> OPENINGS_PGN_FILES = Arrays.asList("bogoindiandefense.pgn", "englishopening.pgn",
 			"friedliverattack.pgn", "grunfelddefense.pgn", "italiangame.pgn", "kingsgambit.pgn", "londonsystem.pgn",
 			"nimzoindiandefense.pgn", "queensgambit.pgn", "retiopening.pgn", "ruylopezopening.pgn", "scotchgame.pgn",
 			"siciliandefense.pgn", "slavdefense.pgn", "trompowskyattack.pgn");
@@ -56,7 +56,7 @@ public class OpeningService {
 				games.add(portableGameNotationService
 						.readPgnFile(fileService.readFileFromResourceFolder("openings", fileName)));
 			} catch (IOException e) {
-				logger.error("Opening could not be read from file {}", fileName, e);
+				LOGGER.error("Opening could not be read from file {}", fileName, e);
 			}
 		}
 
@@ -80,7 +80,7 @@ public class OpeningService {
 				}
 			}
 		}
-		logger.info("{} openings loaded", games.size());
+		LOGGER.info("{} openings loaded", games.size());
 
 		return root;
 	}

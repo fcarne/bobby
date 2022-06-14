@@ -227,7 +227,7 @@ public class BoardView extends JFrame implements IBoardView {
 
         JLabel computerLabel = new JLabel("Computer level");
         setBoldAndBorder(computerLabel);
-        JSlider levelSlider = getLevelSlider();
+        
         JCheckBox openingsCheckBox = new JCheckBox("Use openings", true);
         openingsCheckBox.setName("openingsCheckBox");
         JCheckBox timeoutCheckBox = new JCheckBox("Limit computation time to (seconds)", false);
@@ -237,6 +237,7 @@ public class BoardView extends JFrame implements IBoardView {
         timeoutSpinner.setEnabled(timeoutCheckBox.isSelected());
         timeoutCheckBox.addActionListener(e -> timeoutSpinner.setEnabled(timeoutCheckBox.isSelected()));
 
+        JSlider levelSlider = getLevelSlider();
         final JComponent[] inputs = new JComponent[] {
             colorLabel,
             whiteRadioButton,
@@ -411,14 +412,14 @@ public class BoardView extends JFrame implements IBoardView {
         itemAbout.addActionListener(actionEvent -> showAboutDialog());
     }
 
-    private void addFilesLabels(java.util.List<Component> components) {
-        char a = 'a';
-        char h = 'h';
-        components.add(new SideLabel(""));
-        Stream<Integer> intStream = IntStream.range(a, h + 1).boxed();
-        intStream.forEach(i -> components.add(new SideLabel(Character.toString((char) (int)i))));
-        components.add(new SideLabel(""));
-    }
+	private void addFilesLabels(java.util.List<Component> components) {
+		char a = 'a';
+		char h = 'h';
+		components.add(new SideLabel(""));
+		Stream<Integer> intStream = IntStream.range(a, h + 1).boxed();
+		intStream.forEach(i -> components.add(new SideLabel(Character.toString((char) (int) i))));
+		components.add(new SideLabel(""));
+	}
 
     private SideLabel getRankLabel(int i) {
         return new SideLabel(String.valueOf(i + 1));

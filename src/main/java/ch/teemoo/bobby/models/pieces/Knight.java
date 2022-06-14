@@ -4,18 +4,7 @@ import ch.teemoo.bobby.models.Color;
 
 public class Knight extends Piece {
 	public Knight(final Color color) {
-		super(color, 3);
-	}
-
-	@Override
-	public String getUnicode() {
-		String unicode;
-		if (color == Color.WHITE) {
-			unicode = "\u2658";
-		} else {
-			unicode = "\u265E";
-		}
-		return unicode;
+		super(color, 3, "\u2658", "\u265E");
 	}
 
 	@Override

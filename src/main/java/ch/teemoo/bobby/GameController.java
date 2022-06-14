@@ -47,10 +47,10 @@ import ch.teemoo.bobby.services.MoveService;
 import ch.teemoo.bobby.services.PortableGameNotationService;
 
 public class GameController {
-	private final static Logger logger = LoggerFactory.getLogger(GameController.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(GameController.class);
 
-	private static final Border RED_BORDER = BorderFactory.createLineBorder(java.awt.Color.red, 3, true);
-	private static final Border BLUE_BORDER = BorderFactory.createLineBorder(java.awt.Color.blue, 3, true);
+	public static final Border RED_BORDER = BorderFactory.createLineBorder(java.awt.Color.red, 3, true);
+	public static final Border BLUE_BORDER = BorderFactory.createLineBorder(java.awt.Color.blue, 3, true);
 
 	private Consumer<GameResult> gameResultConsumer;
 
@@ -145,7 +145,7 @@ public class GameController {
 			}
 			Instant end = Instant.now();
 			if (showTiming) {
-				logger.debug("Time to select move: {}", Duration.between(start, end));
+				LOGGER.debug("Time to select move: {}", Duration.between(start, end));
 			}
 			doMove(move);
 		}
@@ -222,6 +222,17 @@ public class GameController {
 		game.removeLastMoveFromHistory();
 		game.setToPlay(move.getPiece().getColor());
 	}
+	
+	void undoLastMove() {
+		if (game.getHistory().size() < 2) {
+			return;
+		}
+		Move lastMove = getLastMove();
+		undoLastMove(lastMove);
+		Move secondLastMove = getLastMove();
+		undoLastMove(secondLastMove);
+		play();
+	}
 
 	void displayGameInfo(Move move) {
 		boolean showPopup = !game.getWhitePlayer().isBot() || !game.getBlackPlayer().isBot();
@@ -234,8 +245,7 @@ public class GameController {
 		switch (state) {
 		case LOSS:
 			Color winningColor = move.getPiece().getColor();
-			Player winner = game.getPlayerByColor(winningColor);
-
+			
 			String points;
 			GameResult.Result result;
 
@@ -250,6 +260,7 @@ public class GameController {
 			info(points + getNbMovesInfo(game), false);
 			gameResultConsumer.accept(getResult(game, result));
 
+			Player winner = game.getPlayerByColor(winningColor);
 			if (winner.isBot()) {
 				info("Checkmate! Ha ha, not even Spassky could beat me!", showPopup);
 			} else {
@@ -358,14 +369,14 @@ public class GameController {
 	}
 
 	private void info(String text, boolean withPopup) {
-		logger.info("[INFO] {}", text);
+		LOGGER.info("[INFO] {}", text);
 		if (withPopup) {
 			view.popupInfo(text);
 		}
 	}
 
 	private void error(Exception exception, boolean withPopup) {
-		logger.error("An error happened: {}", exception.getMessage(), exception);
+		LOGGER.error("An error happened: {}", exception.getMessage(), exception);
 		if (withPopup) {
 			view.popupError(exception.getMessage());
 		}
@@ -429,7 +440,7 @@ public class GameController {
 	}
 
 	void printGameToConsole() {
-		logger.debug("Current board: \n{}", board.toString());
+		LOGGER.debug("Current board: \n{}", board.toString());
 	}
 
 	void suggestMove() {
@@ -437,20 +448,9 @@ public class GameController {
 		Move move = botToSuggestMove.selectMove(game);
 		Instant end = Instant.now();
 		if (showTiming) {
-			logger.debug("Time to suggest move: {}", Duration.between(start, end));
+			LOGGER.debug("Time to suggest move: {}", Duration.between(start, end));
 		}
 		info("Brilliantly, I recommend you to play: " + move.toString(), true);
-	}
-
-	void undoLastMove() {
-		if (game.getHistory().size() < 2) {
-			return;
-		}
-		Move lastMove = getLastMove();
-		undoLastMove(lastMove);
-		Move secondLastMove = getLastMove();
-		undoLastMove(secondLastMove);
-		play();
 	}
 
 	void evaluateDrawProposal() {
@@ -477,8 +477,8 @@ public class GameController {
 	}
 
 	private static class FindBestMoveTask extends SwingWorker<Move, Object> {
-		final private Bot bot;
-		final private Game game;
+		private final Bot bot;
+		private final Game game;
 
 		public FindBestMoveTask(Bot bot, Game game) {
 			this.bot = bot;

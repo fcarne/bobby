@@ -60,11 +60,11 @@ public class Match {
 
 	public String toString() {
 		return
-			"Players: \t" + player1.getDescription() + " vs " + player2.getDescription() + "\n" +
-			"Score:   \t" + scorePlayer1 + "-" + scorePlayer2 + "\n" +
-			"Games:   \t" + playedGames + "\n" +
-			"Moves:   \t" + totalMoves + "\n" +
-			"Avg m/g: \t" + (float) totalMoves / (float) playedGames;
+			"Players: \t" + player1.getDescription() + " vs " + player2.getDescription() + "\n" 
+				+ "Score:   \t" + scorePlayer1 + "-" + scorePlayer2 + "\n"
+				+ "Games:   \t" + playedGames + "\n"
+				+ "Moves:   \t" + totalMoves + "\n"
+				+ "Avg m/g: \t" + (float) totalMoves / (float) playedGames;
 	}
 
 	private void addGame(int nbMoves) {

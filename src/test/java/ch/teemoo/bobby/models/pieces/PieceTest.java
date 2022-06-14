@@ -12,7 +12,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import ch.teemoo.bobby.models.Color;;
+import ch.teemoo.bobby.models.Color;
 
 public class PieceTest {
 
@@ -77,8 +77,9 @@ public class PieceTest {
 	@MethodSource
 	public void equals_nullOrNotEqual_returnFalse(Piece piece, Piece other) {
 		assertThat(piece).isNotEqualTo(other);
-		if (other != null)
+		if (other != null) {
 			assertThat(piece).doesNotHaveSameHashCodeAs(other);
+		}
 	}
 
 	private static Stream<Arguments> equals_nullOrNotEqual_returnFalse() {

@@ -24,7 +24,7 @@ public class Tournament {
 
 	public Map<Player, Float> getParticipantScores() {
 		Map<Player, Float> scoresMap = new HashMap<>(participants.size());
-		for (Player player: participants) {
+		for (Player player : participants) {
 			scoresMap.put(player, (float) (matches.stream().filter(m -> m.isPlayerTakingPartToTheMatch(player))
 				.mapToDouble(m -> m.getScoreByPlayer(player)).sum()));
 		}
@@ -37,7 +37,7 @@ public class Tournament {
 				.collect(Collectors.toList());
 		int currentPos = 1;
 		StringBuilder result = new StringBuilder();
-		for (Map.Entry<Player, Float> entry: entries) {
+		for (Map.Entry<Player, Float> entry : entries) {
 			result.append(currentPos++).append(".\t");
 			result.append(entry.getValue()).append("\t");
 			result.append(entry.getKey().getDescription()).append("\n");
@@ -51,7 +51,7 @@ public class Tournament {
 
 	static List<Match> generateMatches(List<Player> participants) {
 		List<Match> matches = new ArrayList<>();
-		for (int i = 0; i < participants.size()-1; i++) {
+		for (int i = 0; i < participants.size() - 1; i++) {
 			for (int j = i + 1; j < participants.size(); j++) {
 				matches.add(new Match(participants.get(i), participants.get(j)));
 			}

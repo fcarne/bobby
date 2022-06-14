@@ -107,7 +107,7 @@ public class BobbySwingTest {
 	}
 
 	@Test
-	public void suggestMoveDialog_initialBoard_suggestedIsC4OrE4() {
+	public void suggestMoveDialog_initialBoard_suggestedPopup() {
 		frame.menuItem(new GenericTypeMatcher<JMenuItem>(JMenuItem.class) {
 			@Override
 			protected boolean isMatching(JMenuItem menuItem) {
@@ -224,13 +224,29 @@ public class BobbySwingTest {
 		});
 
 		assertThat(whitePawn.target().getText()).isEqualTo(new Pawn(Color.WHITE).getUnicode());
-		assertThat(whitePawn.target().getBorder()).isNotNull();
+		assertThat(whitePawn.target().getBorder()).isNotNull().isEqualTo(GameController.RED_BORDER);
 		assertThat(emptySquare.target().getText()).isEmpty();
+		assertThat(emptySquare.target().getBorder()).isEqualTo(GameController.BLUE_BORDER);
 
 		emptySquare.click();
 		
 		await().untilAsserted(() -> assertThat(emptySquare.target().getText()).isEqualTo(new Pawn(Color.WHITE).getUnicode()));
 		await().untilAsserted(() -> assertThat(whitePawn.target().getText()).isEmpty());
+	}
+	
+	@Test
+	public void boardClick_reclickSquare_pawnNotMovedBoardResetted() throws Exception {
+		JLabelFixture whitePawn = frame.label(new GenericTypeMatcher<Square>(Square.class) {
+			@Override
+			protected boolean isMatching(Square square) {
+				Position position = square.getPosition();
+				return position.getFile() == 4 && position.getRank() == 1;
+			}
+		});
+		whitePawn.click().click();
+
+		assertThat(whitePawn.target().getText()).isEqualTo(new Pawn(Color.WHITE).getUnicode());
+		assertThat(whitePawn.target().getBorder()).isNotEqualTo(GameController.RED_BORDER);
 	}
 
 	@Test

@@ -10,7 +10,7 @@ public class EnPassantMove extends Move {
 		super(move.getPiece(), move.getFromX(), move.getFromY(), move.getToX(), move.getToY());
 		
 		assert getPiece() instanceof Pawn : "Only pawns can make an en passant move";
-		assert move.isTaking(): "En passant move must be a taking move";
+		assert move.isTaking() : "En passant move must be a taking move";
 		
 		this.tookPiecePosX = tookPiecePosX;
 		this.tookPiecePosY = tookPiecePosY;

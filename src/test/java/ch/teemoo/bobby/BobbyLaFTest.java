@@ -51,9 +51,10 @@ class BobbyLaFTest {
 			}
 		}).using(robot);
 
-		if (args.length == 0 || !"default".equalsIgnoreCase(args[0]))
+		if (args.length == 0 || !"default".equalsIgnoreCase(args[0])) {
 			frame.dialog().button("OptionPane.button").click();
-
+		}
+		
 		frame.cleanUp();
 
 		assertThat(UIManager.getLookAndFeel().getClass().getName()).isEqualTo(expected);

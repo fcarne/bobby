@@ -9,7 +9,7 @@ import ch.teemoo.bobby.models.moves.PromotionMove;
 import ch.teemoo.bobby.models.pieces.Piece;
 
 public class Board {
-    public final static int SIZE = 8;
+    public static final int SIZE = 8;
 
     private final Piece[][] board;
 
@@ -117,7 +117,7 @@ public class Board {
             for (int j = 0; j < SIZE; j++) {
                 char c = line.charAt(2 * j);
                 if (c != ' ') {
-                    pieces[SIZE-1-i][j] = Piece.fromUnicodeChar(c);
+					pieces[SIZE - 1 - i][j] = Piece.fromUnicodeChar(c);
                 }
             }
         }

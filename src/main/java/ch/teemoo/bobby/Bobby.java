@@ -21,7 +21,7 @@ import ch.teemoo.bobby.services.OpeningService;
 import ch.teemoo.bobby.services.PortableGameNotationService;
 
 public class Bobby implements Runnable {
-	private final static Logger logger = LoggerFactory.getLogger(Bobby.class);
+	private static final Logger logger = LoggerFactory.getLogger(Bobby.class);
 
 	private final MoveService moveService = new MoveService();
 	private final FileService fileService = new FileService();
@@ -37,7 +37,7 @@ public class Bobby implements Runnable {
 		this.useDefaultSettings = useDefaultSettings;
 	}
 
-	public static void main(String args[]) {
+	public static void main(String[] args) {
 		boolean defaultSettings = args.length > 0 && args[0].equalsIgnoreCase("default");
 
 		setLookAndFeel(defaultSettings);

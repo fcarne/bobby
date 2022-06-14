@@ -1,11 +1,7 @@
-package ch.teemoo.bobby.perfs;
+package ch.teemoo.bobby.services.perfs;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.StringReader;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -19,8 +15,8 @@ import ch.teemoo.bobby.models.players.Human;
 import ch.teemoo.bobby.services.MoveService;
 import ch.teemoo.bobby.services.PortableGameNotationService;
 
-public class ComputeMovesIT {
-	private final static Logger logger = LoggerFactory.getLogger(ComputeMovesIT.class);
+public class ComputeMovesBenchmark {
+	private static final Logger LOGGER = LoggerFactory.getLogger(ComputeMovesBenchmark.class);
 
 	private static final int MAX_DEPTH = 2;
 	private static final int RUNS = 10;
@@ -29,13 +25,13 @@ public class ComputeMovesIT {
 	private PortableGameNotationService portableGameNotationService = new PortableGameNotationService(moveService);
 
 	@Test
-	public void testComputeMoveInitialGame() {
+	public void selectMove_initialGame() {
 		Game game = new Game(new Human("Player 1"), new Human("Player 2"));
 		measureComputation(game, "Initial game");
 	}
 
 	@Test
-	public void testComputeMoveMidGame() {
+	public void selectMove_midGame() {
 		String pgn = "[Event \"F/S Return Match\"]\n" + "[Site \"Belgrade, Serbia JUG\"]\n"
 			+ "[Date \"1992.11.04\"]\n" + "[Round \"29\"]\n" + "[White \"Fischer, Robert J.\"]\n"
 			+ "[Black \"Spassky, Boris V.\"]\n" + "[Result \"1/2-1/2\"]\n" + "\n"
@@ -54,8 +50,7 @@ public class ComputeMovesIT {
 	private void measureComputation(Game game, String testInfo) {
 		DescriptiveStatistics stats = computeWithStats(game);
 		String prettyPrint = statsToString(stats);
-		logger.info("Stats for {}:\n{}", testInfo, prettyPrint);
-		saveToTempFile(prettyPrint, testInfo);
+		LOGGER.info("Stats for {}:\n{}", testInfo, prettyPrint);
 	}
 
 	private DescriptiveStatistics computeWithStats(Game game) {
@@ -80,18 +75,5 @@ public class ComputeMovesIT {
 		builder.append("Max:     ").append(descriptiveStatistics.getMax()).append("\n");
 		builder.append("Values:  ").append(Arrays.toString(descriptiveStatistics.getSortedValues())).append("\n");
 		return builder.toString();
-	}
-
-	private void saveToTempFile(String content, String testInfo) {
-		try {
-			File tmpFile = File.createTempFile(LocalDateTime.now().toString(), ".txt");
-			try (FileWriter writer = new FileWriter(tmpFile)) {
-				writer.write(testInfo);
-				writer.write(content);
-			}
-			logger.info("Saved to file {}", tmpFile.getAbsolutePath());
-		} catch (IOException e) {
-			logger.error("Unable to save to temp file", e);
-		}
 	}
 }

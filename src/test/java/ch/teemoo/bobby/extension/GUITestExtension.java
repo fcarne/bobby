@@ -42,8 +42,9 @@ public class GUITestExtension implements Extension, InvocationInterceptor {
 
     private void takeScreenshot(Method method) {
         final Class<?> testClass = method.getDeclaringClass();
-        if (!(isGUITest(testClass, method)))
+        if (!(isGUITest(testClass, method))) {
             return;
+        }
         screenshotTaker.saveScreenshot(testNameFrom(testClass, method));
     }
 }

@@ -4,18 +4,7 @@ import ch.teemoo.bobby.models.Color;
 
 public class Queen extends Piece {
     public Queen(final Color color) {
-        super(color, 10);
-    }
-
-    @Override
-    public String getUnicode() {
-    	String unicode;
-        if (color == Color.WHITE) {
-        	unicode = "\u2655";
-        } else {
-        	unicode = "\u265B";
-        }
-        return unicode;
+        super(color, 10, "\u2655", "\u265B");
     }
 
     @Override

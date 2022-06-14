@@ -137,7 +137,6 @@ public class Move {
 		}
 
 		if (takingChar == 'x') {
-			// fixme: do not know here what piece is on the board at this place but we must
 			// mark the move as taking
 			move.setTookPiece(board.getPiece(toX, toY).orElseThrow(() -> new RuntimeException("There should be a piece at (" + toX + "," + toY + ") but there is none!")));
 		}
@@ -167,10 +166,12 @@ public class Move {
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o)
+		if (this == o) {
 			return true;
-		if (o == null || getClass() != o.getClass())
+		}	
+		if (o == null || getClass() != o.getClass()) {
 			return false;
+		}
 		Move move = (Move) o;
 		return equalsForPositions(move) && tookPiece == move.tookPiece && isChecking == move.isChecking
 				&& Objects.equals(piece, move.piece);

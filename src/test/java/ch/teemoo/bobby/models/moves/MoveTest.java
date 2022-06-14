@@ -100,8 +100,9 @@ class MoveTest {
 	@MethodSource
 	public void equals_nullOrDifferent_returnFalse(Move move, Object other) {
 		assertThat(move).isNotEqualTo(other);
-		if (other != null)
+		if (other != null) {
 			assertThat(move).doesNotHaveSameHashCodeAs(other);
+		}
 	}
 
 	private static Stream<Arguments> equals_nullOrDifferent_returnFalse() {
@@ -116,7 +117,7 @@ class MoveTest {
 		Move differentChecking = new Move(rook, 0, 0, 0, 5);
 		differentChecking.setChecking(true);
 		
-		Move differentPiece = new Move(new Pawn(Color.WHITE),0,0,0,5);
+		Move differentPiece = new Move(new Pawn(Color.WHITE), 0, 0, 0, 5);
 		
 		return Stream.of(
 				arguments(move, null), 
@@ -181,11 +182,12 @@ class MoveTest {
 		assertThat(move.isChecking()).isEqualTo(isChecking);
 		assertThat(move.isTaking()).isEqualTo(isTaking);
 
-		if (!isTaking)
+		if (!isTaking) {
 			assertThat(move.getTookPiece()).isNull();
-		else
+		} else {
 			assertThat(move.getTookPiece()).isNotNull();
-
+		}
+		
 		assertThat(move.getFromX()).isEqualTo(fromX);
 		assertThat(move.getFromY()).isEqualTo(fromY);
 		assertThat(move.getToX()).isEqualTo(toX);

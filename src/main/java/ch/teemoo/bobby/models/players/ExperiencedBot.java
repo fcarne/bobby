@@ -1,7 +1,7 @@
 package ch.teemoo.bobby.models.players;
 
+import java.security.SecureRandom;
 import java.util.List;
-import java.util.Random;
 
 import ch.teemoo.bobby.models.games.Game;
 import ch.teemoo.bobby.models.moves.Move;
@@ -9,7 +9,7 @@ import ch.teemoo.bobby.services.MoveService;
 import ch.teemoo.bobby.services.OpeningService;
 
 public class ExperiencedBot extends TraditionalBot {
-    private final static Random RANDOM = new Random();
+    private static final SecureRandom RANDOM = new SecureRandom();
     private final OpeningService openingService;
 
     public ExperiencedBot(int level, Integer timeout, MoveService moveService, OpeningService openingService) {

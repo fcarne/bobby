@@ -28,7 +28,7 @@ import ch.teemoo.bobby.models.pieces.Rook;
 
 @ExtendWith(MockitoExtension.class)
 public class PortableGameNotationServiceTest {
-	private final static String PGN_OPENING_RUY_LOPEZ_CONTENT = "[Event \"?\"]\n" 
+	private static final String PGN_OPENING_RUY_LOPEZ_CONTENT = "[Event \"?\"]\n" 
 			+ "[Site \"?\"]\n"
 			+ "[Date \"????.??.??\"]\n" 
 			+ "[Round \"?\"]\n" 
@@ -39,7 +39,7 @@ public class PortableGameNotationServiceTest {
 			+ "\n"
 			+ "1. e4 e5 2. Nf3 Nc6 3. Bb5 *";
 
-	private final static String PGN_GAME_CONTENT = "[Event \"F/S Return Match\"]\n"
+	private static final String PGN_GAME_CONTENT = "[Event \"F/S Return Match\"]\n"
 			+ "[Site \"Belgrade, Serbia JUG\"]\n"
 			+ "[Date \"1992.11.04\"]\n" 
 			+ "[Round \"29\"]\n"
@@ -56,7 +56,7 @@ public class PortableGameNotationServiceTest {
 			+ "35. Ra7 g6 36. Ra6+ Kc5 37. Ke1 Nf4 38. g3 Nxh3 39. Kd2 Kb5 40. Rd6 Kc5 41. Ra6\n"
 			+ "Nf2 42. g4 Bd3 43. Re6 1/2-1/2";
 
-	private final static String PGN_GAME_WORLD_CHAMPIONSHIP_CONTENT = "[Event \"World Championship 28th\"]\n"
+	private static final String PGN_GAME_WORLD_CHAMPIONSHIP_CONTENT = "[Event \"World Championship 28th\"]\n"
 			+ "[Site \"Reykjavik\"]\n" 
 			+ "[Date \"1972.??.??\"]\n" 
 			+ "[Round \"13\"]\n"
@@ -79,7 +79,7 @@ public class PortableGameNotationServiceTest {
 			+ "65.Rxh1 Kd5 66.Kb2 f4 67.Rd1+ Ke4 68.Rc1 Kd3 69.Rd1+ Ke2 70.Rc1 f3 71.Bc5 Rxg7\n"
 			+ "72.Rxc4 Rd7 73.Re4+ Kf1 74.Bd4 f2  0-1\n";
 	
-	private final static String PGN_ENPASSANT_CHECK_CONTENT = "[Event \"Pietzcker Christmas Tournament\"]\n"
+	private static final String PGN_ENPASSANT_CHECK_CONTENT = "[Event \"Pietzcker Christmas Tournament\"]\n"
 			+ "[Site \"Melbourne AUS\"]\n"
 			+ "[Date \"1928.??.??\"]\n"
 			+ "[EventDate \"?\"]\n"
@@ -96,7 +96,7 @@ public class PortableGameNotationServiceTest {
 			+ "7. Nf3 Nge7 8. Bd3 O-O 9. Bxh7+ Kxh7 10. Ng5+ Kg6 11. h4 Nxd4\n"
 			+ "12. Qg4 f5 13. h5+ Kh6 14. Nxe6+ g5 15. hxg6#  1-0";
 	
-	private final static String PGN_PROMOTION_6KNIGHTS_CONTENT ="[Event \"Live Chess\"]\n"
+	private static final String PGN_PROMOTION_6KNIGHTS_CONTENT = "[Event \"Live Chess\"]\n"
 			+ "[Site \"Chess.com\"]\n"
 			+ "[Date \"2022.05.27\"]\n"
 			+ "[Round \"?\"]\n"

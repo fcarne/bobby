@@ -99,7 +99,7 @@ public class BoardViewSwingTest {
 			@Override
 			protected boolean isMatching(JLabel label) {
 				return "Promote pawn to".equals(label.getText());
-			};
+			}
 		}).font().requireBold();
 		dialog.close();
 
@@ -191,7 +191,7 @@ public class BoardViewSwingTest {
 			@Override
 			protected boolean isMatching(JLabel label) {
 				return "An info here".equals(label.getText());
-			};
+			}
 		});
 		dialog.close();
 	}
@@ -210,7 +210,7 @@ public class BoardViewSwingTest {
 			@Override
 			protected boolean isMatching(JLabel label) {
 				return "An error here".equals(label.getText());
-			};
+			}
 		});
 
 		dialog.close();
@@ -278,19 +278,20 @@ public class BoardViewSwingTest {
 		});
 
 		dialog.checkBox("timeoutCheckBox").focus().check(timeoutSelected);
-		if (timeoutSelected)
+		if (timeoutSelected) {
 			dialog.spinner("timeoutSpinner").select(timeoutValue);
-		
+		}
 		dialog.slider("levelSlider").slideTo(sliderLevel);
 		dialog.checkBox("openingsCheckBox").check(openings);
 
 		dialog.radioButton(white ? "whiteRadioButton" : "blackRadioButton").click();
 		
-		if (okOption)
+		if (okOption) {
 			dialog.button("OptionPane.button").click();
-		else
+		} else {
 			dialog.close();
-
+		}
+		
 		GameSetup setup = rf.get();
 
 		if (shouldBeNull) {

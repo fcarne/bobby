@@ -1,11 +1,13 @@
 package ch.teemoo.bobby.services;
 
+import static ch.teemoo.bobby.helpers.ColorHelper.swap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatRuntimeException;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -58,6 +60,24 @@ class MoveServiceTest {
         Move move = new Move(piece, fromX, fromY, toX, toY);
         move.setTookPiece(tookPiece);
 		return move;
+	}
+	
+	private Game getGameAfterMoves(List<String> movesNotation) {
+		Game game = new Game(new RandomBot(moveService), new RandomBot(moveService));
+		Color colorToPlay = Color.WHITE;
+		
+		for (String notation : movesNotation) {
+            Move move = Move.fromBasicNotation(notation, colorToPlay, game.getBoard());
+            Piece piece = game.getBoard().getPiece(move.getFromX(), move.getFromY())
+                    .orElseThrow(() -> new RuntimeException("Unexpected move, no piece at this location"));
+            move = new Move(piece, move.getFromX(), move.getFromY(), move.getToX(), move.getToY());
+            colorToPlay = swap(colorToPlay);
+            game.getBoard().doMove(move);
+            game.setToPlay(colorToPlay);
+            game.addMoveToHistory(move);
+        }
+
+		return game;
 	}
 
 	@Test
@@ -522,7 +542,7 @@ class MoveServiceTest {
         );
         
         List<Move> takingOnly = moveService.computePawnMoves(pawnAtStart, 0, 1, board, Collections.emptyList(), true);
-        assertThat(takingOnly).containsOnly(new Move(pawnAtStart, 0,1,1,2));
+		assertThat(takingOnly).containsOnly(new Move(pawnAtStart, 0, 1, 1, 2));
     }
 
     @Test
@@ -594,15 +614,13 @@ class MoveServiceTest {
     	assertThat(moves).containsOnly(new Move(pawn, 3, 4, 3, 5));
     }
     
-    private static Stream<Arguments> computePawnMoves_enPassantNotPossible_returnNonEnPassantMoves() {
-    	return Stream.of(
-    			arguments(new Move(new Pawn(Color.BLACK),4,5,4,4)),
-    			arguments(new Move(new Pawn(Color.BLACK),3,6,3,4)),
-    			arguments(new Move(new Pawn(Color.BLACK),4,7,4,5)),
-    			arguments(new Move(new Rook(Color.BLACK),4,6,4,4))
-    	);
-    }
-    
+	private static Stream<Arguments> computePawnMoves_enPassantNotPossible_returnNonEnPassantMoves() {
+		return Stream.of(arguments(new Move(new Pawn(Color.BLACK), 4, 5, 4, 4)),
+				arguments(new Move(new Pawn(Color.BLACK), 3, 6, 3, 4)),
+				arguments(new Move(new Pawn(Color.BLACK), 4, 7, 4, 5)),
+				arguments(new Move(new Rook(Color.BLACK), 4, 6, 4, 4)));
+	}
+
     @Test
     public void computePawnMoves_promotionPossible_returnAllPromotions() {
         Board board = new Board("" +
@@ -992,7 +1010,7 @@ class MoveServiceTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings= {
+	@ValueSource(strings = {
     		"♜ ♞     ♚     ♜ \n" +
             "♟ ♟ ♟     ♟ ♟ ♟ \n" +
             "      ♟         \n" +
@@ -1085,12 +1103,12 @@ class MoveServiceTest {
     	                "        ♙   ♕   \n" +
     	                "          ♙     \n" +
     	                "♙ ♙ ♙ ♙ ♔   ♙ ♙ \n" +
-    	                "♖         ♗ ♘ ♖ \n", 4,6)
+    	                "♖         ♗ ♘ ♖ \n", 4, 6)
     	);
     }
 
     @ParameterizedTest
-    @ValueSource(strings= {
+	@ValueSource(strings = {
     		"♜ ♞ ♝ ♛ ♚     ♜ \n" +
             "♟ ♟ ♟     ♟ ♟ ♟ \n" +
             "      ♟         \n" +
@@ -1173,8 +1191,8 @@ class MoveServiceTest {
         Piece blackKing = board.getPiece(4, 7).get();
         
         assertThat(moveService.computeCastlingMoves(blackKing, 4, 7, board, Collections.emptyList())).hasSize(2).containsExactlyInAnyOrder(
-        		new CastlingMove(blackKing,4,7,2,7, new Rook(Color.BLACK), 0,7,3,7),
-        		new CastlingMove(blackKing,4,7,6,7, new Rook(Color.BLACK), 7,7,5,7)
+				new CastlingMove(blackKing, 4, 7, 2, 7, new Rook(Color.BLACK), 0, 7, 3, 7),
+				new CastlingMove(blackKing, 4, 7, 6, 7, new Rook(Color.BLACK), 7, 7, 5, 7)
         );
     }
 
@@ -1224,7 +1242,7 @@ class MoveServiceTest {
                 "♖       ♔ ♗ ♘ ♖ \n"
         );
     	
-    	Piece pawn = board.getPiece(3,1).get();
+		Piece pawn = board.getPiece(3, 1).get();
     	List<Move> pawnMoves = moveService.computeMoves(board, pawn, 3, 1, Collections.emptyList(), false, false);
     	assertThat(pawnMoves).hasSize(2);
     	
@@ -1257,7 +1275,8 @@ class MoveServiceTest {
         // Initial positions board
         Game game = new Game(new RandomBot(moveService), new RandomBot(moveService));
         Board board = game.getBoard();
-        List<Move> whiteMovesStart = moveService.computeBoardMoves(board, Color.WHITE, game.getHistory(),false, false, false);
+		List<Move> whiteMovesStart = moveService.computeBoardMoves(board, Color.WHITE, game.getHistory(), false, false,
+				false);
         assertThat(whiteMovesStart).containsExactlyInAnyOrder(
                 // Pawns
                 new Move(board.getPiece(0, 1).get(), 0, 1, 0, 2),
@@ -1289,7 +1308,8 @@ class MoveServiceTest {
         // Initial positions board
         Game game = new Game(new RandomBot(moveService), new RandomBot(moveService));
         Board board = game.getBoard();
-        List<Move> whiteMovesStart = moveService.computeBoardMoves(board, Color.WHITE, game.getHistory(),false, true, false);
+		List<Move> whiteMovesStart = moveService.computeBoardMoves(board, Color.WHITE, game.getHistory(), false, true,
+				false);
         assertThat(whiteMovesStart).containsExactlyInAnyOrder(
                 new Move(board.getPiece(1, 0).get(), 1, 0, 0, 2),
                 new Move(board.getPiece(1, 0).get(), 1, 0, 2, 2)
@@ -1328,7 +1348,7 @@ class MoveServiceTest {
         assertThat(moveService.computeAllMoves(initialBoard, Color.WHITE, game.getHistory(), false)).hasSize(20)
         	.isEqualTo(moveService.computeAllMoves(initialBoard, Color.WHITE, game.getHistory(), false, false));
         
-        assertThat(moveService.computeAllMoves(initialBoard, Color.BLACK, game.getHistory(),false)).hasSize(20);
+		assertThat(moveService.computeAllMoves(initialBoard, Color.BLACK, game.getHistory(), false)).hasSize(20);
     }
     
     @Test
@@ -1559,6 +1579,249 @@ class MoveServiceTest {
 	public void getBestMove_empty_throwsRuntime() {
 		assertThatRuntimeException().isThrownBy(() -> moveService.getBestMove(new HashMap<>()));
 	}
+	
+	@Test
+	public void selectMove_canCheckMate_returnCheckingMove() {
+		// Scenario: with a minimal depth, if a checkmate is possible, then it must be
+		// the selected move
+        List<String> movesNotation = Arrays.asList(
+                "e2-e3", "f7-f6",
+                "f2-f4", "g7-g5"
+        );
 
+		Game game = getGameAfterMoves(movesNotation);
+		Color colorToPlay = game.getToPlay();
+
+		Move bestMove = moveService.selectMove(game, 1, null);
+
+		game.getBoard().doMove(bestMove);
+		game.addMoveToHistory(bestMove);
+
+		assertThat(bestMove.getBasicNotation()).isEqualTo("d1-h5+");
+		assertThat(moveService.getGameState(game.getBoard(), swap(colorToPlay), game.getHistory()))
+				.isEqualTo(GameState.LOSS);
+	}
+
+	@Test
+	public void selectMove_avoidCheckMate_returnEscapingMove() {
+		// Scenario: with a depth of 1+, if the opponent can checkmate at next turn,
+		// then the selected move must avoid this, although the best move at first depth
+		// would be this one
+		List<String> movesNotation = Arrays.asList(
+				"e2-e3", "f7-f6", 
+				"f2-f4", "g7-g6", 
+				"d1-f3", "b8-c6", 
+				"f1-e2", "b7-b6", 
+				"f3-h5");
+		Game game = getGameAfterMoves(movesNotation);
+		Color colorToPlay = game.getToPlay();
+
+		// At this stage, the best move with the minimal depth (0) is to take the queen,
+		// but doing this will lead to
+		// being checkmated at next turn, so the best move for a larger depth (at least
+		// 1) is not to take the queen
+		Move naiveBestMove = moveService.selectMove(game, 0, null);
+		assertThat(naiveBestMove.getBasicNotation()).isEqualTo("g6xh5");
+
+		Move bestMove = moveService.selectMove(game, 1, LocalDateTime.now().plusDays(1));
+		assertThat(bestMove.getBasicNotation()).isNotEqualTo("g6xh5");
+		game.getBoard().doMove(bestMove);
+		game.addMoveToHistory(bestMove);
+		assertThat(moveService.getGameState(game.getBoard(), swap(colorToPlay), game.getHistory()))
+				.isNotEqualTo(GameState.LOSS);
+	}
+
+	@Test
+	public void selectMove_possibleStaleMate_returnBishopCheckingMove() {
+		List<String> movesNotation = Arrays.asList(
+				"e2-e3", "a7-a5", 
+				"d1-h5", "a8-a6", 
+				"h5xa5", "h7-h5", 
+				"h2-h4", "a6-h6", 
+				"a5xc7", "f7-f6",
+				"c7xd7+", "e8-f7",
+				"d7xb7", "d8-d3",
+				"b7xb8", "d3-h7",
+				"b8xc8", "f7-g6"
+		);
+		
+		Game game = getGameAfterMoves(movesNotation);
+		Color colorToPlay = game.getToPlay();
+		
+		Move bestMove = moveService.selectMove(game, 3, LocalDateTime.now().plusSeconds(2));
+
+		game.getBoard().doMove(bestMove);
+		game.addMoveToHistory(bestMove);
+
+		assertThat(bestMove.getBasicNotation()).isEqualTo("f1-d3+");
+		assertThat(moveService.getGameState(game.getBoard(), swap(colorToPlay), game.getHistory()))
+				.isNotEqualTo(GameState.DRAW_STALEMATE);
+	}
+	
+    @Test
+    public void getGameState_inProgress_returnInProgress() {
+        Board board = new Board("" +
+                "♜ ♞ ♝ ♛ ♚ ♝   ♜ \n" +
+                "♟   ♟ ♟     ♕ ♟ \n" +
+                "  ♟         ♟   \n" +
+                "        ♟   ♘   \n" +
+                "                \n" +
+                "        ♙       \n" +
+                "♙ ♙ ♙ ♙     ♙ ♙ \n" +
+                "♖   ♗   ♔ ♗ ♘ ♖ \n"
+        );
+        assertThat(moveService.getGameState(board, Color.BLACK, Collections.emptyList())).isEqualTo(GameState.IN_PROGRESS);
+    }
+
+    @Test
+    public void getGameState_checkmate_returnLoss() {
+        Board board = new Board("" +
+                "♜ ♞ ♝ ♛ ♚ ♝   ♜ \n" +
+                "♟   ♟ ♟   ♕   ♟ \n" +
+                "  ♟         ♟   \n" +
+                "        ♟   ♘   \n" +
+                "                \n" +
+                "        ♙       \n" +
+                "♙ ♙ ♙ ♙     ♙ ♙ \n" +
+                "♖   ♗   ♔ ♗ ♘ ♖ \n"
+        );
+        assertThat(moveService.getGameState(board, Color.BLACK, Collections.emptyList())).isEqualTo(GameState.LOSS);
+    }
+
+    @Test
+    public void getGameState_stalemate_returnDrawStalemate() {
+        Board board = new Board("" +
+                "        ♚       \n" +
+                "            ♕   \n" +
+                "                \n" +
+                "♗           ♟   \n" +
+                "        ♘   ♙ ♟ \n" +
+                "        ♙     ♘ \n" +
+                "♙ ♙ ♙         ♙ \n" +
+                "♖       ♔ ♗   ♖ \n"
+        );
+        assertThat(moveService.getGameState(board, Color.BLACK, Collections.emptyList())).isEqualTo(GameState.DRAW_STALEMATE);
+    }
+
+    @Test
+    public void getGameState_50MovesNoCaptureNoPawnMoved_return50MovesDraw() {
+        Game game = new Game(new RandomBot(moveService), new RandomBot(moveService));
+        Board board = game.getBoard();
+        List<Move> history = create50Moves(board);
+        assertThat(moveService.getGameState(board, Color.WHITE, history)).isEqualTo(GameState.DRAW_50_MOVES);
+    }
+
+	private List<Move> create50Moves(Board board) {
+		List<Move> history = new ArrayList<Move>(50);
+		for (int i = 0; i < 25; i++) {
+            Move moveWhite;
+            Move moveBlack;
+            if (i % 4 == 0) {
+                moveWhite = new Move(board.getPiece(1, 0).get(), 1, 0, 2, 2);
+                moveBlack = new Move(board.getPiece(1, 7).get(), 1, 7, 2, 5);
+            } else if (i % 4 == 1) {
+                moveWhite = new Move(board.getPiece(2, 2).get(), 2, 2, 1, 0);
+                moveBlack = new Move(board.getPiece(2, 5).get(), 2, 5, 1, 7);
+            } else if (i % 4 == 2) {
+                moveWhite = new Move(board.getPiece(1, 0).get(), 1, 0, 0, 2);
+                moveBlack = new Move(board.getPiece(1, 7).get(), 1, 7, 0, 5);
+            } else {
+                moveWhite = new Move(board.getPiece(0, 2).get(), 0, 2, 1, 0);
+                moveBlack = new Move(board.getPiece(0, 5).get(), 0, 5, 1, 7);
+            }
+            history.add(moveWhite);
+            board.doMove(moveWhite);
+            history.add(moveBlack);
+            board.doMove(moveBlack);
+        }
+		return history;
+	}
+
+    @ParameterizedTest
+    @MethodSource
+    public void getGameState_50MovesPawnMovedOrCapture_returnInProgress(Move move) {
+        Game game = new Game(new RandomBot(moveService), new RandomBot(moveService));
+        Board board = game.getBoard();
+       
+        List<Move> history = create50Moves(board);
+        history.add(move);        
+        assertThat(moveService.getGameState(board, Color.WHITE, history)).isEqualTo(GameState.IN_PROGRESS);
+    }
+    
+    private static Stream<Arguments> getGameState_50MovesPawnMovedOrCapture_returnInProgress() {
+		Move taking = new Move(new Knight(Color.WHITE), 1, 0, 2, 2);
+    	taking.setTookPiece(new Pawn(Color.BLACK));
+    	
+    	return Stream.of(
+				arguments(new Move(new Pawn(Color.WHITE), 1, 1, 1, 3)),
+    			arguments(taking)
+    	);
+    }
+    
+    @Test
+    public void getGameState_threefoldRepetion_returnDrawThreefold() {
+        Board board = new Board("" +
+                "      ♚     ♕   \n" +
+                "                \n" +
+                "                \n" +
+                "            ♟   \n" +
+                "        ♘   ♙ ♟ \n" +
+                "        ♙     ♘ \n" +
+                "♙ ♙ ♙ ♗       ♙ \n" +
+                "♖       ♔ ♗   ♖ \n"
+        );
+        List<String> movesBasicNotation = Arrays.asList(
+                "e2-e3", "f7-f6", "f2-f4", "e7-e5", "f4xe5", "f6xe5", "d1-f3", "g8-f6", "b1-c3", "f6-e4", "c3xe4",
+                "g7-g6", "e4-g5", "d7-d5", "f3xd5", "c7-c6", "d5xc6+", "c8-d7", "c6xb7", "f8-b4", "b7xa8", "e5-e4",
+                "g5xe4", "b8-c6", "a8xc6", "b4-c5", "c6xc5", "d7-e6", "c5xa7", "d8xd2+", "c1xd2", "e6-h3", "g1xh3",
+                "h7-h5", "a7-h7", "g6-g5", "h7xh8+", "e8-d7", "g2-g4", "h5-h4", "h8-g7+", "d7-d8", "g7-g8+", "d8-d7",
+                "g8-g7+", "d7-d8", "g7-g8+", "d8-d7", "g8-g7+", "d7-d8", "g7-g8+");
+        
+        Game game = getGameAfterMoves(movesBasicNotation);
+        
+        assertThat(moveService.getGameState(board, Color.BLACK, game.getHistory())).isEqualTo(GameState.DRAW_THREEFOLD);
+    }
+
+	@ParameterizedTest
+	@MethodSource
+	public void getGameState_notThreefoldRepetion_returnInProgress(Move move1, Move move2, Move move3, Move move4,
+			Move move5, Move move6) {
+    	
+    	Game game = new Game(null, null);
+    	List<Move> history = spy(new ArrayList<Move>());
+    	
+    	doReturn(10).when(history).size();
+    	doReturn(move6).when(history).get(10 - 1);
+    	doReturn(move5).when(history).get(10 - 2);
+    	doReturn(move4).when(history).get(10 - 5);
+    	doReturn(move3).when(history).get(10 - 6);
+    	doReturn(move2).when(history).get(10 - 9);
+    	doReturn(move1).when(history).get(10 - 10);
+    	
+    	assertThat(moveService.getGameState(game.getBoard(), Color.BLACK, history)).isEqualTo(GameState.IN_PROGRESS);
+    }
+
+	private static Stream<Arguments> getGameState_notThreefoldRepetion_returnInProgress() {
+		Move move135 = new Move(new Knight(Color.WHITE), 1, 0, 2, 2);
+		Move move246 = new Move(new Knight(Color.WHITE), 6, 0, 5, 2);
+		Move other = new Move(new Pawn(Color.WHITE), 1, 1, 1, 3);
+		return Stream.of(arguments(move135, move246, move135, other, move135, move246),
+				arguments(move135, other, move135, move246, move135, move246),
+				arguments(move135, move246, other, move246, move135, move246),
+				arguments(other, move246, move135, move246, move135, move246));
+	}
+	
+	@Test
+	public void isDrawAcceptable_initialPositionsDeclined_returnFalse() {
+		Game game = new Game(null, null);
+		assertThat(moveService.isDrawAcceptable(game)).isFalse();
+	}
+
+	@Test
+	public void isDrawAcceptable_oneRookMissingAccepted_returnTrue() {
+		Game game = new Game(null, null);
+		game.getBoard().getBoard()[7][0] = null;
+		assertThat(moveService.isDrawAcceptable(game)).isTrue();
+	}
 
 }

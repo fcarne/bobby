@@ -27,7 +27,7 @@ import ch.teemoo.bobby.services.OpeningService;
 import ch.teemoo.bobby.services.PortableGameNotationService;
 
 public class TournamentOrganizer implements Runnable {
-	private final static Logger logger = LoggerFactory.getLogger(TournamentOrganizer.class);
+	private static final Logger logger = LoggerFactory.getLogger(TournamentOrganizer.class);
 
 	private static final int ROUNDS_PER_MATCH = 4;
 
@@ -41,7 +41,7 @@ public class TournamentOrganizer implements Runnable {
 
 	private final boolean fastTournament;
 
-	public static void main(String args[]) {
+	public static void main(String[] args) {
 		Runnable tournament = new TournamentOrganizer(false);
 		tournament.run();
 	}

@@ -5,16 +5,31 @@ import java.util.Objects;
 import ch.teemoo.bobby.models.Color;
 
 public abstract class Piece {
-	final protected Color color;
-	final protected int value;
+	protected final Color color;
+	protected final int value;
+	protected final String whiteChar;
+	protected final String blackChar;
+	
+	
 
-	public Piece(final Color color, final int value) {
+	public Piece(Color color, int value, String whiteChar, String blackChar) {
+		super();
 		this.color = color;
 		this.value = value;
+		this.whiteChar = whiteChar;
+		this.blackChar = blackChar;
 	}
 
-	abstract public String getUnicode();
-
+    public String getUnicode() {
+    	String unicode;
+        if (color == Color.WHITE) {
+        	unicode = whiteChar;
+        } else {
+        	unicode = blackChar;
+        }
+        return unicode;
+    }
+    
 	public Color getColor() {
 		return color;
 	}
@@ -82,12 +97,15 @@ public abstract class Piece {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		Piece other = (Piece) obj;
 		return color == other.color;
 	}

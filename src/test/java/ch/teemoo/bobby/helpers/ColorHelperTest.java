@@ -12,7 +12,7 @@ public class ColorHelperTest {
     @ParameterizedTest
     @EnumSource(Color.class)
     public void swap_swapTwice_returnSameColor(Color color) {
-    	Color other = color == Color.WHITE? Color.BLACK:Color.WHITE;
+		Color other = color == Color.WHITE ? Color.BLACK : Color.WHITE;
         Color swapColor = ColorHelper.swap(color);
         
         assertThat(swapColor).isEqualTo(other);

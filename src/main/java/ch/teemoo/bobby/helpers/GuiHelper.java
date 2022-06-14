@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class GuiHelper {
-	private final static Logger logger = LoggerFactory.getLogger(GuiHelper.class);
+	private static final Logger logger = LoggerFactory.getLogger(GuiHelper.class);
 
 	private Font pieceFont;
 	private Properties properties;

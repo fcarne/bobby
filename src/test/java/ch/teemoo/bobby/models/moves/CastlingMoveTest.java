@@ -59,8 +59,9 @@ class CastlingMoveTest {
 			"0-0-0,4,7,2,7,0,7,3,7,false" })
 	public void getBasicNotation_ok_returnCorrect(String notation, int fromX, int fromY, int toX, int toY,
 			int rookFromX, int rookFromY, int rookToX, int rookToY, boolean isChecking) {
-		Piece rook = new Rook(Color.WHITE);
-		Piece king = new King(Color.WHITE);
+		Color color = fromY == 0 ? Color.WHITE : Color.BLACK;
+		Piece rook = new Rook(color);
+		Piece king = new King(color);
 		Move move = new CastlingMove(king, fromX, fromY, toX, toX, rook, rookFromX, rookFromY, rookToX, rookToY);
 		move.setChecking(isChecking);
 		assertThat(move.getBasicNotation()).isEqualTo(notation);
@@ -73,6 +74,22 @@ class CastlingMoveTest {
 		Piece king = new King(Color.WHITE);
 		Move move = new CastlingMove(king, 4, 0, 2, 0, rook, 3, 0, 3, 0);
 		assertThatRuntimeException().isThrownBy(() -> move.getBasicNotation());
+	}
+	
+	@Test
+	public void equals_sameMove_returnTrue() {
+		CastlingMove move = new CastlingMove(new King(Color.WHITE), 4, 0, 2, 0, new Rook(Color.WHITE), 0, 0, 3, 0);
+		CastlingMove other = new CastlingMove(new King(Color.WHITE), 4, 0, 2, 0, new Rook(Color.WHITE), 0, 0, 3, 0);
+		
+		assertThat(move).isEqualTo(other).hasSameHashCodeAs(other);
+	}
+
+	@Test
+	public void equals_differentMove_returnFalse() {
+		CastlingMove move = new CastlingMove(new King(Color.BLACK), 4, 7, 2, 7, new Rook(Color.BLACK), 0, 7, 3, 7);
+		CastlingMove other = new CastlingMove(new King(Color.WHITE), 4, 0, 2, 0, new Rook(Color.WHITE), 0, 0, 3, 0);
+		
+		assertThat(move).isNotEqualTo(other).doesNotHaveSameHashCodeAs(other);
 	}
 
 }

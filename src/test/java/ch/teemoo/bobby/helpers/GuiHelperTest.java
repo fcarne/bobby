@@ -9,12 +9,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class GuiHelperTest {
 
-	@Test
-	void constructor_normalBehaviour_returnHelper() {
-		GuiHelper helper = new GuiHelper();
-		assertThat(helper.getVersion()).isEqualTo("1.0.0");
-		assertThat(helper.getPieceFont()).hasFieldOrPropertyWithValue("name", "Free Serif");
-		assertThat(helper.getPieceFont()).hasFieldOrPropertyWithValue("size", 72);
-	}
+  @Test
+  void constructor_normalBehaviour_returnHelper() {
+    GuiHelper helper = new GuiHelper();
+    assertThat(helper.getVersion()).isEqualTo("1.0.0");
+    assertThat(helper.getPieceFont()).hasFieldOrPropertyWithValue("name", "Free Serif");
+    assertThat(helper.getPieceFont()).hasFieldOrPropertyWithValue("size", 72);
+  }
 
 }

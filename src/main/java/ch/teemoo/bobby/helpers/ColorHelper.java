@@ -3,15 +3,14 @@ package ch.teemoo.bobby.helpers;
 import ch.teemoo.bobby.models.Color;
 
 public class ColorHelper {
-    private ColorHelper() {
-    }
+  private ColorHelper() {}
 
-    public static Color swap(Color color) {
-        if (color == Color.WHITE) {
-            return Color.BLACK;
-        } else {
-        	assert color == Color.BLACK;
-            return Color.WHITE;
-        }
+  public static Color swap(Color color) {
+    if (color == Color.WHITE) {
+      return Color.BLACK;
+    } else {
+      assert color == Color.BLACK;
+      return Color.WHITE;
     }
+  }
 }

@@ -6,17 +6,17 @@ import org.junit.jupiter.api.Test;
 
 public class GameResultTest {
 
-	@Test
-	public void constructor_ok_returnResult() {
-		// given
-		int moves = 34;
-		GameResult.Result result = GameResult.Result.BLACK_WINS;
+  @Test
+  public void constructor_ok_returnResult() {
+    // given
+    int moves = 34;
+    GameResult.Result result = GameResult.Result.BLACK_WINS;
 
-		// when
-		GameResult gameResult = new GameResult(moves, result);
+    // when
+    GameResult gameResult = new GameResult(moves, result);
 
-		// then
-		assertThat(gameResult.getNbMoves()).isEqualTo(moves);
-		assertThat(gameResult.getResult()).isEqualTo(result);
-	}
+    // then
+    assertThat(gameResult.getNbMoves()).isEqualTo(moves);
+    assertThat(gameResult.getResult()).isEqualTo(result);
+  }
 }

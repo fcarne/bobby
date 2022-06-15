@@ -7,36 +7,36 @@ import org.junit.jupiter.api.Test;
 
 class NoBoardViewTest {
 
-	private NoBoardView view;
+  private NoBoardView view;
 
-	@BeforeEach
-	public void setup() {
-		view = new NoBoardView();
-	}
+  @BeforeEach
+  public void setup() {
+    view = new NoBoardView();
+  }
 
-	@Test
-	public void getSquares_none_returnsEmpty() {
-		assertThat(view.getSquares()).hasNumberOfRows(0);
-	}
+  @Test
+  public void getSquares_none_returnsEmpty() {
+    assertThat(view.getSquares()).hasNumberOfRows(0);
+  }
 
-	@Test
-	public void saveGameDialog_none_doesNothing() {
-		assertThat(view.saveGameDialog()).isEmpty();
-	}
+  @Test
+  public void saveGameDialog_none_doesNothing() {
+    assertThat(view.saveGameDialog()).isEmpty();
+  }
 
-	@Test
-	public void loadGameDialog_none_doesNothing() {
-		assertThat(view.loadGameDialog()).isEmpty();
-	}
+  @Test
+  public void loadGameDialog_none_doesNothing() {
+    assertThat(view.loadGameDialog()).isEmpty();
+  }
 
-	@Test
-	public void gameSetupDialog_none_doesNothing() {
-		assertThat(view.gameSetupDialog(null, false)).isNull();
-	}
+  @Test
+  public void gameSetupDialog_none_doesNothing() {
+    assertThat(view.gameSetupDialog(null, false)).isNull();
+  }
 
-	@Test
-	public void promotionDialog_none_doesNothing() {
-		assertThat(view.promotionDialog(null)).isNull();
-	}
+  @Test
+  public void promotionDialog_none_doesNothing() {
+    assertThat(view.promotionDialog(null)).isNull();
+  }
 
 }

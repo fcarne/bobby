@@ -3,28 +3,6 @@ package ch.teemoo.bobby;
 import static ch.teemoo.bobby.helpers.ColorHelper.swap;
 import static ch.teemoo.bobby.models.Board.SIZE;
 
-import java.awt.Cursor;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.ExecutionException;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
-
-import javax.swing.BorderFactory;
-import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
-import javax.swing.border.Border;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import ch.teemoo.bobby.gui.IBoardView;
 import ch.teemoo.bobby.gui.Square;
 import ch.teemoo.bobby.helpers.BotFactory;
@@ -45,449 +23,486 @@ import ch.teemoo.bobby.models.players.Player;
 import ch.teemoo.bobby.services.FileService;
 import ch.teemoo.bobby.services.MoveService;
 import ch.teemoo.bobby.services.PortableGameNotationService;
+import java.awt.Cursor;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import javax.swing.BorderFactory;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
+import javax.swing.border.Border;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GameController {
-	private static final Logger LOGGER = LoggerFactory.getLogger(GameController.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(GameController.class);
 
-	public static final Border RED_BORDER = BorderFactory.createLineBorder(java.awt.Color.red, 3, true);
-	public static final Border BLUE_BORDER = BorderFactory.createLineBorder(java.awt.Color.blue, 3, true);
+  public static final Border RED_BORDER = BorderFactory.createLineBorder(java.awt.Color.red, 3);
+  public static final Border BLUE_BORDER = BorderFactory.createLineBorder(java.awt.Color.blue, 3);
 
-	private Consumer<GameResult> gameResultConsumer;
+  private Consumer<GameResult> gameResultConsumer;
 
-	private final IBoardView view;
-	private Board board;
-	private Game game;
-	private final GameFactory gameFactory;
-	private final BotFactory botFactory;
-	private final MoveService moveService;
-	private final FileService fileService;
-	private final PortableGameNotationService portableGameNotationService;
-	private final Bot botToSuggestMove;
-	private final boolean showTiming = true;
+  private final IBoardView view;
+  private Board board;
+  private Game game;
+  private final GameFactory gameFactory;
+  private final BotFactory botFactory;
+  private final MoveService moveService;
+  private final FileService fileService;
+  private final PortableGameNotationService portableGameNotationService;
+  private final Bot botToSuggestMove;
+  private final boolean showTiming = true;
 
-	private Square selectedSquare = null;
+  private Square selectedSquare = null;
 
-	public GameController(IBoardView view, GameFactory gameFactory, BotFactory botFactory, MoveService moveService,
-			FileService fileService, PortableGameNotationService portableGameNotationService) {
-		this.moveService = moveService;
-		this.fileService = fileService;
-		this.portableGameNotationService = portableGameNotationService;
-		this.view = view;
-		this.gameFactory = gameFactory;
-		this.botFactory = botFactory;
-		this.botToSuggestMove = botFactory.getStrongestBot();
-		initView(gameFactory.emptyGame().getBoard());
-	}
+  public GameController(IBoardView view, GameFactory gameFactory, BotFactory botFactory,
+      MoveService moveService, FileService fileService,
+      PortableGameNotationService portableGameNotationService) {
+    this.moveService = moveService;
+    this.fileService = fileService;
+    this.portableGameNotationService = portableGameNotationService;
+    this.view = view;
+    this.gameFactory = gameFactory;
+    this.botFactory = botFactory;
+    this.botToSuggestMove = botFactory.getStrongestBot();
+    initView(gameFactory.emptyGame().getBoard());
+  }
 
-	void initView(Board board) {
-		refreshBoardView(board);
-		view.setItemNewActionListener(actionEvent -> {
-			newGame(null, false, r -> {
-			});
-		});
-		view.setItemLoadActionListener(actionEvent -> loadGame());
-		view.setItemSaveActionListener(actionEvent -> saveGame());
-		view.setItemPrintToConsoleActionListener(actionEvent -> printGameToConsole());
-		view.setItemSuggestMoveActionListener(actionEvent -> suggestMove());
-		view.setItemUndoMoveActionListener(actionEvent -> undoLastMove());
-		view.setItemProposeDrawActionListener(actionEvent -> evaluateDrawProposal());
-	}
+  void initView(Board board) {
+    refreshBoardView(board);
+    view.setItemNewActionListener(actionEvent -> {
+      newGame(null, false, r -> {});
+    });
+    view.setItemLoadActionListener(actionEvent -> loadGame());
+    view.setItemSaveActionListener(actionEvent -> saveGame());
+    view.setItemPrintToConsoleActionListener(actionEvent -> printGameToConsole());
+    view.setItemSuggestMoveActionListener(actionEvent -> suggestMove());
+    view.setItemUndoMoveActionListener(actionEvent -> undoLastMove());
+    view.setItemProposeDrawActionListener(actionEvent -> evaluateDrawProposal());
+  }
 
-	public void newGame(GameSetup gameSetup, boolean exitOnCancel, Consumer<GameResult> gameResultConsumer) {
-		if (gameSetup == null) {
-			GameSetup gameSetupFromDialog = view.gameSetupDialog(botFactory, exitOnCancel);
-			if (gameSetupFromDialog == null && !exitOnCancel) {
-				return;
-			} else {
-				gameSetup = gameSetupFromDialog;
-			}
-		}
-		this.game = gameFactory.createGame(gameSetup);
-		this.board = game.getBoard();
-		this.gameResultConsumer = gameResultConsumer;
-		refreshBoardView(board);
-		cleanSelectedSquare();
-		if (game.canBePlayed()) {
-			play();
-		}
-	}
+  public void newGame(GameSetup gameSetup, boolean exitOnCancel,
+      Consumer<GameResult> gameResultConsumer) {
+    if (gameSetup == null) {
+      GameSetup gameSetupFromDialog = view.gameSetupDialog(botFactory, exitOnCancel);
+      if (gameSetupFromDialog == null && !exitOnCancel) {
+        return;
+      } else {
+        gameSetup = gameSetupFromDialog;
+      }
+    }
+    this.game = gameFactory.createGame(gameSetup);
+    this.board = game.getBoard();
+    this.gameResultConsumer = gameResultConsumer;
+    refreshBoardView(board);
+    cleanSelectedSquare();
+    if (game.canBePlayed()) {
+      play();
+    }
+  }
 
-	void refreshBoardView(Board board) {
-		boolean isReversed = false;
-		if (game != null && game.canBePlayed() && game.getWhitePlayer().isBot()) {
-			isReversed = true;
-		}
-		view.display(board.getBoard(), isReversed);
-	}
+  void refreshBoardView(Board board) {
+    boolean isReversed = false;
+    if (game != null && game.canBePlayed() && game.getWhitePlayer().isBot()) {
+      isReversed = true;
+    }
+    view.display(board.getBoard(), isReversed);
+  }
 
-	void play() {
-		SwingUtilities.invokeLater(this::playNextMove);
-	}
+  void play() {
+    SwingUtilities.invokeLater(this::playNextMove);
+  }
 
-	void playNextMove() {
-		while (game.getPlayerToPlay().isBot() && !isGameOver(game)) {
-			Player player = game.getPlayerToPlay();
-			if (!(player instanceof Bot)) {
-				throw new RuntimeException("Player has to be a bot");
-			}
-			Bot bot = (Bot) player;
-			Instant start = Instant.now();
+  void playNextMove() {
+    while (game.getPlayerToPlay().isBot() && !isGameOver(game)) {
+      Player player = game.getPlayerToPlay();
+      if (!(player instanceof Bot)) {
+        throw new RuntimeException("Player has to be a bot");
+      }
+      Bot bot = (Bot) player;
+      Instant start = Instant.now();
 
-			FindBestMoveTask findBestMoveTask = new FindBestMoveTask(bot, game);
-			findBestMoveTask.execute();
-			Move move;
+      FindBestMoveTask findBestMoveTask = new FindBestMoveTask(bot, game);
+      findBestMoveTask.execute();
+      Move move;
 
-			try {
-				move = findBestMoveTask.get();
-			} catch (InterruptedException | ExecutionException e) {
-				Thread.currentThread().interrupt();
-				throw new RuntimeException("Move computation failed", e);
-			}
-			Instant end = Instant.now();
-			if (showTiming) {
-				LOGGER.debug("Time to select move: {}", Duration.between(start, end));
-			}
-			doMove(move);
-		}
+      try {
+        move = findBestMoveTask.get();
+      } catch (InterruptedException | ExecutionException e) {
+        Thread.currentThread().interrupt();
+        throw new RuntimeException("Move computation failed", e);
+      }
+      Instant end = Instant.now();
+      if (showTiming) {
+        LOGGER.debug("Time to select move: {}", Duration.between(start, end));
+      }
+      doMove(move);
+    }
 
-		if (!game.getPlayerToPlay().isBot() && !isGameOver(game)) {
-			view.resetAllClickables();
-			markSquaresClickableByColor(game.getToPlay());
-		}
-	}
+    if (!game.getPlayerToPlay().isBot() && !isGameOver(game)) {
+      view.resetAllClickables();
+      markSquaresClickableByColor(game.getToPlay());
+    }
+  }
 
-	void doMove(Move move) {
-		Player player = game.getPlayerByColor(move.getPiece().getColor());
-		view.cleanSquaresBorder();
-		if (!player.isBot()) {
-			cleanSelectedSquare();
-			view.resetAllClickables();
-		}
+  void doMove(Move move) {
+    Player player = game.getPlayerByColor(move.getPiece().getColor());
+    view.cleanSquaresBorder();
+    if (!player.isBot()) {
+      cleanSelectedSquare();
+      view.resetAllClickables();
+    }
 
-		List<Move> matchingMoves = moveService
-				.computeMoves(board, move.getPiece(), move.getFromX(), move.getFromY(), game.getHistory(), true, false)
-				.stream().filter(m -> m.equalsForPositions(move)).collect(Collectors.toList());
-		Move allowedMove = getAllowedMove(move, player, matchingMoves);
-		// We use allowedMove instead of given move since it contains additional info
-		// like taking and check
-		board.doMove(allowedMove);
-		view.refresh(board.getBoard());
-		view.addBorderToLastMoveSquares(allowedMove);
-		info(allowedMove.getPrettyNotation(), false);
-		game.addMoveToHistory(allowedMove);
-		game.setToPlay(swap(allowedMove.getPiece().getColor()));
-		displayGameInfo(allowedMove);
-	}
+    List<Move> matchingMoves = moveService
+        .computeMoves(board, move.getPiece(), move.getFromX(), move.getFromY(), game.getHistory(),
+            true, false)
+        .stream()
+        .filter(m -> m.equalsForPositions(move))
+        .collect(Collectors.toList());
+    Move allowedMove = getAllowedMove(move, player, matchingMoves);
 
-	Move getAllowedMove(Move move, Player player, List<Move> matchingMoves) {
-		List<Move> allowedMoves;
-		if (!matchingMoves.isEmpty() && matchingMoves.stream().allMatch(m -> m instanceof PromotionMove)) {
-			Piece promotedPiece;
-			if (move instanceof PromotionMove) {
-				promotedPiece = ((PromotionMove) move).getPromotedPiece();
-			} else {
-				if (player.isBot()) {
-					promotedPiece = new Queen(move.getPiece().getColor());
-				} else {
-					promotedPiece = view.promotionDialog(move.getPiece().getColor());
-				}
-			}
-			allowedMoves = matchingMoves.stream()
-					.filter(m -> ((PromotionMove) m).getPromotedPiece().getClass().equals(promotedPiece.getClass()))
-					.collect(Collectors.toList());
-		} else {
-			allowedMoves = matchingMoves;
-		}
-		if (allowedMoves.isEmpty()) {
-			throw new RuntimeException("Unauthorized move: " + move.getBasicNotation());
-		}
-		if (allowedMoves.size() > 1) {
-			throw new RuntimeException("Ambiguous move: " + move.getBasicNotation() + ". Multiple moves possible here: "
-					+ allowedMoves.toString());
-		}
-		return allowedMoves.get(0);
-	}
+    // We use allowedMove instead of given move since it contains additional info
+    // like taking and check
+    board.doMove(allowedMove);
+    view.refresh(board.getBoard());
+    view.addBorderToLastMoveSquares(allowedMove);
+    info(allowedMove.getPrettyNotation(), false);
+    game.addMoveToHistory(allowedMove);
+    game.setToPlay(swap(allowedMove.getPiece().getColor()));
+    displayGameInfo(allowedMove);
+  }
 
-	void undoLastMove(Move move) {
-		Player player = game.getPlayerByColor(move.getPiece().getColor());
-		if (!player.isBot()) {
-			cleanSelectedSquare();
-			view.cleanSquaresBorder();
-			view.resetAllClickables();
-		}
+  Move getAllowedMove(Move move, Player player, List<Move> matchingMoves) {
+    List<Move> allowedMoves;
+    if (!matchingMoves.isEmpty()
+        && matchingMoves.stream().allMatch(m -> m instanceof PromotionMove)) {
+      Piece promotedPiece;
+      if (move instanceof PromotionMove) {
+        promotedPiece = ((PromotionMove) move).getPromotedPiece();
+      } else {
+        if (player.isBot()) {
+          promotedPiece = new Queen(move.getPiece().getColor());
+        } else {
+          promotedPiece = view.promotionDialog(move.getPiece().getColor());
+        }
+      }
+      allowedMoves = matchingMoves.stream()
+          .filter(m -> ((PromotionMove) m).getPromotedPiece().getClass()
+              .equals(promotedPiece.getClass()))
+          .collect(Collectors.toList());
+    } else {
+      allowedMoves = matchingMoves;
+    }
 
-		board.undoMove(move);
-		view.refresh(board.getBoard());
-		info("Undo: " + move.getPrettyNotation(), false);
-		game.removeLastMoveFromHistory();
-		game.setToPlay(move.getPiece().getColor());
-	}
-	
-	void undoLastMove() {
-		if (game.getHistory().size() < 2) {
-			return;
-		}
-		Move lastMove = getLastMove();
-		undoLastMove(lastMove);
-		Move secondLastMove = getLastMove();
-		undoLastMove(secondLastMove);
-		play();
-	}
+    if (allowedMoves.isEmpty()) {
+      throw new RuntimeException("Unauthorized move: " + move.getBasicNotation());
+    }
+    if (allowedMoves.size() > 1) {
+      throw new RuntimeException("Ambiguous move: " + move.getBasicNotation()
+          + ". Multiple moves possible here: " + allowedMoves.toString());
+    }
+    return allowedMoves.get(0);
+  }
 
-	void displayGameInfo(Move move) {
-		boolean showPopup = !game.getWhitePlayer().isBot() || !game.getBlackPlayer().isBot();
-		GameState state;
-		if (game.getState() != null && !game.getState().isInProgress()) {
-			state = game.getState();
-		} else {
-			state = moveService.getGameState(game.getBoard(), game.getToPlay(), game.getHistory());
-		}
-		switch (state) {
-		case LOSS:
-			Color winningColor = move.getPiece().getColor();
-			
-			String points;
-			GameResult.Result result;
+  void undoLastMove(Move move) {
+    Player player = game.getPlayerByColor(move.getPiece().getColor());
+    if (!player.isBot()) {
+      cleanSelectedSquare();
+      view.cleanSquaresBorder();
+      view.resetAllClickables();
+    }
 
-			if (winningColor == Color.WHITE) {
-				points = "1-0";
-				result = Result.WHITE_WINS;
-			} else {
-				points = "0-1";
-				result = Result.BLACK_WINS;
-			}
+    board.undoMove(move);
+    view.refresh(board.getBoard());
+    info("Undo: " + move.getPrettyNotation(), false);
+    game.removeLastMoveFromHistory();
+    game.setToPlay(move.getPiece().getColor());
+  }
 
-			info(points + getNbMovesInfo(game), false);
-			gameResultConsumer.accept(getResult(game, result));
+  void undoLastMove() {
+    if (game.getHistory().size() < 2) {
+      return;
+    }
 
-			Player winner = game.getPlayerByColor(winningColor);
-			if (winner.isBot()) {
-				info("Checkmate! Ha ha, not even Spassky could beat me!", showPopup);
-			} else {
-				info("Checkmated?!? Noooo! How is this possible?\nCongrats, not everybody is able to beat the genius Bobby!",
-						showPopup);
-			}
-			break;
-		case DRAW_STALEMATE:
-		case DRAW_50_MOVES:
-		case DRAW_THREEFOLD:
-		case DRAW_AGREEMENT:
-			info("1/2-1/2" + getNbMovesInfo(game), false);
-			info("Draw (" + state.getDrawDescription() + "). The game is over.", showPopup);
-			gameResultConsumer.accept(getResult(game, Result.DRAW));
-			break;
-		case IN_PROGRESS:
-		default:
-			if (move.isChecking()) {
-				info("Check!", showPopup);
-			}
-			break;
-		}
-	}
+    Move lastMove = getLastMove();
+    undoLastMove(lastMove);
+    Move secondLastMove = getLastMove();
+    undoLastMove(secondLastMove);
+    play();
+  }
 
-	protected GameResult getResult(Game game, GameResult.Result result) {
-		return new GameResult(game.getHistory().size(), result);
-	}
+  void displayGameInfo(Move move) {
+    boolean showPopup = !game.getWhitePlayer().isBot() || !game.getBlackPlayer().isBot();
+    GameState state;
+    if (game.getState() != null && !game.getState().isInProgress()) {
+      state = game.getState();
+    } else {
+      state = moveService.getGameState(game.getBoard(), game.getToPlay(), game.getHistory());
+    }
 
-	private String getNbMovesInfo(Game game) {
-		return " (" + game.getHistory().size() + " moves)";
-	}
+    switch (state) {
+      case LOSS:
+        Color winningColor = move.getPiece().getColor();
 
-	private void markSquaresClickableByColor(Color color) {
-		Square[][] squares = view.getSquares();
-		for (int i = 0; i < SIZE; i++) {
-			for (int j = 0; j < SIZE; j++) {
-				Square square = squares[i][j];
-				Piece piece = square.getPiece();
-				if (piece != null && piece.getColor() == color) {
-					markSquareClickable(square);
-				}
-			}
-		}
-	}
+        String points;
+        GameResult.Result result;
 
-	private void markSquareClickable(Square square) {
-		if (square.getMouseListeners().length == 0) {
-			square.addMouseListener(new MouseAdapter() {
-				public void mouseClicked(MouseEvent e) {
-					try {
-						squareClicked(square);
-					} catch (Exception exception) {
-						error(exception, true);
-					}
-				}
+        if (winningColor == Color.WHITE) {
+          points = "1-0";
+          result = Result.WHITE_WINS;
+        } else {
+          points = "0-1";
+          result = Result.BLACK_WINS;
+        }
 
-				public void mouseEntered(MouseEvent e) {
-					square.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-				}
+        info(points + getNbMovesInfo(game), false);
+        gameResultConsumer.accept(getResult(game, result));
 
-				public void mouseExited(MouseEvent e) {
-					square.setCursor(Cursor.getDefaultCursor());
-				}
-			});
-		}
-	}
+        Player winner = game.getPlayerByColor(winningColor);
+        if (winner.isBot()) {
+          info("Checkmate! Ha ha, not even Spassky could beat me!", showPopup);
+        } else {
+          info(
+              "Checkmated?!? Noooo! How is this possible?\n"
+              + "Congrats, not everybody is able to beat the genius Bobby!",
+              showPopup);
+        }
+        break;
+      case DRAW_STALEMATE:
+      case DRAW_50_MOVES:
+      case DRAW_THREEFOLD:
+      case DRAW_AGREEMENT:
+        info("1/2-1/2" + getNbMovesInfo(game), false);
+        info("Draw (" + state.getDrawDescription() + "). The game is over.", showPopup);
+        gameResultConsumer.accept(getResult(game, Result.DRAW));
+        break;
+      case IN_PROGRESS:
+      default:
+        if (move.isChecking()) {
+          info("Check!", showPopup);
+        }
+        break;
+    }
+  }
 
-	private void squareClicked(Square square) {
-		if (selectedSquare != null) {
-			if (selectedSquare == square) {
-				// cancel current selection
-				view.cleanSquaresBorder();
-				cleanSelectedSquare();
-				view.resetAllClickables();
-				markSquaresClickableByColor(game.getToPlay());
-			} else {
-				doMove(new Move(selectedSquare.getPiece(), selectedSquare.getPosition().getFile(),
-						selectedSquare.getPosition().getRank(), square.getPosition().getFile(),
-						square.getPosition().getRank()));
-				play();
-			}
-		} else {
-			if (square.getPiece() != null) {
-				if (square.getPiece().getColor() == game.getToPlay()) {
-					selectedSquare = square;
-					view.cleanSquaresBorder();
-					view.resetAllClickables();
-					// Self piece is clickable so that it selection can be cancelled
-					markSquareClickable(square);
-					square.setBorder(RED_BORDER);
-					List<Move> moves = moveService.computeMoves(board, square.getPiece(),
-							square.getPosition().getFile(), square.getPosition().getRank(), game.getHistory(), true,
-							false);
-					for (Move move : moves) {
-						Square destination = view.getSquares()[move.getToY()][move.getToX()];
-						destination.setBorder(BLUE_BORDER);
-						markSquareClickable(destination);
-					}
-				} else {
-					throw new RuntimeException("Cannot select a piece from opponent to start a move");
-				}
-			} else {
-				throw new RuntimeException("Cannot select an empty square to start a move");
-			}
-		}
-	}
+  protected GameResult getResult(Game game, GameResult.Result result) {
+    return new GameResult(game.getHistory().size(), result);
+  }
 
-	private void info(String text, boolean withPopup) {
-		LOGGER.info("[INFO] {}", text);
-		if (withPopup) {
-			view.popupInfo(text);
-		}
-	}
+  private String getNbMovesInfo(Game game) {
+    return " (" + game.getHistory().size() + " moves)";
+  }
 
-	private void error(Exception exception, boolean withPopup) {
-		LOGGER.error("An error happened: {}", exception.getMessage(), exception);
-		if (withPopup) {
-			view.popupError(exception.getMessage());
-		}
-	}
+  private void markSquaresClickableByColor(Color color) {
+    Square[][] squares = view.getSquares();
+    for (int i = 0; i < SIZE; i++) {
+      for (int j = 0; j < SIZE; j++) {
+        Square square = squares[i][j];
+        Piece piece = square.getPiece();
+        if (piece != null && piece.getColor() == color) {
+          markSquareClickable(square);
+        }
+      }
+    }
+  }
 
-	private boolean isGameOver(Game game) {
-		return !moveService.getGameState(game.getBoard(), game.getToPlay(), game.getHistory()).isInProgress();
-	}
+  private void markSquareClickable(Square square) {
+    if (square.getMouseListeners().length == 0) {
+      square.addMouseListener(new MouseAdapter() {
+        public void mouseClicked(MouseEvent e) {
+          try {
+            squareClicked(square);
+          } catch (Exception exception) {
+            error(exception, true);
+          }
+        }
 
-	private void cleanSelectedSquare() {
-		this.selectedSquare = null;
-	}
+        public void mouseEntered(MouseEvent e) {
+          square.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        }
 
-	void saveGame() {
-		Optional<File> file = view.saveGameDialog();
-		if (file.isPresent()) {
-			try {
-				fileService.writeGameToFileBasicNotation(game, file.get());
-			} catch (IOException e) {
-				error(e, true);
-			}
-		}
-	}
+        public void mouseExited(MouseEvent e) {
+          square.setCursor(Cursor.getDefaultCursor());
+        }
+      });
+    }
+  }
 
-	void loadGame() {
-		Optional<File> fileOpt = view.loadGameDialog();
-		if (fileOpt.isPresent()) {
-			try {
-				// we assume that the game to load is played in the same config as currently
-				Game loadedGame = new Game(game.getWhitePlayer(), game.getBlackPlayer());
-				this.game = loadedGame;
-				this.board = loadedGame.getBoard();
-				refreshBoardView(board);
+  private void squareClicked(Square square) {
+    if (selectedSquare != null) {
+      if (selectedSquare == square) {
+        // cancel current selection
+        view.cleanSquaresBorder();
+        cleanSelectedSquare();
+        view.resetAllClickables();
+        markSquaresClickableByColor(game.getToPlay());
+      } else {
+        doMove(new Move(selectedSquare.getPiece(), selectedSquare.getPosition().getFile(),
+            selectedSquare.getPosition().getRank(), square.getPosition().getFile(),
+            square.getPosition().getRank()));
+        play();
+      }
+    } else {
+      if (square.getPiece() != null) {
+        if (square.getPiece().getColor() == game.getToPlay()) {
+          selectedSquare = square;
+          view.cleanSquaresBorder();
+          view.resetAllClickables();
+          // Self piece is clickable so that it selection can be cancelled
+          markSquareClickable(square);
+          square.setBorder(RED_BORDER);
+          List<Move> moves = moveService.computeMoves(board, square.getPiece(),
+              square.getPosition().getFile(), square.getPosition().getRank(), game.getHistory(),
+              true, false);
+          for (Move move : moves) {
+            Square destination = view.getSquares()[move.getToY()][move.getToX()];
+            destination.setBorder(BLUE_BORDER);
+            markSquareClickable(destination);
+          }
+        } else {
+          throw new RuntimeException("Cannot select a piece from opponent to start a move");
+        }
+      } else {
+        throw new RuntimeException("Cannot select an empty square to start a move");
+      }
+    }
+  }
 
-				File file = fileOpt.get();
-				List<String> lines = fileService.readFile(Paths.get(file.toURI()));
-				if (file.getName().endsWith(".pgn")) {
-					applyMovesFromPortableGameNotationFile(lines);
-				} else {
-					applyMovesFromBasicNotationFile(lines);
-				}
-				play();
-			} catch (IOException e) {
-				error(e, true);
-			}
-		}
-	}
+  private void info(String text, boolean withPopup) {
+    LOGGER.info("[INFO] {}", text);
+    if (withPopup) {
+      view.popupInfo(text);
+    }
+  }
 
-	void applyMovesFromPortableGameNotationFile(List<String> lines) {
-		Game loadedGame = portableGameNotationService.readPgnFile(lines);
-		loadedGame.getHistory().forEach(this::doMove);
-	}
+  private void error(Exception exception, boolean withPopup) {
+    LOGGER.error("An error happened: {}", exception.getMessage(), exception);
+    if (withPopup) {
+      view.popupError(exception.getMessage());
+    }
+  }
 
-	void applyMovesFromBasicNotationFile(List<String> lines) {
-		for (String line : lines) {
-			Move move = Move.fromBasicNotation(line, game.getToPlay(), game.getBoard());
-			Piece piece = board.getPiece(move.getFromX(), move.getFromY())
-					.orElseThrow(() -> new RuntimeException("Unexpected move, no piece at this location"));
-			doMove(new Move(piece, move.getFromX(), move.getFromY(), move.getToX(), move.getToY()));
-		}
-	}
+  private boolean isGameOver(Game game) {
+    return !moveService.getGameState(game.getBoard(), game.getToPlay(), game.getHistory())
+        .isInProgress();
+  }
 
-	void printGameToConsole() {
-		LOGGER.debug("Current board: \n{}", board.toString());
-	}
+  private void cleanSelectedSquare() {
+    this.selectedSquare = null;
+  }
 
-	void suggestMove() {
-		Instant start = Instant.now();
-		Move move = botToSuggestMove.selectMove(game);
-		Instant end = Instant.now();
-		if (showTiming) {
-			LOGGER.debug("Time to suggest move: {}", Duration.between(start, end));
-		}
-		info("Brilliantly, I recommend you to play: " + move.toString(), true);
-	}
+  void saveGame() {
+    Optional<File> file = view.saveGameDialog();
+    if (file.isPresent()) {
+      try {
+        fileService.writeGameToFileBasicNotation(game, file.get());
+      } catch (IOException e) {
+        error(e, true);
+      }
+    }
+  }
 
-	void evaluateDrawProposal() {
-		Player playerWaiting = game.getPlayerWaiting();
-		if (playerWaiting.isBot()) {
-			boolean drawAccepted = ((Bot) playerWaiting).isDrawAcceptable(game);
-			if (drawAccepted) {
-				info("Hmmm OK, I hate draws but you played quite well... Accepted!", true);
-				game.setState(GameState.DRAW_AGREEMENT);
-				cleanSelectedSquare();
-				view.cleanSquaresBorder();
-				view.resetAllClickables();
-				displayGameInfo(null);
-			} else {
-				info("Are you kidding me? A champion like me can't accept such proposal (at least not now).", true);
-			}
-		} else {
-			info("Sorry, it is not your turn", true);
-		}
-	}
+  void loadGame() {
+    Optional<File> fileOpt = view.loadGameDialog();
+    if (fileOpt.isPresent()) {
+      try {
+        // we assume that the game to load is played in the same config as
+        // currently
+        Game loadedGame = new Game(game.getWhitePlayer(), game.getBlackPlayer());
+        this.game = loadedGame;
+        this.board = loadedGame.getBoard();
+        refreshBoardView(board);
 
-	private Move getLastMove() {
-		return game.getHistory().get(game.getHistory().size() - 1);
-	}
+        File file = fileOpt.get();
+        List<String> lines = fileService.readFile(Paths.get(file.toURI()));
+        if (file.getName().endsWith(".pgn")) {
+          applyMovesFromPortableGameNotationFile(lines);
+        } else {
+          applyMovesFromBasicNotationFile(lines);
+        }
+        play();
+      } catch (IOException e) {
+        error(e, true);
+      }
+    }
+  }
 
-	private static class FindBestMoveTask extends SwingWorker<Move, Object> {
-		private final Bot bot;
-		private final Game game;
+  void applyMovesFromPortableGameNotationFile(List<String> lines) {
+    Game loadedGame = portableGameNotationService.readPgnFile(lines);
+    loadedGame.getHistory().forEach(this::doMove);
+  }
 
-		public FindBestMoveTask(Bot bot, Game game) {
-			this.bot = bot;
-			this.game = game;
-		}
+  void applyMovesFromBasicNotationFile(List<String> lines) {
+    for (String line : lines) {
+      Move move = Move.fromBasicNotation(line, game.getToPlay(), game.getBoard());
+      Piece piece = board.getPiece(move.getFromX(), move.getFromY())
+          .orElseThrow(() -> new RuntimeException("Unexpected move, no piece at this location"));
+      doMove(new Move(piece, move.getFromX(), move.getFromY(), move.getToX(), move.getToY()));
+    }
+  }
 
-		@Override
-		protected Move doInBackground() {
-			return bot.selectMove(game);
-		}
-	}
+  void printGameToConsole() {
+    LOGGER.debug("Current board: \n{}", board.toString());
+  }
+
+  void suggestMove() {
+    Instant start = Instant.now();
+    Move move = botToSuggestMove.selectMove(game);
+    Instant end = Instant.now();
+
+    if (showTiming) {
+      LOGGER.debug("Time to suggest move: {}", Duration.between(start, end));
+    }
+
+    info("Brilliantly, I recommend you to play: " + move.toString(), true);
+  }
+
+  void evaluateDrawProposal() {
+    Player playerWaiting = game.getPlayerWaiting();
+    if (playerWaiting.isBot()) {
+      boolean drawAccepted = ((Bot) playerWaiting).isDrawAcceptable(game);
+      if (drawAccepted) {
+        info("Hmmm OK, I hate draws but you played quite well... Accepted!", true);
+        game.setState(GameState.DRAW_AGREEMENT);
+        cleanSelectedSquare();
+        view.cleanSquaresBorder();
+        view.resetAllClickables();
+        displayGameInfo(null);
+      } else {
+        info(
+            "Are you kidding me? A champion like me can't accept such proposal (at least not now).",
+            true);
+      }
+    } else {
+      info("Sorry, it is not your turn", true);
+    }
+  }
+
+  private Move getLastMove() {
+    return game.getHistory().get(game.getHistory().size() - 1);
+  }
+
+  private static class FindBestMoveTask extends SwingWorker<Move, Object> {
+    private final Bot bot;
+    private final Game game;
+
+    FindBestMoveTask(Bot bot, Game game) {
+      this.bot = bot;
+      this.game = game;
+    }
+
+    @Override
+    protected Move doInBackground() {
+      return bot.selectMove(game);
+    }
+  }
 }

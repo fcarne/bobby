@@ -3,15 +3,15 @@ package ch.teemoo.bobby.gui;
 import java.awt.Color;
 
 public enum Background {
-    DARK(new Color(139, 69, 19)), LIGHT(new Color(222, 184, 135));
+  DARK(new Color(139, 69, 19)), LIGHT(new Color(222, 184, 135));
 
-    private final Color color;
+  private final Color color;
 
-    Background(Color color) {
-        this.color = color;
-    }
+  Background(Color color) {
+    this.color = color;
+  }
 
-    public Color getColor() {
-        return color;
-    }
+  public Color getColor() {
+    return color;
+  }
 }

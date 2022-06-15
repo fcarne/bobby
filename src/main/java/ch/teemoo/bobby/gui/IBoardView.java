@@ -1,52 +1,51 @@
 package ch.teemoo.bobby.gui;
 
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.util.Optional;
-
 import ch.teemoo.bobby.helpers.BotFactory;
 import ch.teemoo.bobby.models.games.GameSetup;
 import ch.teemoo.bobby.models.moves.Move;
 import ch.teemoo.bobby.models.pieces.Piece;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.util.Optional;
 
 public interface IBoardView {
-	
-	Square[][] getSquares();
 
-	void setItemNewActionListener(ActionListener actionListener);
+  Square[][] getSquares();
 
-	void setItemSaveActionListener(ActionListener actionListener);
+  void setItemNewActionListener(ActionListener actionListener);
 
-	void setItemLoadActionListener(ActionListener actionListener);
+  void setItemSaveActionListener(ActionListener actionListener);
 
-	void setItemPrintToConsoleActionListener(ActionListener actionListener);
+  void setItemLoadActionListener(ActionListener actionListener);
 
-	void setItemSuggestMoveActionListener(ActionListener actionListener);
+  void setItemPrintToConsoleActionListener(ActionListener actionListener);
 
-	void setItemUndoMoveActionListener(ActionListener actionListener);
+  void setItemSuggestMoveActionListener(ActionListener actionListener);
 
-	void setItemProposeDrawActionListener(ActionListener actionListener);
+  void setItemUndoMoveActionListener(ActionListener actionListener);
 
-	void display(Piece[][] positions, boolean isReversed);
+  void setItemProposeDrawActionListener(ActionListener actionListener);
 
-	void refresh(Piece[][] positions);
+  void display(Piece[][] positions, boolean isReversed);
 
-	void resetAllClickables();
+  void refresh(Piece[][] positions);
 
-	void cleanSquaresBorder();
+  void resetAllClickables();
 
-	void addBorderToLastMoveSquares(Move move);
+  void cleanSquaresBorder();
 
-	Optional<File> saveGameDialog();
+  void addBorderToLastMoveSquares(Move move);
 
-	Optional<File> loadGameDialog();
+  Optional<File> saveGameDialog();
 
-	GameSetup gameSetupDialog(BotFactory botFactory, boolean exitOnCancel);
+  Optional<File> loadGameDialog();
 
-	Piece promotionDialog(ch.teemoo.bobby.models.Color color);
+  GameSetup gameSetupDialog(BotFactory botFactory, boolean exitOnCancel);
 
-	void popupInfo(String message);
+  Piece promotionDialog(ch.teemoo.bobby.models.Color color);
 
-	void popupError(String message);
+  void popupInfo(String message);
+
+  void popupError(String message);
 
 }

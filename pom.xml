@@ -212,7 +212,6 @@
 				<executions>
 					<execution>
 						<id>validate</id>
-						<!-- <phase>validate</phase> -->
 						<goals>
 							<goal>check</goal>
 						</goals>
@@ -229,6 +228,10 @@
 				<version>${maven.plugin.surefire.version}</version>
 				<configuration>
 					<skipTests>${skipUnitTests}</skipTests>
+					<testFailureIgnore>true</testFailureIgnore>
+					<forkCount>1</forkCount>
+					<reuseForks>false</reuseForks>
+					<argLine>-Xmx1024m</argLine>
 				</configuration>
 			</plugin>
 
@@ -254,11 +257,6 @@
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>${maven.plugin.jacoco.version}</version>
-				<configuration>
-					<excludes>
-						<exclude>**/test/*</exclude>
-					</excludes>
-				</configuration>
 				<executions>
 					<execution>
 						<goals>
@@ -267,7 +265,7 @@
 					</execution>
 					<execution>
 						<id>report</id>
-						<phase>prepare-package</phase>
+						<phase>test</phase>
 						<goals>
 							<goal>report</goal>
 						</goals>

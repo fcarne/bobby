@@ -10,64 +10,62 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
 import ch.teemoo.bobby.models.Color;
 import ch.teemoo.bobby.models.games.Game;
 import ch.teemoo.bobby.models.moves.Move;
 import ch.teemoo.bobby.models.pieces.Pawn;
 import ch.teemoo.bobby.services.MoveService;
 import ch.teemoo.bobby.services.OpeningService;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 public class ExperiencedBotTest {
-	@Mock
-	MoveService moveService;
+  @Mock
+  MoveService moveService;
 
-	@Mock
-	OpeningService openingService;
+  @Mock
+  OpeningService openingService;
 
-	@Mock
-	Game game;
+  @Mock
+  Game game;
 
-	@Test
-	public void selectMove_noOpening_callSuperSelectMove() {
-		int level = 2;
-		Integer timeout = 3;
-		Bot bot = new ExperiencedBot(level, timeout, moveService, openingService);
+  @Test
+  public void selectMove_noOpening_callSuperSelectMove() {
+    int level = 2;
+    Integer timeout = 3;
+    Bot bot = new ExperiencedBot(level, timeout, moveService, openingService);
 
-		when(openingService.findPossibleMovesForHistory(any())).thenReturn(Collections.emptyList());
+    when(openingService.findPossibleMovesForHistory(any())).thenReturn(Collections.emptyList());
 
-		bot.selectMove(game);
-		verify(moveService, times(1)).selectMove(any(), eq(level), notNull());
-	}
+    bot.selectMove(game);
+    verify(moveService, times(1)).selectMove(any(), eq(level), notNull());
+  }
 
-	@Test
-	public void selectMove_WithOpenings_returnRandomOpening() {
-		Move openingMove1 = new Move(new Pawn(Color.WHITE), 4, 1, 4, 3);
-		Move openingMove2 = new Move(new Pawn(Color.WHITE), 4, 1, 4, 3);
-		Move openingMove3 = new Move(new Pawn(Color.WHITE), 4, 1, 4, 3);
-		List<Move> moves = new ArrayList<>();
-		moves.add(openingMove1);
-		moves.add(openingMove2);
-		moves.add(openingMove3);
+  @Test
+  public void selectMove_WithOpenings_returnRandomOpening() {
+    Move openingMove1 = new Move(new Pawn(Color.WHITE), 4, 1, 4, 3);
+    Move openingMove2 = new Move(new Pawn(Color.WHITE), 4, 1, 4, 3);
+    Move openingMove3 = new Move(new Pawn(Color.WHITE), 4, 1, 4, 3);
+    List<Move> moves = new ArrayList<>();
+    moves.add(openingMove1);
+    moves.add(openingMove2);
+    moves.add(openingMove3);
 
-		when(openingService.findPossibleMovesForHistory(any())).thenReturn(moves);
+    when(openingService.findPossibleMovesForHistory(any())).thenReturn(moves);
 
-		int level = 2;
-		Integer timeout = 3;
-		Bot bot = new ExperiencedBot(level, timeout, moveService, openingService);
-		Move move = bot.selectMove(game);
+    int level = 2;
+    Integer timeout = 3;
+    Bot bot = new ExperiencedBot(level, timeout, moveService, openingService);
+    Move move = bot.selectMove(game);
 
-		verify(moveService, never()).selectMove(any(), anyInt(), any());
-		assertThat(move).isIn(moves);
-	}
+    verify(moveService, never()).selectMove(any(), anyInt(), any());
+    assertThat(move).isIn(moves);
+  }
 
 }

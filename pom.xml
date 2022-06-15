@@ -32,7 +32,7 @@
 		<maven.plugin.pmd.version>3.9.0</maven.plugin.pmd.version>
 		<maven.plugin.spotbugs.version>4.7.0</maven.plugin.spotbugs.version>
 		<maven.plugin.spotbugs-plugin.version>4.7.0.0</maven.plugin.spotbugs-plugin.version>
-		<maven.plugin.jacoco.version>0.8.4</maven.plugin.jacoco.version>
+		<maven.plugin.jacoco.version>0.8.7</maven.plugin.jacoco.version>
 
 		<!-- Dependencies -->
 		<flatlaf.version>2.3</flatlaf.version>
@@ -232,6 +232,9 @@
 					<forkCount>1</forkCount>
 					<reuseForks>false</reuseForks>
 					<argLine>${surefireArgLine} -Xmx1024m</argLine>
+					<systemPropertyVariables>
+						<jacoco-agent.destfile>target/jacoco.exec</jacoco-agent.destfile>
+					</systemPropertyVariables>
 				</configuration>
 			</plugin>
 
@@ -268,11 +271,21 @@
 						</configuration>
 					</execution>
 					<execution>
+						<id>report</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+					<execution>
 						<id>default-report</id>
 						<phase>test</phase>
 						<goals>
 							<goal>report</goal>
 						</goals>
+						<configuration>
+							<dataFile>target/jacoco.exec</dataFile>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>

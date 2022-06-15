@@ -1608,7 +1608,7 @@ class MoveServiceTest {
     Game game = getGameAfterMoves(movesNotation);
     Color colorToPlay = game.getToPlay();
 
-    Move bestMove = moveService.selectMove(game, 3, LocalDateTime.now().plusSeconds(2));
+    Move bestMove = moveService.selectMove(game, 3, LocalDateTime.now().plusDays(2));
 
     game.getBoard().doMove(bestMove);
     game.addMoveToHistory(bestMove);

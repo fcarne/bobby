@@ -16,7 +16,7 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.compiler.source>1.8</maven.compiler.source>
 
-		<skipUnitTests>false</skipUnitTests>
+		<skipTests>false</skipTests>
 
 		<timestamp>${maven.build.timestamp}</timestamp>
 		<maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
@@ -227,11 +227,11 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>${maven.plugin.surefire.version}</version>
 				<configuration>
-					<skipTests>${skipUnitTests}</skipTests>
+					<skipTests>${skipTests}</skipTests>
 					<testFailureIgnore>true</testFailureIgnore>
 					<forkCount>1</forkCount>
 					<reuseForks>false</reuseForks>
-					<argLine>-Xmx1024m</argLine>
+					<argLine>${surefireArgLine} -Xmx1024m</argLine>
 				</configuration>
 			</plugin>
 
@@ -259,12 +259,16 @@
 				<version>${maven.plugin.jacoco.version}</version>
 				<executions>
 					<execution>
+						<id>default-prepare-agent</id>
 						<goals>
 							<goal>prepare-agent</goal>
 						</goals>
+						<configuration>
+							<propertyName>surefireArgLine</propertyName>
+						</configuration>
 					</execution>
 					<execution>
-						<id>report</id>
+						<id>default-report</id>
 						<phase>test</phase>
 						<goals>
 							<goal>report</goal>

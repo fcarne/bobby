@@ -13,12 +13,20 @@ class MoveAnalysisTest {
     Move move = new Move(new Pawn(Color.WHITE), 0, 1, 0, 2);
     Move next = new Move(new Pawn(Color.WHITE), 1, 1, 1, 2);
     MoveAnalysis moveAnalysis = new MoveAnalysis(move);
-    moveAnalysis.setScore(0);
     moveAnalysis.setNextProbableMove(new MoveAnalysis(next));
 
     assertThat(moveAnalysis.getMove()).isEqualTo(move);
     assertThat(moveAnalysis.getScore()).isZero();
     assertThat(moveAnalysis.getNextProbableMove().getMove()).isEqualTo(next);
+  }
+  
+  @Test
+  void constructor_setScore_returnSettedScore_PIT() {
+    MoveAnalysis analysis = new MoveAnalysis(new Move(new Pawn(Color.WHITE),4,1,4,3));
+    analysis.setScore(10);
+    
+    assertThat(analysis.getScore()).isNotZero().isEqualTo(10);
+
   }
 
 }

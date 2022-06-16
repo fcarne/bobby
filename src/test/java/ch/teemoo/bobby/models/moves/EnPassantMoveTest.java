@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 class EnPassantMoveTest {
 
   @Test
-  public void moveConstructor_ok_returnsCorrect() {
+  public void constructor_ok_returnsCorrect() {
     Piece pawn = new Pawn(Color.WHITE);
     Move move = new Move(pawn, 5, 3, 6, 4);
     move.setTookPiece(new Pawn(Color.BLACK));
@@ -21,8 +21,20 @@ class EnPassantMoveTest {
     assertThat(emove.getTookPiecePosX()).isEqualTo(6);
     assertThat(emove.getTookPiecePosY()).isEqualTo(4);
 
-    assertThat(move.isTaking()).isTrue();
-    assertThat(move.isChecking()).isFalse();
+    assertThat(emove.isTaking()).isTrue();
+    assertThat(emove.isChecking()).isFalse();
+  }
+
+  @Test
+  public void constructor_checkingMove_returnsChecking_PIT() {
+    Piece pawn = new Pawn(Color.WHITE);
+    Move move = new Move(pawn, 5, 3, 6, 4);
+    move.setChecking(true);
+    move.setTookPiece(new Pawn(Color.BLACK));
+    
+    EnPassantMove emove = new EnPassantMove(move, 6, 4);
+
+    assertThat(emove.isChecking()).isTrue();
   }
 
   @Test

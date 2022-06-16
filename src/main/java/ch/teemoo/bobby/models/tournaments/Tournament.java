@@ -55,9 +55,9 @@ public class Tournament {
 
   static List<Match> generateMatches(List<Player> participants) {
     List<Match> matches = new ArrayList<>();
-    for (int i = 0; i < participants.size() - 1; i++) {
-      for (int j = i + 1; j < participants.size(); j++) {
-        matches.add(new Match(participants.get(i), participants.get(j)));
+    for (int i = 1; i < participants.size(); i++) {
+      for (int j = 0; j < i; j++) {
+        matches.add(new Match(participants.get(j), participants.get(i)));
       }
     }
     return matches;

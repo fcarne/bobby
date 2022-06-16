@@ -2,11 +2,9 @@ package ch.teemoo.bobby.models.moves;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatRuntimeException;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import ch.teemoo.bobby.models.Color;
 import ch.teemoo.bobby.models.pieces.King;
-import ch.teemoo.bobby.models.pieces.Pawn;
 import ch.teemoo.bobby.models.pieces.Piece;
 import ch.teemoo.bobby.models.pieces.Rook;
 import org.junit.jupiter.api.Test;
@@ -37,7 +35,7 @@ class CastlingMoveTest {
     assertThat(move.isChecking()).isFalse();
   }
 
-  @Test
+  /*@Test
   public void moveConstructor_notKing_throwsAssertionError() {
     Piece rook = new Rook(Color.WHITE);
     Piece pawn = new Pawn(Color.WHITE);
@@ -51,7 +49,7 @@ class CastlingMoveTest {
     Piece pawn = new Pawn(Color.WHITE);
 
     assertThrows(AssertionError.class, () -> new CastlingMove(king, 4, 0, 6, 0, pawn, 7, 0, 5, 0));
-  }
+  }*/
 
   @ParameterizedTest
   @CsvSource({ "0-0,4,0,6,0,7,0,5,0,false", "0-0+,4,7,6,7,7,7,5,7,true",

@@ -1,4 +1,4 @@
-package ch.teemoo.bobby.services.perfs;
+package ch.teemoo.benchmark.services;
 
 import ch.teemoo.bobby.models.games.Game;
 import ch.teemoo.bobby.models.players.Human;

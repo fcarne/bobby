@@ -155,7 +155,7 @@ class BoardTest {
 
     board.doMove(enPassantMove);
     assertThat(board.getPiece(0, 4)).isEmpty();
-    assertThat(board.getPiece(1, 3)).isEmpty();
+    assertThat(board.getPiece(1, 4)).isEmpty();
     assertThat(board.getPiece(1, 5)).isPresent().get().isEqualTo(whitePawn);
   }
 

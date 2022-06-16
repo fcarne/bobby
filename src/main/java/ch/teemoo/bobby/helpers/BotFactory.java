@@ -41,13 +41,16 @@ public class BotFactory {
   }
 
   private void checkLevel(int level) {
-    assert level >= LEVEL_MIN;
-    assert level <= LEVEL_MAX;
+    boolean okLevel = level >= LEVEL_MIN && level <= LEVEL_MAX;
+    if (!okLevel) {
+      throw new RuntimeException("Bot level must be between " + LEVEL_MIN + " and " + LEVEL_MAX);
+    }
   }
 
   private void checkTimeout(Integer timeout) {
-    if (timeout != null) {
-      assert timeout <= TIMEOUT_MAX;
+    boolean okTimeout = timeout == null || timeout <= TIMEOUT_MAX;
+    if(!okTimeout) {
+      throw new RuntimeException("Bot timeout must be less than" + TIMEOUT_MAX);
     }
   }
 }

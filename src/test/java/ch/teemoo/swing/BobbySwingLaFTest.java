@@ -1,11 +1,12 @@
-package ch.teemoo.bobby;
+package ch.teemoo.swing;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.swing.finder.WindowFinder.findFrame;
 import static org.assertj.swing.launcher.ApplicationLauncher.application;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-import ch.teemoo.bobby.extension.GUITestExtension;
+import ch.teemoo.bobby.Bobby;
+import ch.teemoo.swing.extension.GUITestExtension;
 import com.formdev.flatlaf.FlatIntelliJLaf;
 import java.awt.Frame;
 import java.util.stream.Stream;
@@ -23,7 +24,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 @ExtendWith(GUITestExtension.class)
-class BobbyLaFTest {
+class BobbySwingLaFTest {
 
   @BeforeAll
   static void setupOnce() {

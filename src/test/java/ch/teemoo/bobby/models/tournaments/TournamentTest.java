@@ -69,4 +69,19 @@ public class TournamentTest {
   public void toString_newTournament_returnScoreboard() {
     assertThat(tournament.toString()).isEqualTo(tournament.getScoreboard());
   }
+  
+  @Test
+  void generateMatches_4Player1Win_return6MatchesAndCorrectPoints_PIT() {
+    Player winner = new RandomBot(moveService);
+    List<Player> bots = Arrays.asList(winner, new RandomBot(moveService), new RandomBot(moveService),
+        new RandomBot(moveService));
+    Tournament newTournament = new Tournament(bots);
+    
+    newTournament.getMatches().get(0).addWin(winner, 10);
+    newTournament.getMatches().get(1).addDraw(10);
+    Map<Player,Float> scores = newTournament.getParticipantScores();
+    
+    assertThat(newTournament.getMatches()).hasSize(6);
+    assertThat(scores).containsValues(1.5f,0f,0.5f,0f);
+  }
 }

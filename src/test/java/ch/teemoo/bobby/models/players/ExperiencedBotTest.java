@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.ArgumentMatchers.notNull;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -48,7 +49,7 @@ public class ExperiencedBotTest {
   }
 
   @Test
-  public void selectMove_WithOpenings_returnRandomOpening() {
+  public void selectMove_withOpenings_returnRandomOpening() {
     Move openingMove1 = new Move(new Pawn(Color.WHITE), 4, 1, 4, 3);
     Move openingMove2 = new Move(new Pawn(Color.WHITE), 4, 1, 4, 3);
     Move openingMove3 = new Move(new Pawn(Color.WHITE), 4, 1, 4, 3);
@@ -66,6 +67,17 @@ public class ExperiencedBotTest {
 
     verify(moveService, never()).selectMove(any(), anyInt(), any());
     assertThat(move).isIn(moves);
+  }
+  
+  @Test
+  void selectMove_moveIsPawnE4_returnSameMove_PIT() {
+    Move move = new Move(new Pawn(Color.WHITE),4,1,4,3);
+    Bot bot = new ExperiencedBot(1, null, moveService, openingService);
+    when(moveService.selectMove(eq(game), anyInt(), isNull())).thenReturn(move);
+
+    Move selected = bot.selectMove(game);
+  
+    assertThat(selected).isNotNull().isEqualTo(move);
   }
 
 }

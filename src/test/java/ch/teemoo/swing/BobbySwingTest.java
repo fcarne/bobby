@@ -1,4 +1,4 @@
-package ch.teemoo.bobby;
+package ch.teemoo.swing;
 
 import static com.github.stefanbirkner.systemlambda.SystemLambda.tapSystemOutNormalized;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -6,11 +6,13 @@ import static org.assertj.swing.finder.WindowFinder.findFrame;
 import static org.assertj.swing.launcher.ApplicationLauncher.application;
 import static org.awaitility.Awaitility.await;
 
-import ch.teemoo.bobby.extension.GUITestExtension;
+import ch.teemoo.bobby.Bobby;
+import ch.teemoo.bobby.GameController;
 import ch.teemoo.bobby.gui.Square;
 import ch.teemoo.bobby.models.Color;
 import ch.teemoo.bobby.models.Position;
 import ch.teemoo.bobby.models.pieces.Pawn;
+import ch.teemoo.swing.extension.GUITestExtension;
 import java.awt.Dialog;
 import java.awt.Frame;
 import javax.swing.JButton;

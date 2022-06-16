@@ -105,10 +105,10 @@ public class Board {
     board[y][x] = piece;
   }
 
-  private Optional<Piece> removePiece(int x, int y) {
-    Optional<Piece> toRemove = getPiece(x, y);
+  private void removePiece(int x, int y) {
+    //Optional<Piece> toRemove = getPiece(x, y);
     board[y][x] = null;
-    return toRemove;
+    //return toRemove;
   }
 
   private Piece[][] fromString(String value) {

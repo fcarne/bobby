@@ -50,4 +50,17 @@ public class RandomBotTest {
     Bot bot = new RandomBot(null);
     assertThat(bot.isDrawAcceptable(null)).isInstanceOf(Boolean.class);
   }
+
+  @Test
+  public void isDrawAcceptable_ok_returnsTrueAndFalse_PIT() {
+    Bot bot = new RandomBot(null);
+    boolean accepted = bot.isDrawAcceptable(game);
+    boolean opposite;
+    
+    do {
+      opposite = bot.isDrawAcceptable(game);
+    } while(opposite == accepted);
+    
+    assertThat(accepted).isNotEqualTo(opposite);
+  }
 }

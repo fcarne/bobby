@@ -108,4 +108,12 @@ public class MatchTest {
     assertThatRuntimeException().isThrownBy(() -> match.addWin(new RandomBot(null), 21))
         .withMessage("Player not found");
   }
+  
+  @Test
+  void toString_addDrawAndWin_returnUpdatedStats_PIT() {
+    match.addDraw(50);
+    match.addWin(player1, 10);
+    
+    assertThat(match.toString()).contains("Avg m/g: \t30.0");
+  }
 }

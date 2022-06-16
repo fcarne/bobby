@@ -15,9 +15,10 @@ public class PieceTest {
 
   @ParameterizedTest
   @MethodSource("providePieces")
-  public void pieceConstrucor_ok_returnsCorrectPiece(Piece piece, String unicode, int value) {
+  public void pieceConstrucor_ok_returnsCorrectPiece(Piece piece, String unicode, int value, String toString) {
     assertThat(piece.getUnicode()).isEqualTo(unicode);
     assertThat(piece.getValue()).isEqualTo(value);
+    assertThat(piece.toString()).isEqualTo(toString);
   }
 
   @ParameterizedTest
@@ -26,21 +27,22 @@ public class PieceTest {
     Piece copy = piece.copy();
     assertThat(copy.color).isEqualTo(piece.color);
     assertThat(copy.getValue()).isEqualTo(piece.getValue());
+    assertThat(copy).isNotSameAs(piece);
   }
 
   private static Stream<Arguments> providePieces() {
-    return Stream.of(arguments(new Bishop(Color.BLACK), "♝", 3),
-        arguments(new Bishop(Color.WHITE), "♗", 3),
-        arguments(new King(Color.BLACK), "♚", 100),
-        arguments(new King(Color.WHITE), "♔", 100),
-        arguments(new Knight(Color.BLACK), "♞", 3),
-        arguments(new Knight(Color.WHITE), "♘", 3),
-        arguments(new Pawn(Color.BLACK), "♟", 1),
-        arguments(new Pawn(Color.WHITE), "♙", 1),
-        arguments(new Rook(Color.BLACK), "♜", 5),
-        arguments(new Rook(Color.WHITE), "♖", 5),
-        arguments(new Queen(Color.BLACK), "♛", 10),
-        arguments(new Queen(Color.WHITE), "♕", 10));
+    return Stream.of(arguments(new Bishop(Color.BLACK), "♝", 3, "BLACK Bishop"),
+        arguments(new Bishop(Color.WHITE), "♗", 3, "WHITE Bishop"),
+        arguments(new King(Color.BLACK), "♚", 100, "BLACK King"),
+        arguments(new King(Color.WHITE), "♔", 100, "WHITE King"),
+        arguments(new Knight(Color.BLACK), "♞", 3, "BLACK Knight"),
+        arguments(new Knight(Color.WHITE), "♘", 3, "WHITE Knight"),
+        arguments(new Pawn(Color.BLACK), "♟", 1, "BLACK Pawn"),
+        arguments(new Pawn(Color.WHITE), "♙", 1, "WHITE Pawn"),
+        arguments(new Rook(Color.BLACK), "♜", 5, "BLACK Rook"),
+        arguments(new Rook(Color.WHITE), "♖", 5, "WHITE Rook"),
+        arguments(new Queen(Color.BLACK), "♛", 10, "BLACK Queen"),
+        arguments(new Queen(Color.WHITE), "♕", 10, "WHITE Queen"));
   }
 
   @ParameterizedTest

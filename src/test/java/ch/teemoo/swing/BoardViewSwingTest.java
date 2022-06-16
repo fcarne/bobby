@@ -1,11 +1,11 @@
-package ch.teemoo.bobby.gui;
+package ch.teemoo.swing;
 
 import static com.github.stefanbirkner.systemlambda.SystemLambda.catchSystemExit;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-import ch.teemoo.bobby.extension.GUITestExtension;
+import ch.teemoo.bobby.gui.BoardView;
 import ch.teemoo.bobby.helpers.BotFactory;
 import ch.teemoo.bobby.helpers.GuiHelper;
 import ch.teemoo.bobby.models.Color;
@@ -19,6 +19,7 @@ import ch.teemoo.bobby.models.players.ExperiencedBot;
 import ch.teemoo.bobby.models.players.Human;
 import ch.teemoo.bobby.models.players.RandomBot;
 import ch.teemoo.bobby.models.players.TraditionalBot;
+import ch.teemoo.swing.extension.GUITestExtension;
 import java.awt.Dialog;
 import java.io.File;
 import java.io.IOException;

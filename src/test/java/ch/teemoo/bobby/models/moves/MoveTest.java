@@ -60,6 +60,16 @@ class MoveTest {
   }
 
   @Test
+  public void convertCharToX_charD_returns3() {
+    assertThat(Move.convertCharToX('d')).isEqualTo(3);
+  }
+  
+  @Test
+  public void convertXToChar_int3_returnsD() {
+    assertThat(Move.convertXToChar(3)).isEqualTo("d");
+  }
+
+  @Test
   public void toString__returnsPrettyNotation() {
     Move move = new Move(new Rook(Color.WHITE), 0, 0, 0, 5);
     assertThat(move.toString()).isEqualTo(move.getPrettyNotation());

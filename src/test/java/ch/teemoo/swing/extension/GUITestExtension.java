@@ -1,4 +1,4 @@
-package ch.teemoo.bobby.extension;
+package ch.teemoo.swing.extension;
 
 import static org.assertj.swing.annotation.GUITestFinder.isGUITest;
 import static org.assertj.swing.junit.runner.Formatter.testNameFrom;

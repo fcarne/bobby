@@ -37,7 +37,7 @@ public class ExperiencedBotTest {
   Game game;
 
   @Test
-  public void selectMove_noOpening_callSuperSelectMove() {
+  void selectMove_noOpening_callSuperSelectMove() {
     int level = 2;
     Integer timeout = 3;
     Bot bot = new ExperiencedBot(level, timeout, moveService, openingService);
@@ -49,7 +49,7 @@ public class ExperiencedBotTest {
   }
 
   @Test
-  public void selectMove_withOpenings_returnRandomOpening() {
+  void selectMove_withOpenings_returnRandomOpening() {
     Move openingMove1 = new Move(new Pawn(Color.WHITE), 4, 1, 4, 3);
     Move openingMove2 = new Move(new Pawn(Color.WHITE), 4, 1, 4, 3);
     Move openingMove3 = new Move(new Pawn(Color.WHITE), 4, 1, 4, 3);
@@ -71,12 +71,12 @@ public class ExperiencedBotTest {
   
   @Test
   void selectMove_moveIsPawnE4_returnSameMove_PIT() {
-    Move move = new Move(new Pawn(Color.WHITE),4,1,4,3);
+    Move move = new Move(new Pawn(Color.WHITE), 4, 1, 4, 3);
     Bot bot = new ExperiencedBot(1, null, moveService, openingService);
     when(moveService.selectMove(eq(game), anyInt(), isNull())).thenReturn(move);
 
     Move selected = bot.selectMove(game);
-  
+
     assertThat(selected).isNotNull().isEqualTo(move);
   }
 

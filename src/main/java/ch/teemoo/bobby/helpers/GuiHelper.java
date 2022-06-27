@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class GuiHelper {
-  private static final Logger logger = LoggerFactory.getLogger(GuiHelper.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(GuiHelper.class);
 
   private Font pieceFont;
   private Properties properties;
@@ -40,7 +40,7 @@ public class GuiHelper {
       Font font = Font.createFont(Font.TRUETYPE_FONT, inputStream);
       return font.deriveFont(Font.PLAIN, 72);
     } catch (IOException | FontFormatException e) {
-      logger.warn("Unable to use embedded font, using fallback", e);
+      LOGGER.warn("Unable to use embedded font, using fallback", e);
       return new Font("Serif", Font.PLAIN, 48);
     }
   }
@@ -53,7 +53,7 @@ public class GuiHelper {
       }
       properties.load(inputStream);
     } catch (IOException e) {
-      logger.warn("Unable to read properties", e);
+      LOGGER.warn("Unable to read properties", e);
     }
     return properties;
   }

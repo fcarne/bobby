@@ -10,24 +10,25 @@ import java.util.Optional;
 public class Board {
   public static final int SIZE = 8;
 
-  private final Piece[][] board;
+  private final Piece[][] pieces;
 
   public Board(Piece[][] board) {
-    this.board = board.clone();
+    this.pieces = board.clone();
   }
 
   public Board(String representation) {
-    this.board = fromString(representation);
+    this.pieces = fromString(representation);
   }
 
   public Piece[][] getBoard() {
-    return board.clone();
+    return pieces.clone();
   }
 
   public Optional<Piece> getPiece(int x, int y) {
-    return Optional.ofNullable(board[y][x]);
+    return Optional.ofNullable(pieces[y][x]);
   }
 
+  @Override
   public String toString() {
     StringBuilder builder = new StringBuilder();
     for (int i = SIZE - 1; i >= 0; i--) {
@@ -36,11 +37,11 @@ public class Board {
         if (piece.isPresent()) {
           builder.append(piece.get().getUnicode());
         } else {
-          builder.append(" ");
+          builder.append(' ');
         }
-        builder.append(" ");
+        builder.append(' ');
       }
-      builder.append("\n");
+      builder.append('\n');
     }
     return builder.toString();
   }
@@ -102,12 +103,12 @@ public class Board {
   }
 
   private void setPiece(int x, int y, Piece piece) {
-    board[y][x] = piece;
+    pieces[y][x] = piece;
   }
 
   private void removePiece(int x, int y) {
     //Optional<Piece> toRemove = getPiece(x, y);
-    board[y][x] = null;
+    pieces[y][x] = null;
     //return toRemove;
   }
 

@@ -98,31 +98,31 @@ public class OpeningService {
   }
 
   private String prettyPrintNode(Node node, int level) {
-    String result = "";
+    StringBuffer result = new StringBuffer();
     for (int i = 0; i < level; i++) {
-      result += "\t";
+      result.append('\t');
     }
     
     if (level == 0) {
-      result += "<START>";
+      result.append("<START>");
     } else {
-      result += node.getMove();
+      result.append(node.getMove());
     }
     
     if (node.getOpeningName() != null) {
-      result += " [" + node.getOpeningName() + "]";
+      result.append(" [" + node.getOpeningName() + "]");
     }
     
-    result += "\n";
+    result.append('\n');
     List<String> subTrees = node.getChildren()
         .stream()
         .map(child -> prettyPrintNode(child, level + 1))
         .collect(Collectors.toList());
     
     for (String subTree : subTrees) {
-      result += subTree;
+      result.append(subTree);
     }
-    return result;
+    return result.toString();
   }
 
 }

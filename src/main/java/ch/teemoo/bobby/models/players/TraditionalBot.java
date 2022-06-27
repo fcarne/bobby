@@ -20,6 +20,7 @@ public class TraditionalBot extends Bot {
     return super.getDescription() + " (level " + level + ")";
   }
 
+  @Override
   public Move selectMove(Game game) {
     LocalDateTime computationTimeout = null;
     if (timeout != null) {
@@ -28,6 +29,7 @@ public class TraditionalBot extends Bot {
     return moveService.selectMove(game, level, computationTimeout);
   }
 
+  @Override
   public boolean isDrawAcceptable(Game game) {
     return moveService.isDrawAcceptable(game);
   }

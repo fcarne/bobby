@@ -48,7 +48,7 @@ public class BobbySwingTest {
   }
 
   @BeforeEach
-  public void setup() {
+  void setup() {
     Robot robot = BasicRobot.robotWithNewAwtHierarchy();
     robot.settings().timeoutToFindPopup(20000);
     application(Bobby.class).withArgs("default").start();
@@ -65,7 +65,7 @@ public class BobbySwingTest {
   }
 
   @Test
-  public void newGameDialog_clickClose_dialogAppears() throws InterruptedException {
+  void newGameDialog_clickClose_dialogAppears() throws InterruptedException {
     frame.menuItem(new GenericTypeMatcher<JMenuItem>(JMenuItem.class) {
       @Override
       protected boolean isMatching(JMenuItem menuItem) {
@@ -82,7 +82,7 @@ public class BobbySwingTest {
   }
 
   @Test
-  public void newGameDialog_clickOk_dialogAppears() {
+  void newGameDialog_clickOk_dialogAppears() {
     frame.menuItem(new GenericTypeMatcher<JMenuItem>(JMenuItem.class) {
       @Override
       protected boolean isMatching(JMenuItem menuItem) {
@@ -106,7 +106,7 @@ public class BobbySwingTest {
   }
 
   @Test
-  public void suggestMoveDialog_initialBoard_suggestedPopup() {
+  void suggestMoveDialog_initialBoard_suggestedPopup() {
     frame.menuItem(new GenericTypeMatcher<JMenuItem>(JMenuItem.class) {
       @Override
       protected boolean isMatching(JMenuItem menuItem) {
@@ -132,7 +132,7 @@ public class BobbySwingTest {
   }
 
   @Test
-  public void proposeDrawDialog_initialBoard_drawRefused() {
+  void proposeDrawDialog_initialBoard_drawRefused() {
     frame.menuItem(new GenericTypeMatcher<JMenuItem>(JMenuItem.class) {
       @Override
       protected boolean isMatching(JMenuItem menuItem) {
@@ -157,7 +157,7 @@ public class BobbySwingTest {
   }
 
   @Test
-  public void printToConsole_initialBoard_boardLogged() throws Exception {
+  void printToConsole_initialBoard_boardLogged() throws Exception {
 
     String text = tapSystemOutNormalized(
         () -> frame.menuItem(new GenericTypeMatcher<JMenuItem>(JMenuItem.class) {
@@ -179,7 +179,7 @@ public class BobbySwingTest {
   }
 
   @Test
-  public void loadGameDialog_click_dialogAppears() {
+  void loadGameDialog_click_dialogAppears() {
     frame.menuItem(new GenericTypeMatcher<JMenuItem>(JMenuItem.class) {
       @Override
       protected boolean isMatching(JMenuItem menuItem) {
@@ -191,7 +191,7 @@ public class BobbySwingTest {
   }
 
   @Test
-  public void saveGameDialog_click_dialogAppears() {
+  void saveGameDialog_click_dialogAppears() {
     frame.menuItem(new GenericTypeMatcher<JMenuItem>(JMenuItem.class) {
       @Override
       protected boolean isMatching(JMenuItem menuItem) {
@@ -203,7 +203,7 @@ public class BobbySwingTest {
   }
 
   @Test
-  public void boardClick_moveWhitePawn_pawnMoved() throws Exception {
+  void boardClick_moveWhitePawn_pawnMoved() throws Exception {
     JLabelFixture whitePawn = frame.label(new GenericTypeMatcher<Square>(Square.class) {
       @Override
       protected boolean isMatching(Square square) {
@@ -237,7 +237,7 @@ public class BobbySwingTest {
   }
 
   @Test
-  public void boardClick_reclickSquare_pawnNotMovedBoardResetted() throws Exception {
+  void boardClick_reclickSquare_pawnNotMovedBoardResetted() throws Exception {
     JLabelFixture whitePawn = frame.label(new GenericTypeMatcher<Square>(Square.class) {
       @Override
       protected boolean isMatching(Square square) {
@@ -254,7 +254,7 @@ public class BobbySwingTest {
   }
 
   @Test
-  public void undeMoveClick_pawnToC4_boardRestored() throws Exception {
+  void undeMoveClick_pawnToC4_boardRestored() throws Exception {
     JLabelFixture originalSquare = frame.label(new GenericTypeMatcher<Square>(Square.class) {
       @Override
       protected boolean isMatching(Square square) {

@@ -30,7 +30,7 @@ class MoveTest {
   Board board;
 
   @Test
-  public void moveConstructor_ok_returnsCorrect() {
+  void moveConstructor_ok_returnsCorrect() {
     Piece rook = new Rook(Color.WHITE);
     Piece pawn = new Pawn(Color.BLACK);
     Move move = new Move(rook, 0, 0, 0, 5);
@@ -50,33 +50,33 @@ class MoveTest {
   }
 
   @Test
-  public void convertCharToX_charA_returns0() {
+  void convertCharToX_charA_returns0() {
     assertThat(Move.convertCharToX('a')).isEqualTo(0);
   }
 
   @Test
-  public void convertXToChar_int0_returnsA() {
+  void convertXToChar_int0_returnsA() {
     assertThat(Move.convertXToChar(0)).isEqualTo("a");
   }
 
   @Test
-  public void convertCharToX_charD_returns3() {
+  void convertCharToX_charD_returns3() {
     assertThat(Move.convertCharToX('d')).isEqualTo(3);
   }
   
   @Test
-  public void convertXToChar_int3_returnsD() {
+  void convertXToChar_int3_returnsD() {
     assertThat(Move.convertXToChar(3)).isEqualTo("d");
   }
 
   @Test
-  public void toString__returnsPrettyNotation() {
+  void toString__returnsPrettyNotation() {
     Move move = new Move(new Rook(Color.WHITE), 0, 0, 0, 5);
     assertThat(move.toString()).isEqualTo(move.getPrettyNotation());
   }
 
   @Test
-  public void equalsForPosition_equals_returnTrue() {
+  void equalsForPosition_equals_returnTrue() {
     Move move = new Move(new Rook(Color.WHITE), 0, 0, 0, 5);
     Move other = new Move(new Rook(Color.BLACK), move.getFromX(),
         move.getFromY(), move.getToX(),
@@ -87,7 +87,7 @@ class MoveTest {
 
   @ParameterizedTest
   @CsvSource({ "1,0,0,5", "0,1,0,5", "0,0,1,5", "0,0,0,6" })
-  public void equalsForPosition_differentCoordinate_returnFalse(int fromX, int fromY, int toX,
+  void equalsForPosition_differentCoordinate_returnFalse(int fromX, int fromY, int toX,
       int toY) {
     Move move = new Move(new Rook(Color.WHITE), 0, 0, 0, 5);
     Move other = new Move(new Rook(Color.BLACK), fromX, fromY, toX, toY);
@@ -96,7 +96,7 @@ class MoveTest {
 
   @ParameterizedTest
   @MethodSource
-  public void equals_equalOrSame_returnTrue(Move move, Move other) {
+  void equals_equalOrSame_returnTrue(Move move, Move other) {
     assertThat(move).isEqualTo(other).hasSameHashCodeAs(other);
   }
 
@@ -109,7 +109,7 @@ class MoveTest {
 
   @ParameterizedTest
   @MethodSource
-  public void equals_nullOrDifferent_returnFalse(Move move, Object other) {
+  void equals_nullOrDifferent_returnFalse(Move move, Object other) {
     assertThat(move).isNotEqualTo(other);
     if (other != null) {
       assertThat(move).doesNotHaveSameHashCodeAs(other);
@@ -136,7 +136,7 @@ class MoveTest {
   }
 
   @Test
-  public void equals_differentPiece_returnFalse() {
+  void equals_differentPiece_returnFalse() {
     Piece rook1 = new Rook(Color.WHITE);
     Piece pawn = new Pawn(Color.WHITE);
     Move move = new Move(rook1, 0, 0, 0, 5);
@@ -146,14 +146,14 @@ class MoveTest {
   }
 
   @Test
-  public void getBasicNotation_notTaking_returnsHyphen() {
+  void getBasicNotation_notTaking_returnsHyphen() {
     Piece rook = new Rook(Color.WHITE);
     Move move = new Move(rook, 0, 0, 0, 5);
     assertThat(move.getBasicNotation()).isEqualTo("a1-a6");
   }
 
   @Test
-  public void getBasicNotation_isTaking_returnsX() {
+  void getBasicNotation_isTaking_returnsX() {
     Piece rook = new Rook(Color.WHITE);
     Move move = new Move(rook, 0, 0, 0, 5);
     move.setTookPiece(new Pawn(Color.BLACK));
@@ -161,7 +161,7 @@ class MoveTest {
   }
 
   @Test
-  public void getBasicNotation_isChecking_returnsPlus() {
+  void getBasicNotation_isChecking_returnsPlus() {
     Piece rook = new Rook(Color.WHITE);
     Move move = new Move(rook, 0, 0, 0, 5);
     move.setChecking(true);
@@ -169,7 +169,7 @@ class MoveTest {
   }
 
   @Test
-  public void getPrettyNotation_notTakingNorChecking_returnsCorrect() {
+  void getPrettyNotation_notTakingNorChecking_returnsCorrect() {
     Piece rook = new Rook(Color.WHITE);
     Move move = new Move(rook, 0, 0, 0, 5);
     assertThat(move.getPrettyNotation()).isEqualTo("WHITE a1-a6 (Rook)");
@@ -178,7 +178,7 @@ class MoveTest {
   @ParameterizedTest
   @CsvSource({ "a1-a6,0,0,0,5,false,false", "a1-a6+,0,0,0,5,false,true",
       "a1xa6,0,0,0,5,true,false" })
-  public void fromBasicNotation_normalMove_returnsCorrect(String notation, int fromX, int fromY,
+  void fromBasicNotation_normalMove_returnsCorrect(String notation, int fromX, int fromY,
       int toX, int toY, boolean isTaking, boolean isChecking) {
 
     when(board.getPiece(anyInt(), anyInt())).thenReturn(Optional.of(new Pawn(Color.BLACK)));
@@ -204,7 +204,7 @@ class MoveTest {
   @ParameterizedTest
   @CsvSource({ "0-0,WHITE,4,0,6,0,7,0,5,0,false", "0-0+,BLACK,4,7,6,7,7,7,5,7,true",
       "0-0-0+,WHITE,4,0,2,0,0,0,3,0,true", "0-0-0,BLACK,4,7,2,7,0,7,3,7,false" })
-  public void fromBasicNotation_CastlingMove_returnsCastlingMove(String notation, Color color,
+  void fromBasicNotation_CastlingMove_returnsCastlingMove(String notation, Color color,
       int fromX, int fromY, int toX, int toY, int rookFromX, int rookFromY, int rookToX,
       int rookToY, boolean isChecking) {
 
@@ -229,7 +229,7 @@ class MoveTest {
   }
 
   @Test
-  public void fromBasicNotation_nullNotationOrColor_throwsIllegalArgument() {
+  void fromBasicNotation_nullNotationOrColor_throwsIllegalArgument() {
     assertThatIllegalArgumentException()
         .isThrownBy(() -> Move.fromBasicNotation(null, Color.WHITE, board));
     assertThatIllegalArgumentException()
@@ -237,7 +237,7 @@ class MoveTest {
   }
 
   @Test
-  public void fromBasicNotation_tooShortNotation_throwsIllegalArgument() {
+  void fromBasicNotation_tooShortNotation_throwsIllegalArgument() {
     assertThatIllegalArgumentException()
         .isThrownBy(() -> Move.fromBasicNotation("a1-", Color.WHITE, board));
   }

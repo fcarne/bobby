@@ -50,6 +50,8 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
+
+
 public class BoardView extends JFrame implements IBoardView {
   private static final long serialVersionUID = -6991571483234510815L;
   protected static final Border NO_BORDER = BorderFactory.createEmptyBorder();
@@ -92,47 +94,55 @@ public class BoardView extends JFrame implements IBoardView {
     setMenu();
   }
 
+  @Override
   public Square[][] getSquares() {
     return squares.clone();
   }
 
+  @Override
   public void setItemNewActionListener(ActionListener actionListener) {
     itemNew.addActionListener(actionListener);
   }
 
+  @Override
   public void setItemSaveActionListener(ActionListener actionListener) {
     itemSave.addActionListener(actionListener);
   }
 
+  @Override
   public void setItemLoadActionListener(ActionListener actionListener) {
     itemLoad.addActionListener(actionListener);
   }
 
+  @Override
   public void setItemPrintToConsoleActionListener(ActionListener actionListener) {
     itemPrintToConsole.addActionListener(actionListener);
   }
 
+  @Override
   public void setItemSuggestMoveActionListener(ActionListener actionListener) {
     itemSuggestMove.addActionListener(actionListener);
   }
 
+  @Override
   public void setItemUndoMoveActionListener(ActionListener actionListener) {
     itemUndoMove.addActionListener(actionListener);
   }
 
+  @Override
   public void setItemProposeDrawActionListener(ActionListener actionListener) {
     itemProposeDraw.addActionListener(actionListener);
   }
 
+  @Override
   public void display(Piece[][] positions, boolean isReversed) {
     assert positions.length == SIZE && positions[0].length == SIZE;
 
     List<Component> components = new ArrayList<>((SIZE + 2) ^ 2);
     addFilesLabels(components);
-    Background background;
     for (int i = positions.length - 1; i >= 0; i--) {
       components.add(getRankLabel(i));
-      background = getFirstSquareBackground(i);
+      Background background = getFirstSquareBackground(i);
       for (int j = 0; j < positions[i].length; j++) {
         Piece piece = positions[i][j];
         // Inverse coordinates (positions is a 2D array, reversed)
@@ -156,6 +166,7 @@ public class BoardView extends JFrame implements IBoardView {
     setVisible(visible);
   }
 
+  @Override
   public void refresh(Piece[][] positions) {
     for (int i = positions.length - 1; i >= 0; i--) {
       for (int j = 0; j < positions[i].length; j++) {
@@ -166,6 +177,7 @@ public class BoardView extends JFrame implements IBoardView {
     }
   }
 
+  @Override
   public void resetAllClickables() {
     for (int i = 0; i < SIZE; i++) {
       for (int j = 0; j < SIZE; j++) {
@@ -176,6 +188,7 @@ public class BoardView extends JFrame implements IBoardView {
     }
   }
 
+  @Override
   public void cleanSquaresBorder() {
     for (int i = 0; i < SIZE; i++) {
       for (int j = 0; j < SIZE; j++) {
@@ -185,6 +198,7 @@ public class BoardView extends JFrame implements IBoardView {
     }
   }
 
+  @Override
   public void addBorderToLastMoveSquares(Move move) {
     Square from = squares[move.getFromY()][move.getFromX()];
     Square to = squares[move.getToY()][move.getToX()];
@@ -192,7 +206,8 @@ public class BoardView extends JFrame implements IBoardView {
     to.setBorder(GREEN_BORDER);
   }
 
-  public Optional<File> saveGameDialog() {
+  @Override
+ public Optional<File> saveGameDialog() {
     final JFileChooser fileChooser = new JFileChooser();
     int returnVal = fileChooser.showSaveDialog(this);
 
@@ -202,6 +217,7 @@ public class BoardView extends JFrame implements IBoardView {
     return Optional.empty();
   }
 
+  @Override
   public Optional<File> loadGameDialog() {
     final JFileChooser fileChooser = new JFileChooser();
     int returnVal = fileChooser.showOpenDialog(this);
@@ -211,7 +227,8 @@ public class BoardView extends JFrame implements IBoardView {
     }
     return Optional.empty();
   }
-
+  
+  @Override
   public GameSetup gameSetupDialog(BotFactory botFactory, boolean exitOnCancel) {
 
     JLabel colorLabel = new JLabel("Your color");
@@ -237,7 +254,7 @@ public class BoardView extends JFrame implements IBoardView {
     timeoutCheckBox.addActionListener(e -> timeoutSpinner.setEnabled(timeoutCheckBox.isSelected()));
 
     JSlider levelSlider = getLevelSlider();
-    final JComponent[] inputs = new JComponent[] { 
+    final JComponent[] inputs = { 
         colorLabel, 
         whiteRadioButton, 
         blackRadioButton,
@@ -263,10 +280,13 @@ public class BoardView extends JFrame implements IBoardView {
 
     Player human = new Human("Player");
     Player bot;
-    Integer timeout = null;
+    Integer timeout;
     if (timeoutCheckBox.isSelected() && timeoutSpinner.getValue() instanceof Integer) {
       timeout = (Integer) timeoutSpinner.getValue();
+    } else {
+      timeout = null;
     }
+    
     if (levelSlider.getValue() == 0) {
       bot = botFactory.getRandomBot();
     } else {
@@ -288,6 +308,7 @@ public class BoardView extends JFrame implements IBoardView {
     return new GameSetup(whitePlayer, blackPlayer);
   }
 
+  @Override
   public Piece promotionDialog(Color color) {
     JLabel funLabel = new JLabel("Wow! Your pawn jus reached the end of the world!\n");
     JLabel promoteLabel = new JLabel("Promote pawn to");
@@ -307,8 +328,8 @@ public class BoardView extends JFrame implements IBoardView {
     buttonGroup.add(bishopRadioButton);
     buttonGroup.add(knightRadioButton);
 
-    final JComponent[] inputs = new JComponent[] { funLabel, new JSeparator(), promoteLabel,
-        queenRadioButton, rookRadioButton, bishopRadioButton, knightRadioButton };
+    final JComponent[] inputs = { funLabel, new JSeparator(), promoteLabel, queenRadioButton,
+        rookRadioButton, bishopRadioButton, knightRadioButton };
 
     JOptionPane.showConfirmDialog(this, inputs, "Promotion", JOptionPane.DEFAULT_OPTION,
         JOptionPane.QUESTION_MESSAGE, logoIcon);
@@ -331,10 +352,12 @@ public class BoardView extends JFrame implements IBoardView {
     label.setBorder(new EmptyBorder(10, 0, 5, 0));
   }
 
+  @Override
   public void popupInfo(String message) {
     JOptionPane.showMessageDialog(this, message, "Info", JOptionPane.INFORMATION_MESSAGE);
   }
 
+  @Override
   public void popupError(String message) {
     JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
   }
@@ -401,7 +424,7 @@ public class BoardView extends JFrame implements IBoardView {
     itemAbout.addActionListener(actionEvent -> showAboutDialog());
   }
 
-  private void addFilesLabels(java.util.List<Component> components) {
+  private void addFilesLabels(List<Component> components) {
     char a = 'a';
     char h = 'h';
     components.add(new SideLabel(""));
@@ -424,13 +447,7 @@ public class BoardView extends JFrame implements IBoardView {
   }
 
   private Background getFirstSquareBackground(int i) {
-    Background background;
-    if (i % 2 != 0) {
-      background = Background.LIGHT;
-    } else {
-      background = Background.DARK;
-    }
-    return background;
+    return i % 2 != 0 ? Background.LIGHT : Background.DARK;
   }
 
   private void showAboutDialog() {

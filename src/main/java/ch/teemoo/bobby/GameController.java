@@ -62,7 +62,7 @@ public class GameController {
   private final Bot botToSuggestMove;
   private final boolean showTiming = true;
 
-  private Square selectedSquare = null;
+  private Square selectedSquare;
 
   public GameController(IBoardView view, GameFactory gameFactory, BotFactory botFactory,
       MoveService moveService, FileService fileService,
@@ -74,10 +74,10 @@ public class GameController {
     this.gameFactory = gameFactory;
     this.botFactory = botFactory;
     this.botToSuggestMove = botFactory.getStrongestBot();
-    initView(gameFactory.emptyGame().getBoard());
+    initView(gameFactory.emptyGame().getBoard()); 
   }
 
-  void initView(Board board) {
+  final void initView(Board board) {
     refreshBoardView(board);
     view.setItemNewActionListener(actionEvent -> {
       newGame(null, false, r -> {});
@@ -110,11 +110,8 @@ public class GameController {
     }
   }
 
-  void refreshBoardView(Board board) {
-    boolean isReversed = false;
-    if (game != null && game.canBePlayed() && game.getWhitePlayer().isBot()) {
-      isReversed = true;
-    }
+  final void refreshBoardView(Board board) {
+    boolean isReversed = game != null && game.canBePlayed() && game.getWhitePlayer().isBot();
     view.display(board.getBoard(), isReversed);
   }
 
@@ -126,7 +123,7 @@ public class GameController {
     while (game.getPlayerToPlay().isBot() && !isGameOver(game)) {
       Player player = game.getPlayerToPlay();
       if (!(player instanceof Bot)) {
-        throw new RuntimeException("Player has to be a bot");
+        throw new IllegalArgumentException("Player has to be a bot");
       }
       Bot bot = (Bot) player;
       Instant start = Instant.now();
@@ -139,7 +136,7 @@ public class GameController {
         move = findBestMoveTask.get();
       } catch (InterruptedException | ExecutionException e) {
         Thread.currentThread().interrupt();
-        throw new RuntimeException("Move computation failed", e);
+        throw new IllegalArgumentException("Move computation failed", e);
       }
       Instant end = Instant.now();
       if (showTiming) {
@@ -204,10 +201,10 @@ public class GameController {
     }
 
     if (allowedMoves.isEmpty()) {
-      throw new RuntimeException("Unauthorized move: " + move.getBasicNotation());
+      throw new IllegalArgumentException("Unauthorized move: " + move.getBasicNotation());
     }
     if (allowedMoves.size() > 1) {
-      throw new RuntimeException("Ambiguous move: " + move.getBasicNotation()
+      throw new IllegalArgumentException("Ambiguous move: " + move.getBasicNotation()
           + ". Multiple moves possible here: " + allowedMoves.toString());
     }
     return allowedMoves.get(0);
@@ -318,6 +315,7 @@ public class GameController {
   private void markSquareClickable(Square square) {
     if (square.getMouseListeners().length == 0) {
       square.addMouseListener(new MouseAdapter() {
+        @Override
         public void mouseClicked(MouseEvent e) {
           try {
             squareClicked(square);
@@ -325,11 +323,13 @@ public class GameController {
             error(exception, true);
           }
         }
-
+        
+        @Override
         public void mouseEntered(MouseEvent e) {
           square.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         }
-
+        
+        @Override
         public void mouseExited(MouseEvent e) {
           square.setCursor(Cursor.getDefaultCursor());
         }
@@ -369,10 +369,10 @@ public class GameController {
             markSquareClickable(destination);
           }
         } else {
-          throw new RuntimeException("Cannot select a piece from opponent to start a move");
+          throw new IllegalArgumentException("Cannot select a piece from opponent to start a move");
         }
       } else {
-        throw new RuntimeException("Cannot select an empty square to start a move");
+        throw new IllegalArgumentException("Cannot select an empty square to start a move");
       }
     }
   }

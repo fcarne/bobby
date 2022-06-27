@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 public class HumanTest {
 
   @Test
-  public void constructor_ok_returnHuman() {
+  void constructor_ok_returnHuman() {
     String name = "Player's Name";
     Player human = new Human(name);
 

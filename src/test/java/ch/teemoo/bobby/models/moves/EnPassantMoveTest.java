@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 class EnPassantMoveTest {
 
   @Test
-  public void constructor_ok_returnsCorrect() {
+  void constructor_ok_returnsCorrect() {
     Piece pawn = new Pawn(Color.WHITE);
     Move move = new Move(pawn, 5, 3, 6, 4);
     move.setTookPiece(new Pawn(Color.BLACK));
@@ -26,7 +26,7 @@ class EnPassantMoveTest {
   }
 
   @Test
-  public void constructor_checkingMove_returnsChecking_PIT() {
+  void constructor_checkingMove_returnsChecking_PIT() {
     Piece pawn = new Pawn(Color.WHITE);
     Move move = new Move(pawn, 5, 3, 6, 4);
     move.setChecking(true);
@@ -38,7 +38,7 @@ class EnPassantMoveTest {
   }
 
   @Test
-  public void getPrettyNotation_ok_returnEnPassantPostfix() {
+  void getPrettyNotation_ok_returnEnPassantPostfix() {
     Piece pawn = new Pawn(Color.WHITE);
     Move move = new Move(pawn, 5, 6, 5, 7);
     move.setTookPiece(new Pawn(Color.BLACK));

@@ -22,7 +22,7 @@ class MoveAnalysisTest {
   
   @Test
   void constructor_setScore_returnSettedScore_PIT() {
-    MoveAnalysis analysis = new MoveAnalysis(new Move(new Pawn(Color.WHITE),4,1,4,3));
+    MoveAnalysis analysis = new MoveAnalysis(new Move(new Pawn(Color.WHITE), 4, 1, 4, 3));
     analysis.setScore(10);
     
     assertThat(analysis.getScore()).isNotZero().isEqualTo(10);

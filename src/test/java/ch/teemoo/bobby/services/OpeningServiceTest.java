@@ -22,7 +22,7 @@ public class OpeningServiceTest {
   private MoveService moveService;
 
   @BeforeEach
-  public void setup() {
+  void setup() {
     this.fileService = new FileService();
     this.moveService = new MoveService();
     this.portableGameNotationService = new PortableGameNotationService(moveService);
@@ -30,7 +30,7 @@ public class OpeningServiceTest {
   }
 
   @Test
-  public void prettyPrintTree_treeBuilt_treePrinted() {
+  void prettyPrintTree_treeBuilt_treePrinted() {
     // given
 
     // when
@@ -44,7 +44,7 @@ public class OpeningServiceTest {
   }
 
   @Test
-  public void buildTree_fileNotFound_exceptionCaught() throws IOException {
+  void buildTree_fileNotFound_exceptionCaught() throws IOException {
     // given
     FileService fileServiceMock = mock(FileService.class);
     PortableGameNotationService portableGameNotationServiceMock = mock(
@@ -63,7 +63,7 @@ public class OpeningServiceTest {
   }
 
   @Test
-  public void findPossibleMovesForHistory_treeBuilt_movesFound() {
+  void findPossibleMovesForHistory_treeBuilt_movesFound() {
     // given
     List<Move> history = Arrays.asList(new Move(new Pawn(Color.WHITE), 4, 1, 4, 3));
 
@@ -78,7 +78,7 @@ public class OpeningServiceTest {
   }
 
   @Test
-  public void findPossibleMovesForHistory_unknownMove_emptySuggestions() {
+  void findPossibleMovesForHistory_unknownMove_emptySuggestions() {
     // given
     List<Move> history = Arrays.asList(new Move(new Pawn(Color.WHITE), 0, 1, 0, 3));
 

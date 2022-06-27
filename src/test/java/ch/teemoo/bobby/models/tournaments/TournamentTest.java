@@ -25,7 +25,7 @@ public class TournamentTest {
   MoveService moveService;
 
   @BeforeEach
-  public void setup() {
+  void setup() {
     player1 = new RandomBot(moveService);
     player2 = new RandomBot(moveService);
     player3 = new RandomBot(moveService);
@@ -34,7 +34,7 @@ public class TournamentTest {
   }
 
   @Test
-  public void constructor_newTournament_matchesGenerated() {
+  void constructor_newTournament_matchesGenerated() {
     List<Match> matches = tournament.getMatches();
     assertThat(matches).hasSize(3);
     assertThat(matches.stream()
@@ -49,7 +49,7 @@ public class TournamentTest {
   }
 
   @Test
-  public void getParticipantScores_newTournament_return0ForAll() {
+  void getParticipantScores_newTournament_return0ForAll() {
     Map<Player, Float> scores = tournament.getParticipantScores();
 
     assertThat(scores).hasSize(participants.size());
@@ -58,7 +58,7 @@ public class TournamentTest {
   }
 
   @Test
-  public void getScoreboard_newTournament_allParticipantArePresent() {
+  void getScoreboard_newTournament_allParticipantArePresent() {
     assertThat(tournament.getScoreboard()).contains(player1.getDescription())
         .contains(player2.getDescription())
         .contains(player3.getDescription())
@@ -66,22 +66,22 @@ public class TournamentTest {
   }
 
   @Test
-  public void toString_newTournament_returnScoreboard() {
+  void toString_newTournament_returnScoreboard() {
     assertThat(tournament.toString()).isEqualTo(tournament.getScoreboard());
   }
   
   @Test
   void generateMatches_4Player1Win_return6MatchesAndCorrectPoints_PIT() {
     Player winner = new RandomBot(moveService);
-    List<Player> bots = Arrays.asList(winner, new RandomBot(moveService), new RandomBot(moveService),
-        new RandomBot(moveService));
+    List<Player> bots = Arrays.asList(winner, new RandomBot(moveService),
+        new RandomBot(moveService), new RandomBot(moveService));
     Tournament newTournament = new Tournament(bots);
     
     newTournament.getMatches().get(0).addWin(winner, 10);
     newTournament.getMatches().get(1).addDraw(10);
-    Map<Player,Float> scores = newTournament.getParticipantScores();
+    Map<Player, Float> scores = newTournament.getParticipantScores();
     
     assertThat(newTournament.getMatches()).hasSize(6);
-    assertThat(scores).containsValues(1.5f,0f,0.5f,0f);
+    assertThat(scores).containsValues(1.5f, 0f, 0.5f, 0f);
   }
 }

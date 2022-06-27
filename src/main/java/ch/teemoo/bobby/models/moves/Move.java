@@ -12,7 +12,7 @@ public class Move {
   private final int toX;
   private final int toY;
   private Piece tookPiece;
-  private boolean isChecking;
+  private boolean check;
 
   public Move(Piece piece, int fromX, int fromY, int toX, int toY) {
     this.piece = piece;
@@ -20,7 +20,7 @@ public class Move {
     this.fromY = fromY;
     this.toX = toX;
     this.toY = toY;
-    this.tookPiece = null;
+    //this.tookPiece = null;
   }
 
   public Piece getPiece() {
@@ -56,20 +56,20 @@ public class Move {
   }
 
   public boolean isChecking() {
-    return isChecking;
+    return check;
   }
 
   public void setChecking(boolean checking) {
-    isChecking = checking;
+    check = checking;
   }
 
   public String getPrettyNotation() {
     StringBuilder builder = new StringBuilder().append(piece.getColor())
-        .append(" ")
+        .append(' ')
         .append(getBasicNotation())
         .append(" (")
         .append(piece.getClass().getSimpleName())
-        .append(")");
+        .append(')');
     return builder.toString();
   }
 
@@ -81,8 +81,8 @@ public class Move {
         .append(convertXToChar(toX))
         .append(toY + 1);
 
-    if (isChecking) {
-      builder.append("+");
+    if (check) {
+      builder.append('+');
     }
     return builder.toString();
   }
@@ -171,7 +171,7 @@ public class Move {
 
   @Override
   public int hashCode() {
-    return Objects.hash(fromX, fromY, isChecking, piece, toX, toY, tookPiece);
+    return Objects.hash(fromX, fromY, check, piece, toX, toY, tookPiece);
   }
 
   @Override
@@ -183,7 +183,7 @@ public class Move {
       return false;
     }
     Move move = (Move) o;
-    return equalsForPositions(move) && tookPiece == move.tookPiece && isChecking == move.isChecking
+    return equalsForPositions(move) && tookPiece == move.tookPiece && check == move.check
         && Objects.equals(piece, move.piece);
   }
 

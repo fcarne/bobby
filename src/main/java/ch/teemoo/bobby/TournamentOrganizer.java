@@ -49,6 +49,7 @@ public class TournamentOrganizer implements Runnable {
     this.fastTournament = fastTournament;
   }
 
+  @Override
   public void run() {
     IBoardView boardView = new NoBoardView();
     GameController controller = new GameController(boardView, gameFactory, botFactory, moveService,

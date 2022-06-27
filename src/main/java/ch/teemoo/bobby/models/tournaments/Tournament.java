@@ -43,12 +43,13 @@ public class Tournament {
     StringBuilder result = new StringBuilder();
     for (Map.Entry<Player, Float> entry : entries) {
       result.append(currentPos++).append(".\t");
-      result.append(entry.getValue()).append("\t");
-      result.append(entry.getKey().getDescription()).append("\n");
+      result.append(entry.getValue()).append('\t');
+      result.append(entry.getKey().getDescription()).append('\n');
     }
     return result.toString();
   }
 
+  @Override
   public String toString() {
     return getScoreboard();
   }

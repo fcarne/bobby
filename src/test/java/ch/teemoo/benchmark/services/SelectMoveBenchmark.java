@@ -37,13 +37,13 @@ public class SelectMoveBenchmark {
       moveService);
 
   @Test
-  public void selectMove_initialGame() {
+  void selectMove_initialGame() {
     Game game = new Game(new Human("Player 1"), new Human("Player 2"));
     measureComputation(game, "Initial game", null);
   }
 
   @Test
-  public void selectMove_midGame() {
+  void selectMove_midGame() {
     BufferedReader reader = new BufferedReader(new StringReader(PGN_GAME_CONTENT));
 
     Game game = portableGameNotationService
@@ -53,7 +53,7 @@ public class SelectMoveBenchmark {
   }
 
   @Test
-  public void selectMove_midGameWithTimeout() {
+  void selectMove_midGameWithTimeout() {
     BufferedReader reader = new BufferedReader(new StringReader(PGN_GAME_CONTENT));
 
     Game game = portableGameNotationService

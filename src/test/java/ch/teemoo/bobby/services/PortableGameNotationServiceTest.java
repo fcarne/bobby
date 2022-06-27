@@ -133,13 +133,13 @@ public class PortableGameNotationServiceTest {
   private MoveService moveService;
 
   @BeforeEach
-  public void setup() {
+  void setup() {
     this.moveService = new MoveService();
     this.portableGameNotationService = new PortableGameNotationService(moveService);
   }
 
   @Test
-  public void readPgnFile_openingRuyLopez_returnBoardCurrentSituation() {
+  void readPgnFile_openingRuyLopez_returnBoardCurrentSituation() {
     // given
     List<String> lines = Arrays.asList(PGN_OPENING_RUY_LOPEZ_CONTENT.split("\\n"));
 
@@ -160,7 +160,7 @@ public class PortableGameNotationServiceTest {
   }
 
   @Test
-  public void readPgnFile_gameDraw_returnBoardCurrentSituation() throws IOException {
+  void readPgnFile_gameDraw_returnBoardCurrentSituation() throws IOException {
     // given
     List<String> lines = Arrays.asList(PGN_GAME_CONTENT.split("\\n"));
 
@@ -199,7 +199,7 @@ public class PortableGameNotationServiceTest {
   }
 
   @Test
-  public void readPgnFile_longGame_returnBoardCurrentSituation() throws IOException {
+  void readPgnFile_longGame_returnBoardCurrentSituation() throws IOException {
     // given
     List<String> lines = Arrays.asList(PGN_GAME_WORLD_CHAMPIONSHIP_CONTENT.split("\\n"));
 
@@ -226,7 +226,7 @@ public class PortableGameNotationServiceTest {
   }
 
   @Test
-  public void readPgnFile_enPassantMoveGame_returnBoardCurrentSituation() throws IOException {
+  void readPgnFile_enPassantMoveGame_returnBoardCurrentSituation() throws IOException {
     // given
     List<String> lines = Arrays.asList(PGN_ENPASSANT_CHECK_CONTENT.split("\\n"));
 
@@ -251,7 +251,7 @@ public class PortableGameNotationServiceTest {
   }
 
   @Test
-  public void readPgnFile_6KnightsGame_returnBoardCurrentSituation() throws IOException {
+  void readPgnFile_6KnightsGame_returnBoardCurrentSituation() throws IOException {
     // given
     List<String> lines = Arrays.asList(PGN_PROMOTION_6KNIGHTS_CONTENT.split("\\n"));
 
@@ -307,7 +307,7 @@ public class PortableGameNotationServiceTest {
           + "[Result \"*\"]\n"
           + "\n"
           + "1. e4 c9 2. d4 cxd4 3. Qxd4 Nc6 4. Qd1 Nf6 5. Nd2 d5 6. exd5 Nxd5 7. Nf3 Bf5 *" })
-  public void testUnexpectedMove(String pgn) throws IOException {
+  void testUnexpectedMove(String pgn) throws IOException {
     // given
     List<String> lines = Arrays.asList(pgn.split("\\n"));
 

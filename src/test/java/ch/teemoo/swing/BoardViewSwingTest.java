@@ -82,7 +82,7 @@ public class BoardViewSwingTest {
 
   @ParameterizedTest
   @MethodSource
-  public void promotionDialog_clickRadioButton_returnChosenPiece(String name, Class<?> clazz)
+  void promotionDialog_clickRadioButton_returnChosenPiece(String name, Class<?> clazz)
       throws InterruptedException, ExecutionException {
     // given
     Color color = Color.BLACK;
@@ -114,7 +114,7 @@ public class BoardViewSwingTest {
   }
 
   @Test
-  public void loadGameDialog_approve_returnSelectedFile()
+  void loadGameDialog_approve_returnSelectedFile()
       throws InterruptedException, ExecutionException, IOException {
 
     // when
@@ -132,7 +132,7 @@ public class BoardViewSwingTest {
   }
 
   @Test
-  public void loadGameDialog_cancel_returnEmpty()
+  void loadGameDialog_cancel_returnEmpty()
       throws InterruptedException, ExecutionException, IOException {
 
     // when
@@ -147,7 +147,7 @@ public class BoardViewSwingTest {
   }
 
   @Test
-  public void saveGameDialog_approve_returnSelectedFile()
+  void saveGameDialog_approve_returnSelectedFile()
       throws InterruptedException, ExecutionException, IOException {
 
     // when
@@ -165,7 +165,7 @@ public class BoardViewSwingTest {
   }
 
   @Test
-  public void saveGameDialog_cancel_returnEmpty()
+  void saveGameDialog_cancel_returnEmpty()
       throws InterruptedException, ExecutionException, IOException {
 
     // when
@@ -180,7 +180,7 @@ public class BoardViewSwingTest {
   }
 
   @Test
-  public void popupInfo_normalBehaviour_popupShown() {
+  void popupInfo_normalBehaviour_popupShown() {
     SwingUtilities.invokeLater(() -> frame.popupInfo("An info here"));
     DialogFixture dialog = window.dialog(new GenericTypeMatcher<Dialog>(Dialog.class) {
       @Override
@@ -199,7 +199,7 @@ public class BoardViewSwingTest {
   }
 
   @Test
-  public void popupError_normalBehaviour_popupShown() {
+  void popupError_normalBehaviour_popupShown() {
     SwingUtilities.invokeLater(() -> frame.popupError("An error here"));
     DialogFixture dialog = window.dialog(new GenericTypeMatcher<Dialog>(Dialog.class) {
       @Override
@@ -219,7 +219,7 @@ public class BoardViewSwingTest {
   }
 
   @Test
-  public void showAboutDialog_clickMenuItem_popupShown() {
+  void showAboutDialog_clickMenuItem_popupShown() {
     window.menuItem(new GenericTypeMatcher<JMenuItem>(JMenuItem.class) {
       @Override
       protected boolean isMatching(JMenuItem menuItem) {
@@ -243,7 +243,7 @@ public class BoardViewSwingTest {
   }
 
   @Test
-  public void exit_clickMenuItem_disposed() throws Exception {
+  void exit_clickMenuItem_disposed() throws Exception {
     int statusCode = catchSystemExit(() -> {
 
       window.menuItem(new GenericTypeMatcher<JMenuItem>(JMenuItem.class) {
@@ -265,7 +265,7 @@ public class BoardViewSwingTest {
 
   @ParameterizedTest
   @MethodSource
-  public void gameSetupDialog_notExitOnClose_setupHasCorrectPlayers(boolean okOption,
+  void gameSetupDialog_notExitOnClose_setupHasCorrectPlayers(boolean okOption,
       boolean timeoutSelected, Object timeoutValue, int sliderLevel, boolean openings,
       boolean white, boolean shouldBeNull, Class<?> whitePlayerClass, Class<?> blackPlayerClass)
       throws InterruptedException, ExecutionException {
@@ -316,7 +316,7 @@ public class BoardViewSwingTest {
   }
 
   @Test
-  public void gameSetupDialog_exitOnClose_disposed() throws Exception {
+  void gameSetupDialog_exitOnClose_disposed() throws Exception {
     int statusCode = catchSystemExit(() -> {
       RunnableFuture<GameSetup> rf = new FutureTask<>(
           () -> frame.gameSetupDialog(new BotFactory(null, null), true));

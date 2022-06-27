@@ -2,7 +2,6 @@ package ch.teemoo.bobby.services;
 
 import static ch.teemoo.bobby.helpers.ColorHelper.swap;
 
-import ch.teemoo.bobby.helpers.ColorHelper;
 import ch.teemoo.bobby.models.Color;
 import ch.teemoo.bobby.models.games.Game;
 import ch.teemoo.bobby.models.moves.CastlingMove;
@@ -65,7 +64,7 @@ public class PortableGameNotationService {
           || word.equals("*"))) {
         Move move = getMove(color, word);
         moves.add(move);
-        color = ColorHelper.swap(color);
+        color = swap(color);
       }
     }
 
@@ -85,9 +84,8 @@ public class PortableGameNotationService {
       final Predicate<Move> isCheckingCond = m -> move.isChecking() == m.isChecking();
       final Predicate<Move> moveTypeCond = m -> move.getClass().equals(m.getClass());
       final Predicate<Move> promotionCond = m -> !(move instanceof PromotionMove)
-          || ((m instanceof PromotionMove) && ((PromotionMove) move).getPromotedPiece()
-              .getClass()
-              .equals(((PromotionMove) m).getPromotedPiece().getClass()));
+          || ((PromotionMove) move).getPromotedPiece().getClass()
+              .equals(((PromotionMove) m).getPromotedPiece().getClass());
 
       List<Move> matchingMoves = allowedMoves.stream()
           .filter(fromXCond)
@@ -101,12 +99,12 @@ public class PortableGameNotationService {
           .filter(promotionCond)
           .collect(Collectors.toList());
 
-      if (matchingMoves.size() < 1) {
+      if (matchingMoves.isEmpty()) {
         LOGGER.error("Move {} is not allowed here. Allowed moves are {}", move, allowedMoves);
-        throw new RuntimeException("Unexpected move: " + move);
+        throw new IllegalArgumentException("Unexpected move: " + move);
       } else if (matchingMoves.size() > 1) {
         LOGGER.error("Move {} is ambiguous here. Allowed moves are {}", move, allowedMoves);
-        throw new RuntimeException("Ambiguous move: " + move);
+        throw new IllegalArgumentException("Ambiguous move: " + move);
       }
       Move matchingMove = matchingMoves.get(0);
 
@@ -237,7 +235,7 @@ public class PortableGameNotationService {
       toY = Integer.parseInt(columnLineToMatcher.group(2)) - 1;
       remaining = remaining.substring(2);
     } else {
-      throw new RuntimeException("Cannot determine move " + word + " (" + color + ")");
+      throw new IllegalArgumentException("Cannot determine move " + word + " (" + color + ")");
     }
 
     Move move = new Move(piece, fromX, fromY, toX, toY);

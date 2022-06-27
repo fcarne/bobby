@@ -15,7 +15,8 @@ public class PieceTest {
 
   @ParameterizedTest
   @MethodSource("providePieces")
-  public void pieceConstrucor_ok_returnsCorrectPiece(Piece piece, String unicode, int value, String toString) {
+  void pieceConstrucor_ok_returnsCorrectPiece(Piece piece, String unicode, int value,
+      String toString) {
     assertThat(piece.getUnicode()).isEqualTo(unicode);
     assertThat(piece.getValue()).isEqualTo(value);
     assertThat(piece.toString()).isEqualTo(toString);
@@ -23,7 +24,7 @@ public class PieceTest {
 
   @ParameterizedTest
   @MethodSource("providePieces")
-  public void copy_ok_returnsEqual(Piece piece) {
+  void copy_ok_returnsEqual(Piece piece) {
     Piece copy = piece.copy();
     assertThat(copy.color).isEqualTo(piece.color);
     assertThat(copy.getValue()).isEqualTo(piece.getValue());
@@ -47,7 +48,7 @@ public class PieceTest {
 
   @ParameterizedTest
   @MethodSource
-  public void fromUnicodeChar_correctChar_returnsCorrectPiece(char c,
+  void fromUnicodeChar_correctChar_returnsCorrectPiece(char c,
       Class<?> clazz, Color color) {
     assertThat(Piece.fromUnicodeChar(c)).isInstanceOf(clazz)
         .hasFieldOrPropertyWithValue("color", color);
@@ -69,14 +70,14 @@ public class PieceTest {
   }
 
   @Test
-  public void fromUnicodeChar_unknownChar_throwsException() {
+  void fromUnicodeChar_unknownChar_throwsException() {
     char c = 'a';
     assertThatIllegalArgumentException().isThrownBy(() -> Piece.fromUnicodeChar(c));
   }
 
   @ParameterizedTest
   @MethodSource
-  public void equals_sameOrEqual_returnTrue(Piece piece, Piece other) {
+  void equals_sameOrEqual_returnTrue(Piece piece, Piece other) {
     assertThat(piece).isEqualTo(other).hasSameHashCodeAs(other);
   }
 
@@ -88,7 +89,7 @@ public class PieceTest {
 
   @ParameterizedTest
   @MethodSource
-  public void equals_nullOrNotEqual_returnFalse(Piece piece, Piece other) {
+  void equals_nullOrNotEqual_returnFalse(Piece piece, Piece other) {
     assertThat(piece).isNotEqualTo(other);
     if (other != null) {
       assertThat(piece).doesNotHaveSameHashCodeAs(other);

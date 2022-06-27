@@ -16,6 +16,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class FileService {
+  
+  public FileService() {}
+  
   public void writeGameToFileBasicNotation(Game game, File file) throws IOException {
     Files.write(Paths.get(file.toURI()),
         game.getHistory().stream().map(Move::getBasicNotation).collect(Collectors.toList()));
@@ -28,8 +31,8 @@ public class FileService {
   public List<String> readFileFromResourceFolder(String folder, String filename)
       throws IOException {
     try {
-      InputStream inputStream = Optional
-          .ofNullable(Thread.currentThread()
+      InputStream inputStream = Optional.ofNullable(
+           Thread.currentThread()
               .getContextClassLoader()
               .getResourceAsStream(folder + "/" + filename))
           .orElseThrow(() -> new IllegalArgumentException("Resource not found"));
@@ -38,7 +41,7 @@ public class FileService {
         return buffer.lines().collect(Collectors.toList());
       }
     } catch (IllegalArgumentException e) {
-      throw new RuntimeException(
+      throw new IllegalArgumentException(
           "Unable to read file " + filename + " in resource folder " + folder, e);
     }
   }

@@ -21,7 +21,7 @@ public class SquareTest {
   private Font font = Font.getFont("Serif");
 
   @Test
-  public void constructor_newSquare_hasDefaults() {
+  void constructor_newSquare_hasDefaults() {
     Piece queen = new Queen(Color.BLACK);
     Position position = new Position(3, 0);
     Square square = new Square(queen, position, Background.DARK, font);
@@ -37,7 +37,7 @@ public class SquareTest {
 
   @ParameterizedTest
   @MethodSource
-  public void setPiece_pieceOrNull_correctTextDisplay(Piece piece, String expected) {
+  void setPiece_pieceOrNull_correctTextDisplay(Piece piece, String expected) {
     Square square = new Square(null, null, Background.LIGHT, font);
     square.setPiece(piece);
     assertThat(square.getPiece()).isEqualTo(piece);

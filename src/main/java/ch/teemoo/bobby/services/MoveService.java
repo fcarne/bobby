@@ -1,8 +1,6 @@
 package ch.teemoo.bobby.services;
 
 import static ch.teemoo.bobby.helpers.ColorHelper.swap;
-import static ch.teemoo.bobby.models.Board.SIZE;
-import static java.util.stream.Collectors.toList;
 
 import ch.teemoo.bobby.models.Board;
 import ch.teemoo.bobby.models.Color;
@@ -50,9 +48,11 @@ public class MoveService {
   public static final int KING_MOVE_MISTAKE_PENALTY = -10;
   public static final int CASTLING_BONUS = 15;
 
-  private static final int MAX_MOVE = SIZE - 1;
-  private static final int[][] heatmapCenter = generateCenteredHeatmap();
+  private static final int MAX_MOVE = Board.SIZE - 1;
+  private static final int[][] HEATMAP_CENTER = generateCenteredHeatmap();
 
+  public MoveService() {}
+  
   public List<Move> computeAllMoves(Board board, Color color, List<Move> history,
       boolean withAdditionalInfo) {
     return computeAllMoves(board, color, history, withAdditionalInfo, false);
@@ -98,7 +98,7 @@ public class MoveService {
         boolean valid = isValidSituation(board, color);
         board.undoMove(move);
         return valid;
-      }).collect(toList());
+      }).collect(Collectors.toList());
     } else {
       return moves;
     }
@@ -234,8 +234,8 @@ public class MoveService {
   }
 
   Optional<Position> findKingPosition(Board board, Color color) {
-    for (int x = 0; x < SIZE; x++) {
-      for (int y = 0; y < SIZE; y++) {
+    for (int x = 0; x < Board.SIZE; x++) {
+      for (int y = 0; y < Board.SIZE; y++) {
         Optional<Piece> pieceOpt = board.getPiece(x, y);
         if (pieceOpt.isPresent()) {
           Piece piece = pieceOpt.get();
@@ -291,17 +291,19 @@ public class MoveService {
     // king
     List<Move> allMoves = computeAllMoves(board, color, history, false, true);
 
-    final int centerControllingRate = 1;
-    final int attackingRate;
+    int centerControllingRate = 1;
+    int attackingRate;
+    
     if (history.size() < MID_GAME_MOVES_COUNT) {
       attackingRate = 0;
     } else {
       attackingRate = 1;
     }
+    
     int[][] heatmapOpponentKing = getHeatmapAroundLocation(opponentKingPosition.getFile(),
         opponentKingPosition.getRank());
     int myHeatScore = allMoves.stream()
-        .mapToInt(m -> centerControllingRate * heatmapCenter[m.getToX()][m.getToY()]
+        .mapToInt(m -> centerControllingRate * HEATMAP_CENTER[m.getToX()][m.getToY()]
             + attackingRate * heatmapOpponentKing[m.getToX()][m.getToY()])
         .sum();
     
@@ -311,7 +313,7 @@ public class MoveService {
         myKingPosition.getRank());
     
     int opponentHeatScore = allOpponentMoves.stream()
-        .mapToInt(m -> centerControllingRate * heatmapCenter[m.getToX()][m.getToY()]
+        .mapToInt(m -> centerControllingRate * HEATMAP_CENTER[m.getToX()][m.getToY()]
             + attackingRate * heatmapMyKing[m.getToX()][m.getToY()])
         .sum();
     
@@ -322,11 +324,11 @@ public class MoveService {
     // Development strategy is key to avoid being late compared the opponent
     int myDevelopmentScore = getDevelopmentBonus(history.stream()
           .filter(move -> move.getPiece().getColor() == color)
-          .collect(toList()));
+          .collect(Collectors.toList()));
 
     int opponentDevelopmentScore = getDevelopmentBonus(history.stream()
         .filter(move -> move.getPiece().getColor() == swap(color))
-        .collect(toList()));
+        .collect(Collectors.toList()));
     return myDevelopmentScore - opponentDevelopmentScore;
   }
 
@@ -338,7 +340,7 @@ public class MoveService {
           .filter(m -> !(m instanceof CastlingMove))
           .map(Move::getPiece)
           .filter(p -> !(p instanceof Pawn))
-          .collect(toList());
+          .collect(Collectors.toList());
       
       // Should not use a major piece for now
       if (openingPieces.stream()
@@ -414,8 +416,8 @@ public class MoveService {
       boolean withAdditionalInfo, boolean returnFirstPieceMoves, boolean takingMovesOnly) {
     List<Move> moves = new ArrayList<>();
     List<PiecePosition> piecePositions = new ArrayList<>();
-    for (int i = 0; i < SIZE; i++) {
-      for (int j = 0; j < SIZE; j++) {
+    for (int i = 0; i < Board.SIZE; i++) {
+      for (int j = 0; j < Board.SIZE; j++) {
         Optional<Piece> piece = board.getPiece(i, j);
         if (piece.isPresent() && piece.get().getColor() == color) {
           piecePositions.add(new PiecePosition(piece.get(), new Position(i, j)));
@@ -525,7 +527,7 @@ public class MoveService {
   }
 
   List<Move> computeDiagonalMoves(Piece piece, int posX, int posY, Board board) {
-    return computeDiagonalMoves(piece, posX, posY, board, SIZE);
+    return computeDiagonalMoves(piece, posX, posY, board, Board.SIZE);
   }
 
   List<Move> computeDiagonalMoves(Piece piece, int posX, int posY, Board board, int maxDistance) {
@@ -566,7 +568,7 @@ public class MoveService {
   }
 
   List<Move> computeStraightMoves(Piece piece, int posX, int posY, Board board) {
-    return computeStraightMoves(piece, posX, posY, board, SIZE);
+    return computeStraightMoves(piece, posX, posY, board, Board.SIZE);
   }
 
   List<Move> computeStraightMoves(Piece piece, int posX, int posY, Board board, int maxDistance) {
@@ -626,8 +628,8 @@ public class MoveService {
       int kingToX, int rookFromX, int rookToX, List<Move> history) {
 
     if (history.stream()
-        .anyMatch(m -> (m.getFromX() == kingFromX && m.getFromY() == kingFromY)
-            || (m.getFromX() == rookFromX && m.getFromY() == kingFromY))) {
+        .anyMatch(m -> m.getFromX() == kingFromX && m.getFromY() == kingFromY
+            || m.getFromX() == rookFromX && m.getFromY() == kingFromY)) {
       return Optional.empty();
     }
 
@@ -826,6 +828,7 @@ public class MoveService {
             break;
           default:
             heat = 0;
+            break;
         }
         heatmap[i][j] = heat;
       }

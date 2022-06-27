@@ -28,17 +28,17 @@ public class Match {
   }
 
   public float getScoreByPlayer(Player player) {
-    if (player == player1) {
+    if (player.equals(player1)) {
       return scorePlayer1;
-    } else if (player == player2) {
+    } else if (player.equals(player2)) {
       return scorePlayer2;
     } else {
-      throw new RuntimeException("Given player does not take part to this match");
+      throw new IllegalArgumentException("Given player does not take part to this match");
     }
   }
 
   public boolean isPlayerTakingPartToTheMatch(Player player) {
-    return player == player1 || player == player2;
+    return player.equals(player1) || player.equals(player2);
   }
 
   public void addDraw(int nbMoves) {
@@ -53,7 +53,7 @@ public class Match {
     } else if (player.equals(player2)) {
       this.scorePlayer2 += 1;
     } else {
-      throw new RuntimeException("Player not found");
+      throw new IllegalArgumentException("Player not found");
     }
     addGame(nbMoves);
   }

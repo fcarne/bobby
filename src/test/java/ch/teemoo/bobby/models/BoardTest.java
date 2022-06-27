@@ -20,7 +20,7 @@ class BoardTest {
   Piece pawn;
 
   @BeforeEach
-  public void setup() {
+  void setup() {
     initialBoard = new Board(""
         + "♜ ♞ ♝ ♛ ♚ ♝ ♞ ♜ \n"
         + "♟ ♟ ♟ ♟ ♟ ♟ ♟ ♟ \n"
@@ -90,7 +90,7 @@ class BoardTest {
   }
 
   @Test
-  public void doMove_normalMove_movesPiece() {
+  void doMove_normalMove_movesPiece() {
 
     assertThat(pawn).isEqualTo(new Pawn(Color.WHITE));
     assertThat(initialBoard.getPiece(0, 2)).isEmpty();
@@ -101,7 +101,7 @@ class BoardTest {
   }
 
   @Test
-  public void doMove_promotionMove_pawnMovedAndPromoted() {
+  void doMove_promotionMove_pawnMovedAndPromoted() {
     Queen queen = new Queen(Color.WHITE);
     PromotionMove pmove = new PromotionMove(move, queen);
 
@@ -112,7 +112,7 @@ class BoardTest {
   }
 
   @Test
-  public void doMove_castlingMove_rookAndKingMoved() {
+  void doMove_castlingMove_rookAndKingMoved() {
     Board board = new Board(""
         + "♜ ♞ ♝   ♚ ♝   ♜ \n"
         + "♟ ♟   ♟ ♞ ♟ ♟ ♟ \n"
@@ -134,7 +134,7 @@ class BoardTest {
   }
 
   @Test
-  public void doMove_enPassantMove_pawnTaken() {
+  void doMove_enPassantMove_pawnTaken() {
     Board board = new Board(""
         + "♜ ♞ ♝   ♚ ♝   ♜ \n"
         + "♟     ♟ ♞ ♟ ♟ ♟ \n"
@@ -160,7 +160,7 @@ class BoardTest {
   }
 
   @Test
-  public void undoMove_normalMove_movesPiece() {
+  void undoMove_normalMove_movesPiece() {
     initialBoard.doMove(move);
 
     assertThat(initialBoard.getPiece(0, 2)).isPresent();
@@ -172,7 +172,7 @@ class BoardTest {
   }
 
   @Test
-  public void undoMove_takingMove_pieceRepositioned() {
+  void undoMove_takingMove_pieceRepositioned() {
     Board board = new Board(""
         + "♜ ♞ ♝   ♚ ♝   ♜ \n"
         + "♟     ♟ ♞ ♟ ♟ ♟ \n"
@@ -199,7 +199,7 @@ class BoardTest {
   }
 
   @Test
-  public void undoMove_promotionMove_pawnMovedAndPromotedBack() {
+  void undoMove_promotionMove_pawnMovedAndPromotedBack() {
     Queen queen = new Queen(Color.WHITE);
     PromotionMove pmove = new PromotionMove(move, queen);
     initialBoard.doMove(pmove);
@@ -214,7 +214,7 @@ class BoardTest {
   }
 
   @Test
-  public void undoMove_castlingMove_rookAndKingMovedBack() {
+  void undoMove_castlingMove_rookAndKingMovedBack() {
     Board board = new Board(""
         + "♜ ♞ ♝   ♚ ♝   ♜ \n"
         + "♟ ♟   ♟ ♞ ♟ ♟ ♟ \n"
@@ -237,7 +237,7 @@ class BoardTest {
   }
 
   @Test
-  public void undoMove_enPassantMove_pawnRepositioned() {
+  void undoMove_enPassantMove_pawnRepositioned() {
     Board board = new Board(""
         + "♜ ♞ ♝   ♚ ♝   ♜ \n"
         + "♟     ♟ ♞ ♟ ♟ ♟ \n"

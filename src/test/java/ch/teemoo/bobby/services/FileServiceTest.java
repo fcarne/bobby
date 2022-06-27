@@ -26,13 +26,13 @@ public class FileServiceTest {
   private File file;
 
   @BeforeEach
-  public void setup() throws IOException {
+  void setup() throws IOException {
     file = File.createTempFile("temp", "tmp");
     file.deleteOnExit();
   }
 
   @Test
-  public void readFile() throws IOException {
+  void readFile() throws IOException {
     // given
     Files.write(Paths.get(file.toURI()), Arrays.asList("Hello", "World"));
 
@@ -44,7 +44,7 @@ public class FileServiceTest {
   }
 
   @Test
-  public void writeGameToFileBasicNotation_oneMove_fileIsWritten() throws IOException {
+  void writeGameToFileBasicNotation_oneMove_fileIsWritten() throws IOException {
     // given
     Game game = new Game(new Human("A"), new Human("B"));
     game.addMoveToHistory(new Move(new Pawn(Color.WHITE), 0, 1, 0, 2));
@@ -59,7 +59,7 @@ public class FileServiceTest {
   }
 
   @Test
-  public void readFileFromResourceFolder_existingFile_returnsFile() throws IOException {
+  void readFileFromResourceFolder_existingFile_returnsFile() throws IOException {
     // given
     String folder = "openings";
     String filename = "siciliandefense.pgn";
@@ -72,7 +72,7 @@ public class FileServiceTest {
   }
 
   @Test
-  public void readFileFromResourceFolder_nonExistingFile_throwsRuntime() {
+  void readFileFromResourceFolder_nonExistingFile_throwsRuntime() {
     // given
     String folder = "openings";
     String filename = UUID.randomUUID().toString() + ".pgn";

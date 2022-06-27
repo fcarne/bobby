@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 class PromotionMoveTest {
 
   @Test
-  public void constructor_ok_returnsCorrect() {
+  void constructor_ok_returnsCorrect() {
     Piece pawn = new Pawn(Color.WHITE);
     Piece queen = new Queen(Color.WHITE);
     Move move = new Move(pawn, 5, 6, 5, 7);
@@ -26,7 +26,7 @@ class PromotionMoveTest {
   }
 
   @Test
-  public void constructor_checkingAndTaking_returnsCheckingAndTaking_PIT() {
+  void constructor_checkingAndTaking_returnsCheckingAndTaking_PIT() {
     Piece pawn = new Pawn(Color.WHITE);
     Piece queen = new Queen(Color.WHITE);
     Move move = new Move(pawn, 5, 6, 5, 7);
@@ -41,7 +41,7 @@ class PromotionMoveTest {
   }
 
   @Test
-  public void getPrettyNotation_ok_returnPromotedPostfix() {
+  void getPrettyNotation_ok_returnPromotedPostfix() {
     Piece pawn = new Pawn(Color.WHITE);
     Piece queen = new Queen(Color.WHITE);
     Move move = new Move(pawn, 5, 6, 5, 7);

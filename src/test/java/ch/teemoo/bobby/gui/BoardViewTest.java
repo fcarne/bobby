@@ -29,12 +29,12 @@ public class BoardViewTest {
   private BoardView view;
 
   @BeforeEach
-  public void setup() {
+  void setup() {
     view = new BoardView("Test board", guiHelper, false);
   }
 
   @Test
-  public void constructor_newBoardView_hasDefaults() {
+  void constructor_newBoardView_hasDefaults() {
     assertThat(view.getTitle()).isEqualTo("Test board");
     assertThat(view.getContentPane().getLayout()).isInstanceOf(GridLayout.class);
     GridLayout gridLayout = (GridLayout) view.getContentPane().getLayout();
@@ -46,7 +46,7 @@ public class BoardViewTest {
 
   @ParameterizedTest
   @CsvSource({ "false,a", "true,h" })
-  public void display_onlyRook_boardHasCorrectSetup(boolean reversed, String letter) {
+  void display_onlyRook_boardHasCorrectSetup(boolean reversed, String letter) {
     Piece[][] pieces = new Piece[8][8];
     Piece rook = new Rook(Color.WHITE);
     pieces[2][4] = rook;
@@ -85,7 +85,7 @@ public class BoardViewTest {
   }
 
   @Test
-  public void refresh_oneRookToEmpty_squareIsBlank() {
+  void refresh_oneRookToEmpty_squareIsBlank() {
     Piece[][] pieces = new Piece[8][8];
     Piece rook = new Rook(Color.WHITE);
     pieces[2][4] = rook;
@@ -100,7 +100,7 @@ public class BoardViewTest {
   }
 
   @Test
-  public void resetAllClickables_listenerAdded_clearAllListeners() {
+  void resetAllClickables_listenerAdded_clearAllListeners() {
     Piece[][] noPieces = new Piece[8][8];
     view.display(noPieces, false);
     view.getSquares()[2][4].addMouseListener(new MouseAdapter() {
@@ -117,7 +117,7 @@ public class BoardViewTest {
   }
 
   @Test
-  public void cleanSquareBorder_addedGreenBorder_squareHasNoBorder() {
+  void cleanSquareBorder_addedGreenBorder_squareHasNoBorder() {
     Piece[][] noPieces = new Piece[8][8];
     view.display(noPieces, false);
     view.getSquares()[2][4].setBorder(GREEN_BORDER);
@@ -128,7 +128,7 @@ public class BoardViewTest {
   }
 
   @Test
-  public void addBorderToLastMoveSquares_moveFromE3ToE4_squaresHaveGreenBorder() {
+  void addBorderToLastMoveSquares_moveFromE3ToE4_squaresHaveGreenBorder() {
     Piece[][] noPieces = new Piece[8][8];
     view.display(noPieces, false);
 

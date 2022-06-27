@@ -50,7 +50,7 @@ class MoveServiceTest {
   private MoveService moveService;
 
   @BeforeEach
-  public void setup() {
+  void setup() {
     moveService = new MoveService();
   }
 
@@ -80,7 +80,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void generateCenteredHeatmap_none_returnCorrectMap() {
+  void generateCenteredHeatmap_none_returnCorrectMap() {
     int[][] heatmap = MoveService.generateCenteredHeatmap();
 
     assertThat(heatmap).hasDimensions(8, 8);
@@ -99,7 +99,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void isOutOfBounds_legalMove_returnFalse() {
+  void isOutOfBounds_legalMove_returnFalse() {
     Move move = new Move(null, 0, 0, 0, 7);
 
     assertThat(moveService.isOutOfBounds(move)).isFalse();
@@ -107,19 +107,19 @@ class MoveServiceTest {
 
   @ParameterizedTest
   @CsvSource({ "-1,0", "0,-1", "0,8", "8,0" })
-  public void isOutOfBounds_outOfBoundsMove_returnTrue(int toX, int toY) {
+  void isOutOfBounds_outOfBoundsMove_returnTrue(int toX, int toY) {
     Move move = new Move(null, 0, 0, toX, toY);
 
     assertThat(moveService.isOutOfBounds(move)).isTrue();
   }
 
   @Test
-  public void getAllowedMove_outOfBounds_returnEmpty() {
+  void getAllowedMove_outOfBounds_returnEmpty() {
     assertThat(moveService.getAllowedMove(null, 0, 7, 0, 1, null)).isEmpty();
   }
 
   @Test
-  public void getAllowedMove_bishopCapturingQueen_returnTakingMove() {
+  void getAllowedMove_bishopCapturingQueen_returnTakingMove() {
     Board board = new Board(""
         + "♜ ♞ ♝ ♛ ♚ ♝ ♞ ♜ \n"
         + "♟ ♟ ♟     ♟ ♟ ♟ \n"
@@ -140,7 +140,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void getAllowedMove_pawnMovingNoCapture_returnMove() {
+  void getAllowedMove_pawnMovingNoCapture_returnMove() {
     Board board = new Board(""
         + "♜ ♞ ♝ ♛ ♚ ♝ ♞ ♜ \n"
         + "♟ ♟ ♟     ♟ ♟ ♟ \n"
@@ -157,7 +157,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void getAllowedMove_pawnBlockedByOwnPawn_returnEmpty() {
+  void getAllowedMove_pawnBlockedByOwnPawn_returnEmpty() {
     Board board = new Board(""
         + "♜ ♞ ♝ ♛ ♚ ♝ ♞ ♜ \n"
         + "♟ ♟ ♟     ♟ ♟ ♟ \n"
@@ -173,7 +173,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void getAllowedMove_pawnCapturing_returnTakingMove() {
+  void getAllowedMove_pawnCapturing_returnTakingMove() {
     Board board = new Board(""
         + "♜ ♞ ♝ ♛ ♚ ♝ ♞ ♜ \n"
         + "♟ ♟ ♟     ♟ ♟ ♟ \n"
@@ -191,7 +191,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void getAllowedMove_pawnCapturingBlockedByOwnPawn_returnEmpty() {
+  void getAllowedMove_pawnCapturingBlockedByOwnPawn_returnEmpty() {
     Board board = new Board(""
         + "♜ ♞ ♝ ♛ ♚ ♝ ♞ ♜ \n"
         + "♟ ♟ ♟     ♟ ♟ ♟ \n"
@@ -208,7 +208,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void getAllowedMove_pawnCapturingNothingToCapture_returnEmpty() {
+  void getAllowedMove_pawnCapturingNothingToCapture_returnEmpty() {
     Board board = new Board(""
         + "♜ ♞ ♝ ♛ ♚ ♝ ♞ ♜ \n"
         + "♟ ♟ ♟     ♟ ♟ ♟ \n"
@@ -225,7 +225,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void getAllowedMove_bishopCapturingOwnPiece_returnEmpty() {
+  void getAllowedMove_bishopCapturingOwnPiece_returnEmpty() {
     Board board = new Board(""
         + "♜ ♞ ♝ ♛ ♚ ♝ ♞ ♜ \n"
         + "♟ ♟ ♟       ♟ ♟ \n"
@@ -242,7 +242,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void getAllowedMove_bishopMovingNoCapture_returnMove() {
+  void getAllowedMove_bishopMovingNoCapture_returnMove() {
     Board board = new Board(""
         + "♜ ♞ ♝ ♛ ♚ ♝ ♞ ♜ \n"
         + "♟ ♟ ♟       ♟ ♟ \n"
@@ -259,7 +259,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void getAllowedMove_pawnCapturingCheckingFalse_returnNotTakingMove() {
+  void getAllowedMove_pawnCapturingCheckingFalse_returnNotTakingMove() {
     Board board = new Board(""
         + "♜ ♞ ♝ ♛ ♚ ♝ ♞ ♜ \n"
         + "♟ ♟ ♟     ♟ ♟ ♟ \n"
@@ -278,7 +278,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void computeStraightMoves_freeSpace_returnMovesUpToBorder() {
+  void computeStraightMoves_freeSpace_returnMovesUpToBorder() {
     Board board = new Board(""
         + "                \n"
         + "                \n"
@@ -314,7 +314,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void computeStraightMoves_withOpponentPieces_returnMovesLimitedToTaking() {
+  void computeStraightMoves_withOpponentPieces_returnMovesLimitedToTaking() {
     Board board = new Board(""
         + "                \n"
         + "      ♟         \n"
@@ -341,7 +341,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void computeStraightMoves_withOwnPieces_returnMovesLimitedByPieces() {
+  void computeStraightMoves_withOwnPieces_returnMovesLimitedByPieces() {
     Board board = new Board(""
         + "                \n"
         + "      ♙         \n"
@@ -365,7 +365,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void computeDiagonalMoves_freeSpace_returnMovesUpToBorder() {
+  void computeDiagonalMoves_freeSpace_returnMovesUpToBorder() {
     Board board = new Board(""
         + "                \n"
         + "                \n"
@@ -399,7 +399,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void computeDiagonalMoves_withOpponentPieces_returnMovesLimitedToTaking() {
+  void computeDiagonalMoves_withOpponentPieces_returnMovesLimitedToTaking() {
     Board board = new Board(""
         + "                \n"
         + "  ♟             \n"
@@ -425,7 +425,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void computeDiagonalMoves_withOpponentPieces_returnMovesUpToBorder() {
+  void computeDiagonalMoves_withOpponentPieces_returnMovesUpToBorder() {
     Board board = new Board(""
         + "                \n"
         + "  ♙             \n"
@@ -448,7 +448,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void computeLShapeMoves_freeSpace_return8Moves() {
+  void computeLShapeMoves_freeSpace_return8Moves() {
     Board board = new Board(""
         + "                \n"
         + "                \n"
@@ -471,7 +471,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void computeLShapeMoves_withPieces_return5PossibleMoves() {
+  void computeLShapeMoves_withPieces_return5PossibleMoves() {
     Board board = new Board(""
         + "                \n"
         + "    ♟   ♟       \n"
@@ -492,7 +492,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void computePawnMoves_freeSpace_returnAllPossibleMoves() {
+  void computePawnMoves_freeSpace_returnAllPossibleMoves() {
     Board board = new Board(""
         + "                \n"
         + "                \n"
@@ -521,7 +521,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void computePawnMoves_withPieces_returnOnlyAllowedMoves() {
+  void computePawnMoves_withPieces_returnOnlyAllowedMoves() {
     Board board = new Board(""
         + "                \n"
         + "                \n"
@@ -548,7 +548,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void computePawnMoves_enPassantPossible_returnEnPassantMove() {
+  void computePawnMoves_enPassantPossible_returnEnPassantMove() {
     Board board = new Board(""
         + "                \n"
         + "                \n"
@@ -571,7 +571,7 @@ class MoveServiceTest {
 
   @ParameterizedTest
   @MethodSource
-  public void computePawnMoves_enPassantNotPossible_returnNonEnPassantMoves(Move lastMove) {
+  void computePawnMoves_enPassantNotPossible_returnNonEnPassantMoves(Move lastMove) {
     Board board = new Board(""
         + "                \n"
         + "                \n"
@@ -597,7 +597,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void computePawnMoves_promotionPossible_returnAllPromotions() {
+  void computePawnMoves_promotionPossible_returnAllPromotions() {
     Board board = new Board(""
         + "                \n"
         + "        ♙       \n"
@@ -618,7 +618,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void isInPawnCheck_check_returnTrue() {
+  void isInPawnCheck_check_returnTrue() {
     Board board = new Board(""
         + "♜ ♞     ♚     ♜ \n"
         + "♟ ♟ ♝ ♕   ♙   ♟ \n"
@@ -633,7 +633,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void isInPawnCheck_noCheck_returnFalse() {
+  void isInPawnCheck_noCheck_returnFalse() {
     Board board = new Board(""
         + "♔               \n"
         + "                \n"
@@ -651,7 +651,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void isInLCheck_blackKingCheck_returnTrue() {
+  void isInLCheck_blackKingCheck_returnTrue() {
     Board board = new Board(""
         + "♜ ♞ ♝ ♛ ♚     ♜ \n"
         + "♟ ♟ ♟     ♟   ♟ \n"
@@ -665,7 +665,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void isInLCheck_noCheck_returnFalse() {
+  void isInLCheck_noCheck_returnFalse() {
     Board board = new Board(""
         + "♜ ♞ ♝   ♚     ♜ \n"
         + "♟ ♟ ♟     ♟   ♟ \n"
@@ -681,7 +681,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void isInDiagonalCheck_checkBothQueenAndBishop_returnTrue() {
+  void isInDiagonalCheck_checkBothQueenAndBishop_returnTrue() {
     Board board = new Board(""
         + "♜ ♞ ♝   ♚ ♝     \n"
         + "♟ ♟ ♟     ♘   ♟ \n"
@@ -696,7 +696,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void isInDiagonalCheck_noCheck_returnFalse() {
+  void isInDiagonalCheck_noCheck_returnFalse() {
     Board board = new Board(""
         + "♜ ♞ ♝   ♚ ♝     \n"
         + "♟ ♟ ♟ ♟ ♛ ♟   ♟ \n"
@@ -711,7 +711,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void isInStraightCheck_verticalCheckByQueen_returnsTrue() {
+  void isInStraightCheck_verticalCheckByQueen_returnsTrue() {
     // Vertically
     Board board = new Board(""
         + "♜ ♞ ♝ ♛ ♚     ♜ \n"
@@ -726,7 +726,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void isInStraightCheck_orizontalCheckByRock_returnsTrue() {
+  void isInStraightCheck_orizontalCheckByRock_returnsTrue() {
     Board board = new Board(""
         + "♜ ♞ ♝ ♛ ♚     ♖ \n"
         + "♟ ♟ ♟ ♟ ♙ ♟   ♟ \n"
@@ -740,7 +740,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void isInStraightCheck_noCheck_returnsFalse() {
+  void isInStraightCheck_noCheck_returnsFalse() {
     Board board = new Board(""
         + "♜ ♞ ♝   ♚ ♝     \n"
         + "♟ ♟ ♟ ♟ ♛ ♟   ♟ \n"
@@ -754,7 +754,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void findKingPosition_initialBoard_returnStartingPositions() {
+  void findKingPosition_initialBoard_returnStartingPositions() {
     // Initial positions board
     Game game = new Game(new RandomBot(moveService), new RandomBot(moveService));
 
@@ -772,7 +772,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void findKingPosition_emptyBoard_returnEmptyPositions() {
+  void findKingPosition_emptyBoard_returnEmptyPositions() {
     // Empty board
     Board emptyBoard = new Board(new Piece[8][8]);
 
@@ -824,19 +824,19 @@ class MoveServiceTest {
           + "                \n"
           + "♙ ♙ ♙ ♙     ♙ ♙ \n"
           + "♖   ♗ ♕ ♔ ♗     \n" })
-  public void isInCheck_blackKingCheck_returnTrue(String boardString) {
+  void isInCheck_blackKingCheck_returnTrue(String boardString) {
     Board board = new Board(boardString);
     assertThat(moveService.isInCheck(board, Color.BLACK)).isTrue();
   }
 
   @Test
-  public void isInCheck_noCheck_returnFalse() {
+  void isInCheck_noCheck_returnFalse() {
     Game game = new Game(new RandomBot(moveService), new RandomBot(moveService));
     assertThat(moveService.isInCheck(game.getBoard(), Color.BLACK)).isFalse();
   }
 
   @Test
-  public void isInCheck_noKing_throwRuntime() {
+  void isInCheck_noKing_throwRuntime() {
     // Empty board
     Board emptyBoard = new Board(new Piece[8][8]);
     assertThatRuntimeException().isThrownBy(() -> moveService.isInCheck(emptyBoard, Color.WHITE))
@@ -844,7 +844,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void isValidSituation_valid_returnTrue() {
+  void isValidSituation_valid_returnTrue() {
     Board board = new Board(""
         + "♜ ♞       ♚   ♜ \n"
         + "♟ ♟   ♝   ♙   ♟ \n"
@@ -858,7 +858,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void isValidSituation_missingKings_returnFalse() {
+  void isValidSituation_missingKings_returnFalse() {
     Board board = new Board(""
         + "♜ ♞       ♚   ♜ \n"
         + "♟ ♟   ♝   ♙   ♟ \n"
@@ -874,7 +874,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void isValidSituation_kingsDistanceTooSmall_returnFalse() {
+  void isValidSituation_kingsDistanceTooSmall_returnFalse() {
     Board board = new Board(""
         + "♜ ♞     ♔ ♚   ♜ \n"
         + "♟ ♟   ♝   ♙   ♟ \n"
@@ -889,7 +889,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void isValidSituation_inCheckAfterMyMove_returnFalse() {
+  void isValidSituation_inCheckAfterMyMove_returnFalse() {
     Board board = new Board(""
         + "♜ ♞       ♚   ♜ \n"
         + "♟ ♟   ♝   ♙   ♟ \n"
@@ -903,7 +903,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void getCastlingMove_ok_returnCastlingMove() {
+  void getCastlingMove_ok_returnCastlingMove() {
     Board board = new Board(""
         + "♜ ♞   ♛ ♚     ♜ \n"
         + "♟ ♟ ♟     ♟ ♟ ♟ \n"
@@ -957,7 +957,7 @@ class MoveServiceTest {
           + "          ♙     \n"
           + "♙ ♙ ♙ ♙     ♙ ♙ \n"
           + "♜       ♔ ♗ ♘ ♖ \n" })
-  public void getCastlingMove_whiteRookNotPresent_returnEmpty(String boardString) {
+  void getCastlingMove_whiteRookNotPresent_returnEmpty(String boardString) {
     Board board = new Board(boardString);
     Piece king = board.getPiece(4, 0).get();
     assertThat(moveService.getCastlingMove(board, king, 4, 0, 2, 0, 3, Collections.emptyList()))
@@ -965,7 +965,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void getCastlingMove_pieceBetweenRookAndKing_returnEmpty() {
+  void getCastlingMove_pieceBetweenRookAndKing_returnEmpty() {
     Board board = new Board(""
         + "♜ ♞   ♛ ♚     ♜ \n"
         + "♟ ♟ ♟     ♟ ♟ ♟ \n"
@@ -1011,7 +1011,7 @@ class MoveServiceTest {
           + "      ♙   ♙     \n"
           + "♙ ♙         ♙ ♙ \n"
           + "♖       ♔ ♗ ♘ ♖ \n" })
-  public void getCastlingMove_kingCrossFireOrChecked(String boardString) {
+  void getCastlingMove_kingCrossFireOrChecked(String boardString) {
     Board board = new Board(boardString);
     Piece king = board.getPiece(4, 0).get();
     assertThat(moveService.getCastlingMove(board, king, 4, 0, 2, 0, 3, Collections.emptyList()))
@@ -1020,7 +1020,7 @@ class MoveServiceTest {
 
   @ParameterizedTest
   @MethodSource
-  public void getCastlingMove_kingOrRookAlreadyMoved_returnEmpty(Move move) {
+  void getCastlingMove_kingOrRookAlreadyMoved_returnEmpty(Move move) {
     Board board = new Board(""
         + "♜       ♚     ♜ \n"
         + "♟ ♟ ♟ ♛   ♟ ♟ ♟ \n"
@@ -1043,7 +1043,7 @@ class MoveServiceTest {
 
   @ParameterizedTest
   @MethodSource
-  public void isValidKingPositionForCastling_kingHasMoved_returnFalse(String stringBoard, int x,
+  void isValidKingPositionForCastling_kingHasMoved_returnFalse(String stringBoard, int x,
       int y) {
     Board board = new Board(stringBoard);
     Piece king = board.getPiece(x, y).get();
@@ -1112,7 +1112,7 @@ class MoveServiceTest {
           + "          ♙     \n"
           + "♙ ♙ ♙ ♙ ♕   ♙ ♙ \n"
           + "♖     ♔ ♚ ♗ ♘ ♖ \n" })
-  public void testIsValidKingPositionForCastling_invalidKingPosition_returnFalse(
+  void testIsValidKingPositionForCastling_invalidKingPosition_returnFalse(
       String boardString) {
     Board board = new Board(boardString);
     Piece king = board.getPiece(3, 0).get();
@@ -1120,7 +1120,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void isValidKingPositionForCastling_inCheck_returnFalse() {
+  void isValidKingPositionForCastling_inCheck_returnFalse() {
     Board board = new Board(""
         + "♜ ♞   ♛ ♚     ♜ \n"
         + "♟ ♟ ♟     ♟ ♟ ♟ \n"
@@ -1135,7 +1135,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void isValidKingPositionForCastling_validPosition_returnTrue() {
+  void isValidKingPositionForCastling_validPosition_returnTrue() {
     Board board = new Board(""
         + "♜ ♞   ♛ ♚     ♜ \n"
         + "♟ ♟ ♟     ♟ ♟ ♟ \n"
@@ -1152,7 +1152,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void computeCastlingMoves_blackBothSides_return2Moves() {
+  void computeCastlingMoves_blackBothSides_return2Moves() {
     Board board = new Board(""
         + "♜       ♚     ♜ \n"
         + "♟ ♟ ♟ ♛   ♟ ♟ ♟ \n"
@@ -1172,7 +1172,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void computeCastlingMoves_kingInvalid_returnEmpty() {
+  void computeCastlingMoves_kingInvalid_returnEmpty() {
     Board board = new Board(""
         + "♜       ♚     ♜ \n"
         + "♟ ♟ ♟ ♛   ♟ ♟ ♟ \n"
@@ -1188,7 +1188,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void computeCastlingMoves_deniedByHistory_returnEmpty() {
+  void computeCastlingMoves_deniedByHistory_returnEmpty() {
     Board board = new Board(""
         + "♜       ♚     ♜ \n"
         + "♟ ♟ ♟ ♛   ♟ ♟ ♟ \n"
@@ -1204,7 +1204,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void computeMoves_castlingPossible_returnCorrectSizeForEachPiece() {
+  void computeMoves_castlingPossible_returnCorrectSizeForEachPiece() {
     Board board = new Board(""
         + "♜ ♞   ♛ ♚     ♜ \n"
         + "♟ ♟ ♟     ♟ ♟ ♟ \n"
@@ -1251,7 +1251,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void computeBoardMoves_initialPositions_returnAllPossibleStartingMoves() {
+  void computeBoardMoves_initialPositions_returnAllPossibleStartingMoves() {
     // Initial positions board
     Game game = new Game(new RandomBot(moveService), new RandomBot(moveService));
     Board board = game.getBoard();
@@ -1283,7 +1283,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void computeBoardMoves_returnFirstPieceHavingMoves_returnKnightMoves() {
+  void computeBoardMoves_returnFirstPieceHavingMoves_returnKnightMoves() {
     // Initial positions board
     Game game = new Game(new RandomBot(moveService), new RandomBot(moveService));
     Board board = game.getBoard();
@@ -1295,7 +1295,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void canMove_initialPosition_returnTrueForBothColor() {
+  void canMove_initialPosition_returnTrueForBothColor() {
     // Initial positions board
     Game game = new Game(new RandomBot(moveService), new RandomBot(moveService));
     Board board = game.getBoard();
@@ -1304,7 +1304,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void canMove_checkMate_returnFalse() {
+  void canMove_checkMate_returnFalse() {
     Board board = new Board(""
         + "♜ ♞ ♝ ♛ ♚ ♝ ♞ ♜ \n"
         + "♟ ♟ ♟ ♟ ♟     ♟ \n"
@@ -1318,7 +1318,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void computeAllMoves_initialPosition_return20Moves() {
+  void computeAllMoves_initialPosition_return20Moves() {
     Game game = new Game(new RandomBot(moveService), new RandomBot(moveService));
     Board initialBoard = game.getBoard();
     // Each player has 20 possible moves in initial position
@@ -1332,7 +1332,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void getHeatmapAroundLocation_leftBottomCorner_returnExpectedHeatMap() {
+  void getHeatmapAroundLocation_leftBottomCorner_returnExpectedHeatMap() {
     int[][] heatmap = moveService.getHeatmapAroundLocation(7, 0);
     int[][] expected = new int[][] { 
       { 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -1347,7 +1347,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void getHeatScore_initialBoard_return0() {
+  void getHeatScore_initialBoard_return0() {
     Game game = new Game(new RandomBot(moveService), new RandomBot(moveService));
     Board initialBoard = game.getBoard();
 
@@ -1358,7 +1358,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void getHeatScore_checkmateAfter30Moves_return18() {
+  void getHeatScore_checkmateAfter30Moves_return18() {
     Board board = new Board(""
         + "♜ ♞ ♝ ♛ ♚ ♝ ♞ ♜ \n"
         + "♟ ♟ ♟ ♟ ♟     ♟ \n"
@@ -1377,7 +1377,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void getPiecesValueSum_initialPosition_return140() {
+  void getPiecesValueSum_initialPosition_return140() {
     // Initial positions board
     Game game = new Game(new RandomBot(moveService), new RandomBot(moveService));
     Board board = game.getBoard();
@@ -1395,7 +1395,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void getPiecesValueSum_blackDisadvantage_returnCorrectPoints() {
+  void getPiecesValueSum_blackDisadvantage_returnCorrectPoints() {
     Board board = new Board(""
         + "                \n"
         + "                \n"
@@ -1412,13 +1412,13 @@ class MoveServiceTest {
   }
 
   @Test
-  public void getDevelopmentBonus_noMovesDone_return0() {
+  void getDevelopmentBonus_noMovesDone_return0() {
     assertThat(moveService.getDevelopmentBonus(Collections.emptyList())).isEqualTo(0);
   }
 
   @ParameterizedTest
   @MethodSource
-  public void getDevelopmentBonus_importantPieceMoveInOpening_returnPenalty(Move move) {
+  void getDevelopmentBonus_importantPieceMoveInOpening_returnPenalty(Move move) {
     List<Move> moves = Arrays.asList(new Move(new Pawn(Color.WHITE), 3, 1, 3, 3), move);
     assertThat(moveService.getDevelopmentBonus(moves))
         .isEqualTo(-5 + (move.getPiece() instanceof King ? -10 : 0));
@@ -1431,14 +1431,14 @@ class MoveServiceTest {
   }
 
   @Test
-  public void getDevelopmentBonus_pieceMovedTwiceInOpening_returnOpeningPenalty() {
+  void getDevelopmentBonus_pieceMovedTwiceInOpening_returnOpeningPenalty() {
     Piece knight = new Knight(Color.WHITE);
     List<Move> moves = Arrays.asList(new Move(knight, 1, 0, 2, 2), new Move(knight, 2, 2, 3, 4));
     assertThat(moveService.getDevelopmentBonus(moves)).isEqualTo(-5);
   }
 
   @Test
-  public void getDevelopmentBonus_castling_returnCastlingBonus() {
+  void getDevelopmentBonus_castling_returnCastlingBonus() {
     Piece king = new King(Color.WHITE);
     List<Move> moves = Arrays
         .asList(new CastlingMove(king, 4, 0, 2, 0, new Rook(Color.WHITE), 0, 0, 3, 0));
@@ -1446,7 +1446,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void getDevelopmentBonus_kingMoveBeforeCastling_returnKingMovedPenalty() {
+  void getDevelopmentBonus_kingMoveBeforeCastling_returnKingMovedPenalty() {
     List<Move> moves = Arrays.asList(new Move(new Pawn(Color.WHITE), 3, 1, 3, 2),
         new Move(new Pawn(Color.WHITE), 3, 2, 3, 3), new Move(new Pawn(Color.WHITE), 3, 3, 3, 4),
         new Move(new Pawn(Color.WHITE), 3, 4, 3, 5), new Move(new Pawn(Color.WHITE), 3, 5, 3, 6),
@@ -1455,7 +1455,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void getDevelopmentScore_whiteCasltedBlackMovedQueen_return20() {
+  void getDevelopmentScore_whiteCasltedBlackMovedQueen_return20() {
     List<Move> moves = Arrays.asList(
         new CastlingMove(new King(Color.WHITE), 4, 0, 2, 0, new Rook(Color.WHITE), 0, 0, 3, 0),
         new Move(new Pawn(Color.BLACK), 3, 6, 3, 4), new Move(new Queen(Color.BLACK), 3, 7, 3, 5));
@@ -1463,25 +1463,25 @@ class MoveServiceTest {
   }
 
   @Test
-  public void evaluateBoard_loss_returnWorstPossible() {
+  void evaluateBoard_loss_returnWorstPossible() {
     assertThat(moveService.evaluateBoard(null, Color.BLACK, Color.WHITE, GameState.LOSS, null, null,
         Collections.emptyList())).isEqualTo(MoveService.WORST);
   }
 
   @Test
-  public void evaluateBoard_win_returnBestPossible() {
+  void evaluateBoard_win_returnBestPossible() {
     assertThat(moveService.evaluateBoard(null, Color.BLACK, Color.BLACK, GameState.LOSS, null, null,
         Collections.emptyList())).isEqualTo(MoveService.BEST);
   }
 
   @Test
-  public void evaluateBoard_draw_returnDrawPenalty() {
+  void evaluateBoard_draw_returnDrawPenalty() {
     assertThat(moveService.evaluateBoard(null, Color.BLACK, Color.BLACK, GameState.DRAW_STALEMATE,
         null, null, Collections.emptyList())).isEqualTo(-20);
   }
 
   @Test
-  public void evaluateBoard_initialPosition_returnZero() {
+  void evaluateBoard_initialPosition_returnZero() {
     Game game = new Game(new RandomBot(moveService), new RandomBot(moveService));
     assertThat(moveService.evaluateBoard(game.getBoard(), Color.WHITE, Color.BLACK,
         GameState.IN_PROGRESS, new Position(4, 7), new Position(4, 0), game.getHistory()))
@@ -1489,7 +1489,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void evaluateBoard_oneRookMissing_returnMinus50() {
+  void evaluateBoard_oneRookMissing_returnMinus50() {
     Game game = new Game(new RandomBot(moveService), new RandomBot(moveService));
     game.getBoard().getBoard()[0][0] = null;
     assertThat(moveService.evaluateBoard(game.getBoard(), Color.WHITE, Color.BLACK,
@@ -1498,7 +1498,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void getMaxScoreWithRandomChoice_maxScoreIs8_returnMoveWithThatScore() {
+  void getMaxScoreWithRandomChoice_maxScoreIs8_returnMoveWithThatScore() {
     Map<MoveAnalysis, Integer> map = new HashMap<>();
     map.put(new MoveAnalysis(new Move(new Bishop(Color.WHITE), 4, 5, 5, 6)), -2);
     map.put(new MoveAnalysis(new Move(new Bishop(Color.WHITE), 4, 5, 3, 4)), 5);
@@ -1515,7 +1515,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void getMaxScoreWithRandomChoice_singleMove_returnOnlyMove() {
+  void getMaxScoreWithRandomChoice_singleMove_returnOnlyMove() {
     Map<MoveAnalysis, Integer> map = new HashMap<>(1);
     MoveAnalysis moveAnalysis = new MoveAnalysis(new Move(new Bishop(Color.WHITE), 4, 5, 5, 6));
 
@@ -1525,12 +1525,12 @@ class MoveServiceTest {
   }
 
   @Test
-  public void getMaxScoreWithRandomChoice_emptyMap_returnEmpty() {
+  void getMaxScoreWithRandomChoice_emptyMap_returnEmpty() {
     assertThat(moveService.getMaxScoreWithRandomChoice(new HashMap<>())).isEmpty();
   }
 
   @Test
-  public void getBestMove_bestMoveisQueenG8_returnQueenMove() {
+  void getBestMove_bestMoveisQueenG8_returnQueenMove() {
     Map<MoveAnalysis, Integer> map = new HashMap<>();
     map.put(new MoveAnalysis(new Move(new Bishop(Color.BLACK), 4, 5, 5, 6)), 60);
     map.put(new MoveAnalysis(new Move(new Bishop(Color.BLACK), 4, 5, 3, 4)), 23);
@@ -1545,12 +1545,12 @@ class MoveServiceTest {
   }
 
   @Test
-  public void getBestMove_empty_throwsRuntime() {
+  void getBestMove_empty_throwsRuntime() {
     assertThatRuntimeException().isThrownBy(() -> moveService.getBestMove(new HashMap<>()));
   }
 
   @Test
-  public void selectMove_canCheckMate_returnCheckingMove() {
+  void selectMove_canCheckMate_returnCheckingMove() {
     // Scenario: with a minimal depth, if a checkmate is possible, then it must
     // be the selected move
     List<String> movesNotation = Arrays.asList("e2-e3", "f7-f6", "f2-f4", "g7-g5");
@@ -1569,7 +1569,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void selectMove_avoidCheckMate_returnEscapingMove() {
+  void selectMove_avoidCheckMate_returnEscapingMove() {
     // Scenario: with a depth of 1+, if the opponent can checkmate at next turn,
     // then the selected move must avoid this, although the best move at first
     // depth would be this one
@@ -1593,7 +1593,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void selectMove_possibleStaleMate_returnBishopCheckingMove() {
+  void selectMove_possibleStaleMate_returnBishopCheckingMove() {
     List<String> movesNotation = Arrays.asList(
         "e2-e3", "a7-a5", 
         "d1-h5", "a8-a6",
@@ -1619,7 +1619,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void getGameState_inProgress_returnInProgress() {
+  void getGameState_inProgress_returnInProgress() {
     Board board = new Board(""
         + "♜ ♞ ♝ ♛ ♚ ♝   ♜ \n"
         + "♟   ♟ ♟     ♕ ♟ \n"
@@ -1634,7 +1634,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void getGameState_checkmate_returnLoss() {
+  void getGameState_checkmate_returnLoss() {
     Board board = new Board(""
         + "♜ ♞ ♝ ♛ ♚ ♝   ♜ \n"
         + "♟   ♟ ♟   ♕   ♟ \n"
@@ -1649,7 +1649,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void getGameState_stalemate_returnDrawStalemate() {
+  void getGameState_stalemate_returnDrawStalemate() {
     Board board = new Board(""
         + "        ♚       \n"
         + "            ♕   \n"
@@ -1664,7 +1664,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void getGameState_50MovesNoCaptureNoPawnMoved_return50MovesDraw() {
+  void getGameState_50MovesNoCaptureNoPawnMoved_return50MovesDraw() {
     Game game = new Game(new RandomBot(moveService), new RandomBot(moveService));
     Board board = game.getBoard();
     List<Move> history = create50Moves(board);
@@ -1700,7 +1700,7 @@ class MoveServiceTest {
 
   @ParameterizedTest
   @MethodSource
-  public void getGameState_50MovesPawnMovedOrCapture_returnInProgress(Move move) {
+  void getGameState_50MovesPawnMovedOrCapture_returnInProgress(Move move) {
     Game game = new Game(new RandomBot(moveService), new RandomBot(moveService));
     Board board = game.getBoard();
 
@@ -1718,7 +1718,7 @@ class MoveServiceTest {
   }
 
   @Test
-  public void getGameState_threefoldRepetion_returnDrawThreefold() {
+  void getGameState_threefoldRepetion_returnDrawThreefold() {
     Board board = new Board(""
         + "      ♚     ♕   \n"
         + "                \n"
@@ -1743,7 +1743,7 @@ class MoveServiceTest {
 
   @ParameterizedTest
   @MethodSource
-  public void getGameState_notThreefoldRepetion_returnInProgress(Move move1, Move move2, Move move3,
+  void getGameState_notThreefoldRepetion_returnInProgress(Move move1, Move move2, Move move3,
       Move move4, Move move5, Move move6) {
 
     Game game = new Game(null, null);
@@ -1772,13 +1772,13 @@ class MoveServiceTest {
   }
 
   @Test
-  public void isDrawAcceptable_initialPositionsDeclined_returnFalse() {
+  void isDrawAcceptable_initialPositionsDeclined_returnFalse() {
     Game game = new Game(null, null);
     assertThat(moveService.isDrawAcceptable(game)).isFalse();
   }
 
   @Test
-  public void isDrawAcceptable_oneRookMissingAccepted_returnTrue() {
+  void isDrawAcceptable_oneRookMissingAccepted_returnTrue() {
     Game game = new Game(null, null);
     game.getBoard().getBoard()[7][0] = null;
     assertThat(moveService.isDrawAcceptable(game)).isTrue();

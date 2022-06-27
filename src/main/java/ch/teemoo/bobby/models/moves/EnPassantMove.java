@@ -25,19 +25,10 @@ public class EnPassantMove extends Move {
   public int getTookPiecePosY() {
     return tookPiecePosY;
   }
-
+  
+  @Override
   public String getPrettyNotation() {
     return super.getPrettyNotation() + " (en passant)";
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    return super.equals(o);
-  }
-
-  @Override
-  public int hashCode() {
-    return super.hashCode();
   }
 
 }

@@ -57,23 +57,13 @@ public class CastlingMove extends Move {
     } else if (rookFromX == 7) {
       notation = "0-0";
     } else {
-      throw new RuntimeException("Unexpected rook position");
+      throw new IllegalStateException("Unexpected rook position");
     }
 
     if (isChecking()) {
       notation = notation + "+";
     }
     return notation;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    return super.equals(o);
-  }
-
-  @Override
-  public int hashCode() {
-    return super.hashCode();
   }
 
 }

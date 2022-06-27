@@ -37,12 +37,12 @@ public class TournamentOrganizerTest {
   final MoveService moveService = new MoveService();
 
   @BeforeEach
-  public void setup() {
+  void setup() {
     tournamentOrganizer = new TournamentOrganizer(true);
   }
 
   @Test
-  public void getAllPlayers_none_returns5Players() {
+  void getAllPlayers_none_returns5Players() {
     List<Player> players = tournamentOrganizer.getAllPlayers();
     assertThat(players).hasSize(5);
     assertThat(players.stream().filter(RandomBot.class::isInstance)).hasSize(1);
@@ -51,7 +51,7 @@ public class TournamentOrganizerTest {
   }
 
   @Test
-  public void getOnlyTwoFastPlayers_none_returns2Players() {
+  void getOnlyTwoFastPlayers_none_returns2Players() {
     List<Player> players = tournamentOrganizer.getOnlyTwoFastPlayers();
     assertThat(players).hasSize(2);
     assertThat(players).first().isInstanceOf(RandomBot.class);
@@ -60,7 +60,7 @@ public class TournamentOrganizerTest {
 
   @ParameterizedTest
   @CsvSource({ "WHITE_WINS,1,0", "BLACK_WINS,0,1", "DRAW,0.5,0.5" })
-  public void playRound_newMatch_pointsCorrectlyAssigned(GameResult.Result result,
+  void playRound_newMatch_pointsCorrectlyAssigned(GameResult.Result result,
       float whitePoints, float blackPoints) throws InterruptedException, ExecutionException {
     final FileService fileService = new FileService();
     final PortableGameNotationService pgnService = new PortableGameNotationService(moveService);
@@ -85,7 +85,7 @@ public class TournamentOrganizerTest {
   }
 
   @Test
-  public void run_fastTournament_resultsLogged() throws Exception {
+  void run_fastTournament_resultsLogged() throws Exception {
     String text = tapSystemOutNormalized(() -> {
       tournamentOrganizer.run();
     });
@@ -97,7 +97,7 @@ public class TournamentOrganizerTest {
   }
 
   @Test
-  public void run_longTournament_resultsLogged() throws Exception {
+  void run_longTournament_resultsLogged() throws Exception {
     TournamentOrganizer organizer = spy(new TournamentOrganizer(false));
 
     doReturn(organizer.getOnlyTwoFastPlayers()).when(organizer).getAllPlayers();

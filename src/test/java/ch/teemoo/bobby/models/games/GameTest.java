@@ -29,13 +29,13 @@ public class GameTest {
   Player blackPlayer;
 
   @BeforeEach
-  public void setupPlayers() {
+  void setupPlayers() {
     whitePlayer = new Human("White");
     blackPlayer = new Human("Black");
   }
 
   @Test
-  public void constructor_newGame_hasDefault() {
+  void constructor_newGame_hasDefault() {
     Game game = new Game(whitePlayer, blackPlayer);
     game.setOpening("Sicilian Defense");
 
@@ -50,7 +50,7 @@ public class GameTest {
   }
 
   @Test
-  public void constructor_newGame_correctBoardSetup() {
+  void constructor_newGame_correctBoardSetup() {
     Game game = new Game(whitePlayer, blackPlayer);
     Board board = game.getBoard();
     Piece[][] pieces = board.getBoard();
@@ -108,7 +108,7 @@ public class GameTest {
   }
 
   @Test
-  public void addMoveToHistory_newMove_moveAdded() {
+  void addMoveToHistory_newMove_moveAdded() {
     Game game = new Game(whitePlayer, blackPlayer);
     assertThat(game.getHistory()).isEmpty();
 
@@ -119,7 +119,7 @@ public class GameTest {
   }
 
   @Test
-  public void testRemoveLastMoveFromHistory() {
+  void testRemoveLastMoveFromHistory() {
     Game game = new Game(new Human("Player 1"), new Human("Player 2"));
     Move move = new Move(new Pawn(Color.WHITE), 4, 1, 4, 2);
     game.addMoveToHistory(move);
@@ -132,7 +132,7 @@ public class GameTest {
   }
 
   @Test
-  public void getPlayerByColor_whiteAndBlack_returnRightPlayer() {
+  void getPlayerByColor_whiteAndBlack_returnRightPlayer() {
     Game game = new Game(whitePlayer, blackPlayer);
     assertThat(game.getPlayerByColor(Color.WHITE)).isEqualTo(whitePlayer);
     assertThat(game.getPlayerByColor(Color.BLACK)).isEqualTo(blackPlayer);
@@ -140,7 +140,7 @@ public class GameTest {
 
   @ParameterizedTest
   @MethodSource
-  public void canBePlayed_newGame_returnExpected(Player whitePlayer, Player blackPlayer,
+  void canBePlayed_newGame_returnExpected(Player whitePlayer, Player blackPlayer,
       GameState state, boolean expected) {
     Game game = new Game(whitePlayer, blackPlayer);
     game.setState(state);
@@ -160,7 +160,7 @@ public class GameTest {
 
   @ParameterizedTest
   @EnumSource(Color.class)
-  public void getPlayerToPlayAndWaiting_whiteAndBlack_returnsColorAsToPlay(Color color) {
+  void getPlayerToPlayAndWaiting_whiteAndBlack_returnsColorAsToPlay(Color color) {
     Game game = new Game(whitePlayer, blackPlayer);
     game.setToPlay(color);
 

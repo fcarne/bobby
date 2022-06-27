@@ -2,7 +2,7 @@ package ch.teemoo.bobby.helpers;
 
 import ch.teemoo.bobby.models.Color;
 
-public class ColorHelper {
+public final class ColorHelper {
   private ColorHelper() {}
 
   public static Color swap(Color color) {

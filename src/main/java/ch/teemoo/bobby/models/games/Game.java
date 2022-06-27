@@ -79,13 +79,15 @@ public class Game {
   }
 
   public Player getPlayerByColor(Color color) {
-    switch (color) {
-      case WHITE:
-        return whitePlayer;
-      default:
-        assert color == Color.BLACK;
-        return blackPlayer;
+    Player player;
+    if (color == Color.WHITE) {
+      player = whitePlayer;
+    } else {
+      assert color == Color.BLACK;
+      player = blackPlayer;
     }
+
+    return player;
   }
 
   public Player getPlayerToPlay() {

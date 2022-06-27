@@ -12,7 +12,7 @@ class BotTest {
 
   @ParameterizedTest
   @MethodSource
-  public void constructor_ok_returnBot(Player bot, String name, String description) {
+  void constructor_ok_returnBot(Player bot, String name, String description) {
 
     assertThat(bot.getName()).isEqualTo(name);
     assertThat(bot.getDescription()).isEqualTo(description);

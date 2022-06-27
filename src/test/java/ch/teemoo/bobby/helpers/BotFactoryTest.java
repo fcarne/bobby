@@ -24,54 +24,54 @@ public class BotFactoryTest {
   OpeningService openingService;
 
   @BeforeEach
-  public void setup() {
+  void setup() {
     this.botFactory = new BotFactory(moveService, openingService);
   }
 
   @Test
-  public void getRandomBot_returnsRandomBot() {
+  void getRandomBot_returnsRandomBot() {
     Bot bot = botFactory.getRandomBot();
     assertThat(bot).isInstanceOf(RandomBot.class);
   }
 
   @Test
-  public void getTraditionalBot_noError_returnsTraditionalWithLevel2() {
+  void getTraditionalBot_noError_returnsTraditionalWithLevel2() {
     Bot bot = botFactory.getTraditionalBot(2, null);
     assertThat(bot).isInstanceOf(TraditionalBot.class);
     assertThat(bot.getDescription()).contains("level 2");
   }
 
   @Test
-  public void getTraditionalBot_wrongLevel_throwsRuntime() {
+  void getTraditionalBot_wrongLevel_throwsRuntime() {
     assertThatRuntimeException().isThrownBy(() -> botFactory.getTraditionalBot(-1, null));
     assertThatRuntimeException().isThrownBy(() -> botFactory.getTraditionalBot(3, null));
   }
 
   @Test
-  public void getTraditionalBot_wrongTimeout_throwsRuntime() {
+  void getTraditionalBot_wrongTimeout_throwsRuntime() {
     assertThatRuntimeException().isThrownBy(() -> botFactory.getTraditionalBot(1, 60));
   }
 
   @Test
-  public void getExperiencedBot_noError_returnsExperiencedWithLevel0() {
+  void getExperiencedBot_noError_returnsExperiencedWithLevel0() {
     Bot bot = botFactory.getExperiencedBot(0, null);
     assertThat(bot).isInstanceOf(ExperiencedBot.class);
     assertThat(bot.getDescription()).contains("level 0");
   }
 
   @Test
-  public void getExperiencedBot_wrongLevel_throwsRuntime() {
+  void getExperiencedBot_wrongLevel_throwsRuntime() {
     assertThatRuntimeException().isThrownBy(() -> botFactory.getExperiencedBot(-1, null));
     assertThatRuntimeException().isThrownBy(() -> botFactory.getExperiencedBot(3, null));
   }
 
   @Test
-  public void getExperiencedBot_wrongTimeout_throwsRuntime() {
+  void getExperiencedBot_wrongTimeout_throwsRuntime() {
     assertThatRuntimeException().isThrownBy(() -> botFactory.getExperiencedBot(1, 60));
   }
 
   @Test
-  public void getStrongestBot_returnsExperiencedBot() {
+  void getStrongestBot_returnsExperiencedBot() {
     Bot bot = botFactory.getStrongestBot();
     assertThat(bot).isInstanceOf(ExperiencedBot.class);
   }

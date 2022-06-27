@@ -13,12 +13,14 @@ public class RandomBot extends Bot {
     super(moveService);
   }
 
+  @Override
   public Move selectMove(Game game) {
     List<Move> moves = moveService.computeAllMoves(game.getBoard(), game.getToPlay(),
         game.getHistory(), true);
     return moves.get(RANDOM.nextInt(moves.size()));
   }
-
+  
+  @Override
   public boolean isDrawAcceptable(Game game) {
     return RANDOM.nextBoolean();
   }

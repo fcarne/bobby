@@ -17,12 +17,16 @@ public class ExperiencedBot extends TraditionalBot {
     this.openingService = openingService;
   }
 
+  @Override
   public Move selectMove(Game game) {
     List<Move> openingMoves = openingService.findPossibleMovesForHistory(game.getHistory());
+    Move move;
     if (openingMoves.isEmpty()) {
-      return super.selectMove(game);
+      move = super.selectMove(game);
     } else {
-      return openingMoves.get(RANDOM.nextInt(openingMoves.size()));
+      move = openingMoves.get(RANDOM.nextInt(openingMoves.size()));
     }
+    
+    return move;
   }
 }

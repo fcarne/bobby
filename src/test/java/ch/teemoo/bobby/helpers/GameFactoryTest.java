@@ -13,7 +13,7 @@ public class GameFactoryTest {
   private GameFactory gameFactory = new GameFactory();
 
   @Test
-  public void createGame_withSetup_returnSamePlayers() {
+  void createGame_withSetup_returnSamePlayers() {
     // given
     Player whitePlayer = new Human("White");
     Player blackPlayer = new Human("Black");
@@ -28,7 +28,7 @@ public class GameFactoryTest {
   }
 
   @Test
-  public void emptyGame_newGame_nullPlayers() {
+  void emptyGame_newGame_nullPlayers() {
     // given
 
     // when

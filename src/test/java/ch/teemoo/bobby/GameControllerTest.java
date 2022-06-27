@@ -86,7 +86,7 @@ public class GameControllerTest {
   private GameController controller;
 
   @BeforeEach
-  public void setup() {
+  void setup() {
     when(gameFactory.emptyGame()).thenReturn(new Game(null, null));
     when(gameFactory.createGame(any())).thenReturn(game);
     when(botFactory.getStrongestBot()).thenReturn(new TraditionalBot(0, null, moveService));
@@ -97,7 +97,7 @@ public class GameControllerTest {
   }
 
   @Test
-  public void init_newGameController_actionListener_set() {
+  void init_newGameController_actionListener_set() {
     verify(view, times(2)).display(any(), anyBoolean());
     verify(view).setItemLoadActionListener(any());
     verify(view).setItemPrintToConsoleActionListener(any());
@@ -107,7 +107,7 @@ public class GameControllerTest {
   }
 
   @Test
-  public void newGame_withSetup_dialogComesUp() {
+  void newGame_withSetup_dialogComesUp() {
     GameSetup gameSetup = new GameSetup(new Human("test1"), new Human("test2"));
 
     controller.newGame(gameSetup, true, gameResult -> {});
@@ -116,13 +116,13 @@ public class GameControllerTest {
   }
 
   @Test
-  public void refreshBoardView_normal_displayCalledWithFalse() {
+  void refreshBoardView_normal_displayCalledWithFalse() {
     controller.refreshBoardView(board);
     verify(view, atLeastOnce()).display(any(), eq(false));
   }
 
   @Test
-  public void refreshBoardView_reversed_displayCalledWithTrue() {
+  void refreshBoardView_reversed_displayCalledWithTrue() {
     when(game.getWhitePlayer()).thenReturn(new RandomBot(moveService));
     when(game.canBePlayed()).thenReturn(true);
     when(board.getBoard()).thenReturn(new Piece[][] {});
@@ -133,7 +133,7 @@ public class GameControllerTest {
   }
 
   @Test
-  public void getAllowedMove_normal_returnMove() {
+  void getAllowedMove_normal_returnMove() {
     Move move = new Move(new Queen(Color.WHITE), 3, 0, 3, 1);
     Move computedMove = new Move(new Queen(Color.WHITE), move.getFromX(), move.getFromY(),
         move.getToX(), move.getToY());
@@ -145,7 +145,7 @@ public class GameControllerTest {
   }
 
   @Test
-  public void getAllowedMove_unauthorizedMove_throwRuntime() {
+  void getAllowedMove_unauthorizedMove_throwRuntime() {
     Move move = new Move(new Queen(Color.WHITE), 3, 0, 3, 1);
     assertThatRuntimeException()
         .isThrownBy(() -> controller.getAllowedMove(move, null, Collections.emptyList()))
@@ -153,7 +153,7 @@ public class GameControllerTest {
   }
 
   @Test
-  public void getAllowedMove_ambiguousMove_throwRuntime() {
+  void getAllowedMove_ambiguousMove_throwRuntime() {
     Move move = new Move(new Queen(Color.WHITE), 3, 0, 3, 1);
     Move computedMove1 = new Move(new Queen(Color.WHITE), move.getFromX(), move.getFromY(),
         move.getToX(), move.getToY());
@@ -166,7 +166,7 @@ public class GameControllerTest {
   }
 
   @Test
-  public void getAllowedMove_humanPromotion_returnKnightPromotion() {
+  void getAllowedMove_humanPromotion_returnKnightPromotion() {
     Move move = new Move(new Pawn(Color.WHITE), 3, 6, 3, 7);
     Move computedMove = new Move(new Pawn(Color.WHITE), move.getFromX(), move.getFromY(),
         move.getToX(), move.getToY());
@@ -186,7 +186,7 @@ public class GameControllerTest {
   }
 
   @Test
-  public void getAllowedMove_botPromotion_returnQueenPromotion() {
+  void getAllowedMove_botPromotion_returnQueenPromotion() {
     Move move = new Move(new Pawn(Color.WHITE), 3, 6, 3, 7);
     Move computedMove = new Move(new Pawn(Color.WHITE), move.getFromX(), move.getFromY(),
         move.getToX(), move.getToY());
@@ -206,7 +206,7 @@ public class GameControllerTest {
   }
 
   @Test
-  public void getAllowedMove_promotionAlreadySet_returnKnightPromotion() {
+  void getAllowedMove_promotionAlreadySet_returnKnightPromotion() {
     // given
     PromotionMove move = new PromotionMove(new Move(new Pawn(Color.WHITE), 3, 6, 3, 7),
         new Knight(Color.WHITE));
@@ -230,7 +230,7 @@ public class GameControllerTest {
   }
 
   @Test
-  public void doMove_humanPlayer_moveDoneAndAddedToHistory() {
+  void doMove_humanPlayer_moveDoneAndAddedToHistory() {
     Move move = new Move(new Queen(Color.WHITE), 3, 0, 3, 1);
     Move computedMove = new Move(new Queen(Color.WHITE), move.getFromX(), move.getFromY(),
         move.getToX(), move.getToY());
@@ -251,7 +251,7 @@ public class GameControllerTest {
   }
 
   @Test
-  public void doMove_unauthorizedBotMove_throwRuntime() {
+  void doMove_unauthorizedBotMove_throwRuntime() {
     Move move = new Move(new Queen(Color.WHITE), 3, 0, 3, 1);
 
     when(game.getPlayerByColor(eq(Color.WHITE))).thenReturn(new RandomBot(moveService));
@@ -263,7 +263,7 @@ public class GameControllerTest {
   }
 
   @Test
-  public void undoLastMove_humanPlayer_moveUndoneAndRemovedFromHistory() {
+  void undoLastMove_humanPlayer_moveUndoneAndRemovedFromHistory() {
     Move move = new Move(new Queen(Color.WHITE), 3, 0, 3, 1);
     when(game.getPlayerByColor(eq(Color.WHITE))).thenReturn(new Human("test"));
     controller.undoLastMove(move);
@@ -276,7 +276,7 @@ public class GameControllerTest {
   }
 
   @Test
-  public void undoLastMove_botPlayer_moveUndoneAndRemovedFromHistory() {
+  void undoLastMove_botPlayer_moveUndoneAndRemovedFromHistory() {
     Move move = new Move(new Queen(Color.WHITE), 3, 0, 3, 1);
     when(game.getPlayerByColor(eq(Color.WHITE))).thenReturn(new RandomBot(moveService));
     controller.undoLastMove(move);
@@ -287,7 +287,7 @@ public class GameControllerTest {
   }
 
   @Test
-  public void displayGameInfo_inProgressNoCheck_noOutput() throws Exception {
+  void displayGameInfo_inProgressNoCheck_noOutput() throws Exception {
     Player player = new Human("test");
     when(game.getWhitePlayer()).thenReturn(player);
     Move move = new Move(new Queen(Color.WHITE), 3, 0, 3, 1);
@@ -299,7 +299,7 @@ public class GameControllerTest {
   }
 
   @Test
-  public void displayGameInfo_inProgressCheck_checkLogged() throws Exception {
+  void displayGameInfo_inProgressCheck_checkLogged() throws Exception {
     Player player = new RandomBot(moveService);
     when(game.getWhitePlayer()).thenReturn(player);
     when(game.getBlackPlayer()).thenReturn(player);
@@ -316,7 +316,7 @@ public class GameControllerTest {
   }
 
   @Test
-  public void displayGameInfo_drawThreefold_drawLogged() throws Exception {
+  void displayGameInfo_drawThreefold_drawLogged() throws Exception {
     Player player = new Human("test");
     when(game.getWhitePlayer()).thenReturn(player);
     Move move = new Move(new Queen(Color.WHITE), 3, 0, 3, 1);
@@ -331,7 +331,7 @@ public class GameControllerTest {
   }
 
   @Test
-  public void displayGameInfo_draw50Moves_drawLogged() throws Exception {
+  void displayGameInfo_draw50Moves_drawLogged() throws Exception {
     Player player = new Human("test");
     when(game.getWhitePlayer()).thenReturn(player);
     Move move = new Move(new Queen(Color.WHITE), 3, 0, 3, 1);
@@ -346,7 +346,7 @@ public class GameControllerTest {
   }
 
   @Test
-  public void displayGameInfo_drawStalemate_drawLogged() throws Exception {
+  void displayGameInfo_drawStalemate_drawLogged() throws Exception {
     Player player = new Human("test");
     when(game.getWhitePlayer()).thenReturn(player);
     Move move = new Move(new Queen(Color.WHITE), 3, 0, 3, 1);
@@ -361,7 +361,7 @@ public class GameControllerTest {
   }
 
   @Test
-  public void displayGameInfo_whiteBotWin_10Logged() throws Exception {
+  void displayGameInfo_whiteBotWin_10Logged() throws Exception {
     Player player = new RandomBot(moveService);
     when(game.getWhitePlayer()).thenReturn(player);
     when(game.getBlackPlayer()).thenReturn(new Human("test"));
@@ -376,7 +376,7 @@ public class GameControllerTest {
   }
 
   @Test
-  public void displayGameInfo_blackHumanWin_01Logged() throws Exception {
+  void displayGameInfo_blackHumanWin_01Logged() throws Exception {
     Player player = new Human("test");
     when(game.getWhitePlayer()).thenReturn(player);
     Move move = new Move(new Queen(Color.BLACK), 3, 0, 3, 1);
@@ -391,7 +391,7 @@ public class GameControllerTest {
   }
 
   @Test
-  public void saveGame_saved_writeToFileCalled() throws Exception {
+  void saveGame_saved_writeToFileCalled() throws Exception {
     File file = mock(File.class);
     when(view.saveGameDialog()).thenReturn(Optional.of(file));
     controller.saveGame();
@@ -399,14 +399,14 @@ public class GameControllerTest {
   }
 
   @Test
-  public void saveGame_cancelled_writeToFileNotCalled() throws Exception {
+  void saveGame_cancelled_writeToFileNotCalled() throws Exception {
     when(view.saveGameDialog()).thenReturn(Optional.empty());
     controller.saveGame();
     verify(fileService, never()).writeGameToFileBasicNotation(any(), any());
   }
 
   @Test
-  public void saveGame_throwException_errorLogged() throws Exception {
+  void saveGame_throwException_errorLogged() throws Exception {
     File file = mock(File.class);
     when(view.saveGameDialog()).thenReturn(Optional.of(file));
     doThrow(new IOException("Test exception")).when(fileService)
@@ -419,14 +419,14 @@ public class GameControllerTest {
   }
 
   @Test
-  public void loadGame_cancelled_readFileNotCalled() throws Exception {
+  void loadGame_cancelled_readFileNotCalled() throws Exception {
     when(view.loadGameDialog()).thenReturn(Optional.empty());
     controller.loadGame();
     verify(fileService, never()).readFile(any());
   }
 
   @Test
-  public void loadGame_basicNotation_moveDone() throws Exception {
+  void loadGame_basicNotation_moveDone() throws Exception {
     File file = File.createTempFile("test", ".txt");
     file.deleteOnExit();
 
@@ -446,7 +446,7 @@ public class GameControllerTest {
   }
 
   @Test
-  public void loadGame_pgn() throws Exception {
+  void loadGame_pgn() throws Exception {
     File file = File.createTempFile("test", ".pgn");
     file.deleteOnExit();
     when(view.loadGameDialog()).thenReturn(Optional.of(file));
@@ -466,7 +466,7 @@ public class GameControllerTest {
   }
 
   @Test
-  public void loadGame_throwException_errorLogged() throws Exception {
+  void loadGame_throwException_errorLogged() throws Exception {
     File file = File.createTempFile("test", ".txt");
     file.deleteOnExit();
     when(view.loadGameDialog()).thenReturn(Optional.of(file));
@@ -480,7 +480,7 @@ public class GameControllerTest {
   }
 
   @Test
-  public void printGameToConsole_none_boardLogged() throws Exception {
+  void printGameToConsole_none_boardLogged() throws Exception {
     String text = tapSystemOutNormalized(() -> {
       controller.printGameToConsole();
     });
@@ -489,7 +489,7 @@ public class GameControllerTest {
   }
 
   @Test
-  public void suggestMove_knightD8ToE6_moveLogged() throws Exception {
+  void suggestMove_knightD8ToE6_moveLogged() throws Exception {
     Move move = new Move(new Knight(Color.BLACK), 3, 7, 4, 5);
     when(moveService.selectMove(any(), anyInt(), any())).thenReturn(move);
     String text = tapSystemOutNormalized(() -> {
@@ -499,14 +499,14 @@ public class GameControllerTest {
   }
 
   @Test
-  public void undoLastMove_emptyHistory_undoNotCalled() {
+  void undoLastMove_emptyHistory_undoNotCalled() {
     when(game.getHistory()).thenReturn(Collections.emptyList());
     controller.undoLastMove();
     verify(board, never()).undoMove(any());
   }
 
   @Test
-  public void undoLastMove_withHistory_undoLastMove() {
+  void undoLastMove_withHistory_undoLastMove() {
     List<Move> moves = Arrays.asList(new Move(new Knight(Color.BLACK), 3, 7, 4, 5),
         new Move(new Knight(Color.WHITE), 3, 0, 4, 2));
     when(game.getHistory()).thenReturn(moves);
@@ -516,7 +516,7 @@ public class GameControllerTest {
   }
 
   @Test
-  public void evaluateDrawProposal_accepted_stateIsDraw() {
+  void evaluateDrawProposal_accepted_stateIsDraw() {
     // given
     Player whitePlayer = new TraditionalBot(1, null, moveService);
     when(game.getPlayerWaiting()).thenReturn(whitePlayer);
@@ -533,7 +533,7 @@ public class GameControllerTest {
   }
 
   @Test
-  public void evaluateDrawProposal_declined_stateIsNotDraw() {
+  void evaluateDrawProposal_declined_stateIsNotDraw() {
     // given
     Player whitePlayer = new TraditionalBot(1, null, moveService);
     when(game.getPlayerWaiting()).thenReturn(whitePlayer);
@@ -547,7 +547,7 @@ public class GameControllerTest {
   }
 
   @Test
-  public void evaluateDrawProposal_humanWaiting_loggedNotYourTurn() {
+  void evaluateDrawProposal_humanWaiting_loggedNotYourTurn() {
     when(game.getPlayerWaiting()).thenReturn(new Human("test"));
 
     controller.evaluateDrawProposal();
@@ -556,7 +556,7 @@ public class GameControllerTest {
   }
 
   @Test
-  public void playNextMove_gameOver_nothingCalled() {
+  void playNextMove_gameOver_nothingCalled() {
     when(moveService.getGameState(any(), any(), any())).thenReturn(GameState.LOSS);
     when(game.getPlayerToPlay()).thenReturn(new Human("test"));
     controller.playNextMove();
@@ -565,7 +565,7 @@ public class GameControllerTest {
   }
 
   @Test
-  public void playNextMove_humanToPlay_waitForHumanMove() {
+  void playNextMove_humanToPlay_waitForHumanMove() {
     when(moveService.getGameState(any(), any(), any())).thenReturn(GameState.IN_PROGRESS);
     when(game.getPlayerToPlay()).thenReturn(new Human("test"));
     Square[][] squares = new Square[8][8];

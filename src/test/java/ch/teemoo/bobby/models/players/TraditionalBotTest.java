@@ -34,7 +34,7 @@ public class TraditionalBotTest {
   @ParameterizedTest
   @ValueSource(ints = { 2 })
   @NullSource
-  public void selectMove_timeout_selectMoveCalled(Integer timeout) {
+  void selectMove_timeout_selectMoveCalled(Integer timeout) {
     int level = 2;
     Bot bot = new TraditionalBot(level, timeout, moveService);
 
@@ -44,7 +44,7 @@ public class TraditionalBotTest {
   }
 
   @Test
-  public void isDrawAcceptable_drawNotAcceptable_returnFalse() {
+  void isDrawAcceptable_drawNotAcceptable_returnFalse() {
     Bot bot = new TraditionalBot(1, null, moveService);
     
     bot.isDrawAcceptable(game);
@@ -67,12 +67,12 @@ public class TraditionalBotTest {
 
   @Test
   void selectMove_moveIsPawnE4_returnSelectedMove_PIT() {
-    Move move = new Move(new Pawn(Color.WHITE),4,1,4,3);
+    Move move = new Move(new Pawn(Color.WHITE), 4, 1, 4, 3);
     Bot bot = new TraditionalBot(1, null, moveService);
     when(moveService.selectMove(eq(game), anyInt(), isNull())).thenReturn(move);
 
     Move selected = bot.selectMove(game);
-  
+
     assertThat(selected).isNotNull().isEqualTo(move);
   }
 }

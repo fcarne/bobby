@@ -29,7 +29,7 @@ public class RandomBotTest {
   MoveService moveService;
 
   @Test
-  public void selectMove_moveList_returnElementOfList() {
+  void selectMove_moveList_returnElementOfList() {
 
     Move move1 = new Move(new Rook(Color.WHITE), 3, 4, 4, 4);
     Move move2 = new Move(new Knight(Color.WHITE), 2, 4, 5, 5);
@@ -46,20 +46,20 @@ public class RandomBotTest {
   }
 
   @Test
-  public void isDrawAcceptable_ok_returnsRandomBoolean() {
+  void isDrawAcceptable_ok_returnsRandomBoolean() {
     Bot bot = new RandomBot(null);
     assertThat(bot.isDrawAcceptable(null)).isInstanceOf(Boolean.class);
   }
 
   @Test
-  public void isDrawAcceptable_ok_returnsTrueAndFalse_PIT() {
+  void isDrawAcceptable_ok_returnsTrueAndFalse_PIT() {
     Bot bot = new RandomBot(null);
     boolean accepted = bot.isDrawAcceptable(game);
     boolean opposite;
     
     do {
       opposite = bot.isDrawAcceptable(game);
-    } while(opposite == accepted);
+    } while (opposite == accepted);
     
     assertThat(accepted).isNotEqualTo(opposite);
   }

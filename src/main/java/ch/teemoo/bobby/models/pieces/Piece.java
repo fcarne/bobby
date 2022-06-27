@@ -8,7 +8,7 @@ public abstract class Piece {
   protected final int value;
   protected final String whiteChar;
   protected final String blackChar;
-
+  
   public Piece(Color color, int value, String whiteChar, String blackChar) {
     super();
     this.color = color;

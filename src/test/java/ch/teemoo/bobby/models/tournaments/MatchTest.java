@@ -19,20 +19,20 @@ public class MatchTest {
   private Match match;
 
   @BeforeEach
-  public void setup() {
+  void setup() {
     this.player1 = new RandomBot(null);
     this.player2 = new RandomBot(null);
     this.match = new Match(player1, player2);
   }
 
   @Test
-  public void constructor_newMatch_hasDefault() {
+  void constructor_newMatch_hasDefault() {
     assertThat(match.getPlayer1()).isEqualTo(player1);
     assertThat(match.getPlayer2()).isEqualTo(player2);
   }
 
   @Test
-  public void toString_ok_returnMatchDescription() {
+  void toString_ok_returnMatchDescription() {
     assertThat(match.toString()).contains("Players:")
         .contains("Score:")
         .contains("Games:")
@@ -41,30 +41,30 @@ public class MatchTest {
   }
 
   @Test
-  public void getScoreByPlayer_matchPlayers_return0() {
+  void getScoreByPlayer_matchPlayers_return0() {
     assertThat(match.getScoreByPlayer(player1)).isEqualTo(0);
     assertThat(match.getScoreByPlayer(player2)).isEqualTo(0);
   }
 
   @Test
-  public void getScoreByPlayer_nonParticipant_throwRuntimeException() {
+  void getScoreByPlayer_nonParticipant_throwRuntimeException() {
     assertThatRuntimeException().isThrownBy(() -> match.getScoreByPlayer(new RandomBot(null)))
         .withMessage("Given player does not take part to this match");
   }
 
   @Test
-  public void isPlayerTakingPartToTheMatch_participant_returnTrue() {
+  void isPlayerTakingPartToTheMatch_participant_returnTrue() {
     assertThat(match.isPlayerTakingPartToTheMatch(player1)).isTrue();
     assertThat(match.isPlayerTakingPartToTheMatch(player2)).isTrue();
   }
 
   @Test
-  public void isPlayerTakingPartToTheMatch_nonParticipant_returnFalse() {
+  void isPlayerTakingPartToTheMatch_nonParticipant_returnFalse() {
     assertThat(match.isPlayerTakingPartToTheMatch(new RandomBot(null))).isFalse();
   }
 
   @Test
-  public void addDraw_newMatch_halfPointEach() {
+  void addDraw_newMatch_halfPointEach() {
     // given
     float score1 = match.getScoreByPlayer(player1);
     float score2 = match.getScoreByPlayer(player2);
@@ -79,7 +79,7 @@ public class MatchTest {
 
   @ParameterizedTest
   @ValueSource(ints = { 1, 2 })
-  public void addWin_playerWins_onePointAdded(int winning) {
+  void addWin_playerWins_onePointAdded(int winning) {
     // given
     Player winningPlayer;
     Player losingPlayer;
@@ -104,7 +104,7 @@ public class MatchTest {
   }
 
   @Test
-  public void addWin_nonParticipant_throwsRuntime() {
+  void addWin_nonParticipant_throwsRuntime() {
     assertThatRuntimeException().isThrownBy(() -> match.addWin(new RandomBot(null), 21))
         .withMessage("Player not found");
   }

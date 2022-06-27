@@ -14,6 +14,7 @@ import ch.teemoo.bobby.services.PortableGameNotationService;
 import com.formdev.flatlaf.FlatIntelliJLaf;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,17 +37,18 @@ public class Bobby implements Runnable {
   }
 
   public static void main(String[] args) {
-    boolean defaultSettings = args.length > 0 && args[0].equalsIgnoreCase("default");
+    boolean defaultSettings = args.length > 0 && "default".equalsIgnoreCase(args[0]);
 
     setLookAndFeel(defaultSettings);
     SwingUtilities.invokeLater(new Bobby(defaultSettings));
   }
 
+  @Override
   public void run() {
     GameSetup gameSetup = null;
     if (useDefaultSettings) {
       gameSetup = new GameSetup(new Human("Player"), botFactory.getStrongestBot());
-    }
+    } 
     IBoardView boardView = new BoardView("Bobby chess game", guiHelper);
     GameController gameController = new GameController(boardView, gameFactory, botFactory,
         moveService, fileService, portableGameNotationService);
@@ -60,7 +62,8 @@ public class Bobby implements Runnable {
       } else {
         UIManager.setLookAndFeel(new FlatIntelliJLaf());
       }
-    } catch (Exception e) {
+    } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+        | UnsupportedLookAndFeelException e) {
       LOGGER.warn("Unable to set Look and Feel (use system L&F is {})", useDefaultSettings, e);
     }
   }

@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 public class GameSetupTest {
 
   @Test
-  public void constructor_ok_returnSetup() {
+  void constructor_ok_returnSetup() {
     // given
     Player white = new Human("White");
     Player black = new Human("Black");

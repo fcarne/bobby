@@ -38,7 +38,7 @@ class BobbySwingLaFTest {
 
   @ParameterizedTest
   @MethodSource
-  public void main_argsPassed_lookAndFeelChanged(String[] args, String expected) {
+  void main_argsPassed_lookAndFeelChanged(String[] args, String expected) {
     Robot robot = BasicRobot.robotWithNewAwtHierarchy();
 
     application(Bobby.class).withArgs(args).start();

@@ -25,6 +25,7 @@ import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -160,7 +161,7 @@ public class PortableGameNotationService {
     movesContent = movesContent.replaceAll("\\d+\\.{1,3}", "");
 
     // Skip unnecessary spaces
-    movesContent = movesContent.replaceAll("^\\s+", "").replaceAll("\\s+$", "");
+    movesContent = StringUtils.strip(movesContent);
     return movesContent;
   }
 

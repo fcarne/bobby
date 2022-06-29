@@ -1,0 +1,32 @@
+scenario initial_board
+load ../bobby_pvp.asm
+
+check (forall $whitePawnFile in File with boardPiece($whitePawnFile, 2) = PAWN);
+check (forall $blackPawnFile in File with boardPiece($blackPawnFile, 7) = PAWN);
+
+check boardPiece(1,1) = ROOK;
+check boardPiece(8,1) = ROOK;
+check boardPiece(1,8) = ROOK;
+check boardPiece(8,8) = ROOK;
+
+check boardPiece(2,1) = KNIGHT;
+check boardPiece(7,1) = KNIGHT;
+check boardPiece(2,8) = KNIGHT;
+check boardPiece(7,8) = KNIGHT;
+
+check boardPiece(3,1) = BISHOP;
+check boardPiece(6,1) = BISHOP;
+check boardPiece(3,8) = BISHOP;
+check boardPiece(6,8) = BISHOP;
+
+check boardPiece(4,1) = QUEEN;
+check boardPiece(4,8) = QUEEN;
+
+check boardPiece(5,1) = KING;
+check boardPiece(5,8) = KING;
+
+check (forall $whiteF in File, $whiteR in Rank with $whiteR <= 2 implies boardColor($whiteF, $whiteR) = WHITE);
+check (forall $blackF in File, $blackR in Rank with $blackR >= 7 implies boardColor($blackF, $blackR) = BLACK);
+
+check turn = WHITE;
+check status = IN_PROGRESS;

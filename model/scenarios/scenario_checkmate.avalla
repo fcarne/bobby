@@ -1,0 +1,65 @@
+scenario checkmate
+load ../bobby_pvp.asm
+
+
+set fromFile := 5;
+set fromRank := 2;
+set toFile := 5;
+set toRank := 4;
+set isCheckmate := false;
+step
+check boardPiece(5,2) = undef;
+check boardColor(5,2) = undef;
+check boardPiece(5,4) = PAWN;
+check boardColor(5,4) = WHITE;
+check turn = BLACK;
+
+set fromFile := 6;
+set fromRank := 7;
+set toFile := 6;
+set toRank := 5;
+step
+check boardPiece(6,7) = undef;
+check boardColor(6,7) = undef;
+check boardPiece(6,5) = PAWN;
+check boardColor(6,5) = BLACK;
+check turn = WHITE;
+
+set fromFile := 5;
+set fromRank := 4;
+set toFile := 6;
+set toRank := 5;
+step
+check boardPiece(5,4) = undef;
+check boardColor(5,4) = undef;
+check boardPiece(6,5) = PAWN;
+check boardColor(6,5) = WHITE;
+check turn = BLACK;
+
+set fromFile := 7;
+set fromRank := 7;
+set toFile := 7;
+set toRank := 5;
+step
+check boardPiece(7,7) = undef;
+check boardColor(7,7) = undef;
+check boardPiece(7,5) = PAWN;
+check boardColor(7,5) = BLACK;
+check turn = WHITE;
+
+set fromFile := 4;
+set fromRank := 1;
+set toFile := 8;
+set toRank := 5;
+set isCheckmate := true;
+step
+check boardPiece(4,1) = undef;
+check boardColor(4,1) = undef;
+check boardPiece(8,5) = QUEEN;
+check boardColor(8,5) = WHITE;
+check status = CHECKMATE;
+check winner = WHITE;
+
+step
+
+check status = CHECKMATE;

@@ -1,0 +1,27 @@
+scenario invalid_move
+load ../bobby_pvp.asm
+
+check turn = WHITE;
+
+set fromFile := 1;
+set fromRank := 1;
+set toFile := 2;
+set toRank := 2;
+set isCheckmate := false;
+step
+check boardPiece(1,1) = ROOK;
+check boardColor(1,1) = WHITE;
+check boardPiece(2,2) = PAWN;
+check boardColor(2,2) = WHITE;
+check turn = WHITE;
+
+set fromFile := 2;
+set fromRank := 1;
+set toFile := 3;
+set toRank := 3;
+step
+check boardPiece(2,1) = undef;
+check boardColor(2,1) = undef;
+check boardPiece(3,3) = KNIGHT;
+check boardColor(3,3) = WHITE;
+check turn = BLACK;

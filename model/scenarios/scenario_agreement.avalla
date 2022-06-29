@@ -1,0 +1,26 @@
+scenario agreement
+load ../bobby_pvp.asm
+
+
+set fromFile := 5;
+set fromRank := 2;
+set toFile := 5;
+set toRank := 4;
+set isCheckmate := false;
+step
+check boardPiece(5,2) = undef;
+check boardColor(5,2) = undef;
+check boardPiece(5,4) = PAWN;
+check boardColor(5,4) = WHITE;
+check turn = BLACK;
+
+set fromFile := 5;
+set fromRank := 7;
+set toFile := 5;
+set toRank := 5;
+set proposeDraw(BLACK) := true;
+set proposeDraw(WHITE) := true;
+step
+check endOfGame;
+check status = AGREEMENT;
+check isUndef(winner);

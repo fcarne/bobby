@@ -1,6 +1,7 @@
 asm bobby_PC
 
 import StandardLibrary
+import CTLlibrary
 
 signature:
 	// DOMAINS
@@ -279,7 +280,26 @@ definitions:
 					skip
 				endif
 		endif
+		
 	
+	CTLSPEC ef(winner = WHITE) // VERO -> il bianco può vincere
+	CTLSPEC ef(winner = BLACK) // VERO -> il nero può vincere
+	CTLSPEC not ef(winner = playerColor) // FALSO -> trovo un controesempio di partita in cui vince l'utente
+	CTLSPEC af(endOfGame) // VERO -> la partita finisce sempre
+	CTLSPEC ag(endOfGame implies ag(endOfGame)) // VERO -> se la partità è finita, non si può fare altro
+	
+	CTLSPEC ag((exist $fW in File, $rW in Rank with boardPiece($fW, $rW) = KING and boardColor($fW, $rW) = WHITE) and 
+			(exist $fB in File, $rB in Rank with boardPiece($fB,$rB) = KING and boardColor($fB, $rB) = BLACK)) // VERO -> i due re non possono mai essere mangiati
+			
+	CTLSPEC not ef(status = STALEMATE) // FALSO -> trovo un controesempio di partita che finisce in stallo
+	CTLSPEC ef(status = AGREEMENT) // VERO -> c'è la possibilità che la partita finisca in un pareggio accordato
+	CTLSPEC aw(not endOfGame, ef(status = AGREEMENT) and not endOfGame) // VERO -> è sempre possibile che la partita finisca in pareggio (prima che la partita finisca)
+
+	CTLSPEC ag((movedPiece = PAWN and turn = WHITE and lastMoveToRank = 8 and lastMoveToFile = 1) implies ax(boardPiece(1, 8) != PAWN)) // VERO -> se la mossa scelta porta un pedone bianco al bordo, allora dev'essere promosso
+
+	CTLSPEC ag(turn != playerColor implies ax(turn = playerColor)) // VERO -> il PC esegue una mossa sempre valida
+	CTLSPEC ag(turn != playerColor implies ax(turn = playerColor)) // FALSO -> se sceglie una mossa non valida il turno resta in mano sua
+
 	// MAIN RULE
 	main rule r_main = 
 		switch status

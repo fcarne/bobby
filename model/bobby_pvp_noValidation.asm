@@ -1,7 +1,6 @@
 asm bobby_pvp_noValidation
 
 import StandardLibrary
-import CTLlibrary
 
 signature:
 	// DOMAINS
@@ -48,8 +47,6 @@ definitions:
 				r_doMove[$fromFile, $fromRank, $toFile, $toRank, boardPiece($fromFile, $fromRank)]
 				turn := swap(turn)
 			endpar
-
-	CTLSPEC ag(status = IN_PROGRESS)
 
 	// MAIN RULE
 	main rule r_main = 

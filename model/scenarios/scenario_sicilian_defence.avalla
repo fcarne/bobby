@@ -1,0 +1,27 @@
+scenario sicilian_defence
+load ../bobby_pvp.asm
+
+check turn = WHITE;
+
+set fromFile := 5;
+set fromRank := 2;
+set toFile := 5;
+set toRank := 4;
+set isCheckmate := false;
+step
+check boardPiece(5,2) = undef;
+check boardColor(5,2) = undef;
+check boardPiece(5,4) = PAWN;
+check boardColor(5,4) = WHITE;
+check turn = BLACK;
+
+set fromFile := 3;
+set fromRank := 7;
+set toFile := 3;
+set toRank := 5;
+step
+check boardPiece(3,7) = undef;
+check boardColor(3,7) = undef;
+check boardPiece(3,5) = PAWN;
+check boardColor(3,5) = BLACK;
+check turn = WHITE;

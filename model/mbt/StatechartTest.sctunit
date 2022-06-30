@@ -1,0 +1,94 @@
+testclass StatechartTest for statechart Statechart {
+	
+	@Test
+	operation testAgreement() {
+		enter
+		mock can_move() returns (true)
+		
+		assert active(main_region.In_Progress)
+		assert active(main_region.In_Progress.game.White_turn)
+		assert turn == 0
+		
+		raise doMove : true
+		
+		assert active(main_region.In_Progress.game.Black_turn)
+		assert turn == 1
+		
+		mock accept_draw() returns (true)
+		raise proposeDraw
+		
+		assert active(main_region.Agreement)
+		assert winner == -1
+		
+		exit
+	}
+	
+	
+	@Test
+	operation testCheckmate() {
+		enter
+	
+		mock can_move() returns (true)
+	
+		while(moves_number < 4) {		
+			raise doMove : true
+		}
+
+		mock can_move() returns (false)
+		mock is_in_check() returns (true)		
+		raise doMove : false // 3 moves checkmate
+		
+		assert active(main_region.Loss)
+		assert winner == 0
+		
+		exit
+	}
+	
+	@Test
+	operation testStalemate() {
+		enter
+
+		mock can_move() returns (false)
+		mock is_in_check() returns (false)
+				
+		raise doMove : true
+		
+		assert active(main_region.Stalemate)
+		assert winner == -1
+		
+		exit
+	}
+	
+	@Test
+	operation testThreefold() {
+		enter
+		
+		mock can_move() returns (true)
+		mock threefold_repetition() returns (true)
+				
+		while(moves_number <= 10) {		
+			raise doMove : false // only moving knights
+		}
+		
+		assert active(main_region.Threefold)
+		assert winner == -1
+		
+		exit
+	}
+	
+	@Test
+	operation test50Moves() {
+		enter
+	
+		mock can_move() returns (true)
+				
+		while(moves_number <= 50) {		
+			raise doMove : false // only moving knights
+		}
+		
+		assert active(main_region.Fifty_Moves_Draw)
+		assert winner == -1
+		
+		exit
+	}
+}

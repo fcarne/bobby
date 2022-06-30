@@ -337,7 +337,7 @@ public class MoveService {
     if (myHistory.size() <= OPENING_MOVES_COUNT) {
       // Still in the opening
       List<Piece> openingPieces = myHistory.stream()
-          .filter(m -> !(m instanceof CastlingMove))
+          .filter(CastlingMove.class::isInstance)
           .map(Move::getPiece)
           .filter(p -> !(p instanceof Pawn))
           .collect(Collectors.toList());
@@ -355,7 +355,7 @@ public class MoveService {
       }
     }
     // Castling is always good to secure the King
-    if (myHistory.stream().anyMatch(m -> m instanceof CastlingMove)) {
+    if (myHistory.stream().anyMatch(CastlingMove.class::isInstance)) {
       bonus += CASTLING_BONUS;
     } else {
       // But any other king move drops the right for castling
@@ -385,10 +385,8 @@ public class MoveService {
   }
 
   Optional<MoveAnalysis> getMaxScoreWithRandomChoice(Map<MoveAnalysis, Integer> moveScores) {
-    // Instead of just search for the max score, we search for all moves that
-    // have
-    // the max score, and if there are
-    // more than one move, then we randomly choose one. It shall give a bit of
+    // Instead of just search for the max score, we search for all moves that have the max score,
+    // and if there are more than one move, then we randomly choose one. It shall give a bit of
     // variation in games.
     if (moveScores.isEmpty()) {
       return Optional.empty();

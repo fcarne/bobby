@@ -181,7 +181,7 @@ public class GameController {
   Move getAllowedMove(Move move, Player player, List<Move> matchingMoves) {
     List<Move> allowedMoves;
     if (!matchingMoves.isEmpty()
-        && matchingMoves.stream().allMatch(m -> m instanceof PromotionMove)) {
+        && matchingMoves.stream().allMatch(PromotionMove.class::isInstance)) {
       Piece promotedPiece;
       if (move instanceof PromotionMove) {
         promotedPiece = ((PromotionMove) move).getPromotedPiece();

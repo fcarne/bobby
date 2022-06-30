@@ -65,8 +65,8 @@ public class CastlingMove extends Move {
   }
 
   //@ also
-  //@ ensures rookFromX == 0 <==> \result == "0-0-0";
-  //@ ensures rookFromX == 7 <==> \result == "0-0";
+  //@ ensures rookFromX == 0 <==> \result.contains("0-0-0");
+  //@ ensures rookFromX == 7 <==> \result.contains("0-0");
   @Override
   public String getBasicNotation() {
     String notation;

@@ -44,11 +44,13 @@ public class Board {
     for (int i = SIZE - 1; i >= 0; i--) {
       for (int j = 0; j < SIZE; j++) {
         Optional<Piece> piece = getPiece(j, i);
+
         if (piece.isPresent()) {
           builder.append(piece.get().getUnicode());
         } else {
           builder.append(' ');
         }
+        
         builder.append(' ');
       }
       builder.append('\n');
@@ -149,7 +151,7 @@ public class Board {
   private Piece[][] fromString(String value) {
     Piece[][] pieces = new Piece[SIZE][SIZE];
     String[] lines = value.split("\n");
-    assert lines.length == SIZE;
+    //@ assert lines.length == SIZE;
 
     for (int i = 0; i < SIZE; i++) {
       String line = lines[i];

@@ -8,7 +8,7 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GuiHelper {
+public final class GuiHelper {
   private static final Logger LOGGER = LoggerFactory.getLogger(GuiHelper.class);
 
   private Font pieceFont;
@@ -32,8 +32,7 @@ public class GuiHelper {
   }
 
   private Font loadPieceFont() {
-    try {
-      InputStream inputStream = getResource("fonts/FreeSerif.ttf");
+    try (InputStream inputStream = getResource("fonts/FreeSerif.ttf")) {
       if (inputStream == null) {
         throw new IOException("Cannot load font from resource");
       }

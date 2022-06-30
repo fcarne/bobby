@@ -89,13 +89,15 @@ public class Match {
   }
 
   public String toString() {
-    return "Players: \t" + player1.getDescription() + " vs " + player2.getDescription() + "\n"
-        + "Score:   \t" + scorePlayer1 + "-" + scorePlayer2 + "\n"
-        + "Games:   \t" + playedGames + "\n"
-        + "Moves:   \t" + totalMoves + "\n"
-        + "Avg m/g: \t" + (float) totalMoves / (float) playedGames;
+    StringBuilder builder = new StringBuilder();
+    builder.append("Players: \t").append(player1.getDescription()).append(" vs")
+      .append(player2.getDescription()).append('\n')
+      .append("Score:   \t").append(scorePlayer1).append('-').append(scorePlayer2).append('\n')
+      .append("Games:   \t").append(playedGames).append('\n')
+      .append("Moves:   \t").append(totalMoves).append('\n')
+      .append("Avg m/g: \t").append((float) totalMoves / (float) playedGames);
+    return builder.toString();
   }
-
   
   //@ requires nbMoves > 0;
   //@ ensures playedGames == \old(playedGames) + 1;

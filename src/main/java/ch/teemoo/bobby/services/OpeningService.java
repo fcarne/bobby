@@ -98,7 +98,7 @@ public class OpeningService {
   }
 
   private String prettyPrintNode(Node node, int level) {
-    StringBuffer result = new StringBuffer();
+    StringBuilder result = new StringBuilder();
     for (int i = 0; i < level; i++) {
       result.append('\t');
     }

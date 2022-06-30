@@ -50,15 +50,13 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
-
-
 public class BoardView extends JFrame implements IBoardView {
   private static final long serialVersionUID = -6991571483234510815L;
   protected static final Border NO_BORDER = BorderFactory.createEmptyBorder();
   protected static final Border GREEN_BORDER = BorderFactory.createLineBorder(java.awt.Color.green,
       3, true);
 
-  private final boolean visible;
+  private final boolean shouldBeVisible;
   private final Container contentPane;
   private final Icon logoIcon;
   private final GuiHelper guiHelper;
@@ -71,7 +69,6 @@ public class BoardView extends JFrame implements IBoardView {
   private JMenuItem itemSuggestMove;
   private JMenuItem itemUndoMove;
   private JMenuItem itemProposeDraw;
-  private JMenuItem itemAbout;
 
   public BoardView(String title, GuiHelper guiHelper) {
     this(title, guiHelper, true);
@@ -82,7 +79,7 @@ public class BoardView extends JFrame implements IBoardView {
     this.squares = new Square[SIZE][SIZE];
     setTitle(title);
     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-    this.visible = visible;
+    this.shouldBeVisible = visible;
     this.contentPane = getContentPane();
     this.logoIcon = new ImageIcon(
         Thread.currentThread().getContextClassLoader().getResource("img/logo.png"), "Bobby logo");
@@ -163,7 +160,7 @@ public class BoardView extends JFrame implements IBoardView {
     } else {
       components.forEach(contentPane::add);
     }
-    setVisible(visible);
+    setVisible(shouldBeVisible);
   }
 
   @Override
@@ -419,7 +416,7 @@ public class BoardView extends JFrame implements IBoardView {
     JMenu helpMenu = new JMenu("Help");
     menuBar.add(helpMenu);
 
-    this.itemAbout = new JMenuItem("About");
+    JMenuItem itemAbout = new JMenuItem("About");
     helpMenu.add(itemAbout);
     itemAbout.addActionListener(actionEvent -> showAboutDialog());
   }

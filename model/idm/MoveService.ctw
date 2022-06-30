@@ -1,0 +1,20 @@
+Model MoveService
+
+Parameters:
+  canMove : Boolean
+  isInCheck: Boolean
+  historySize : [0 .. 51 ]
+  noPawnMovedInLast50 : Boolean
+  noTakingInLast50 : Boolean
+  equals1_5 : Boolean
+  equals1_9 : Boolean
+  equals2_6 : Boolean
+  equals2_10 : Boolean
+  
+  state : { LOSS, STALEMATE, THREEFOLD, 50MOVES, IN_PROGRESS }
+
+Constraints:
+  # not canMove and isInCheck <=> state = LOSS #
+  # not canMove and not isInCheck <=> state = STALEMATE #
+  # historySize >= 10 and equals1_5 and equals1_9 and equals2_6 and equals2_10 <=> state = THREEFOLD #
+  # historySize >= 50 and noPawnMovedInLast50 and noTakingInLast50 <=> state = 50MOVES #

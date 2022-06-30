@@ -8,9 +8,8 @@ import ch.teemoo.bobby.services.MoveService;
 import ch.teemoo.bobby.services.OpeningService;
 
 public class BotFactory {
-  private static final int LEVEL_MAX = 2;
-  private static final int LEVEL_MIN = 0;
-  private static final int TIMEOUT_MAX = 10;
+  private static /*@ spec_public @*/ final int LEVEL_MAX = 2;
+  private static /*@ spec_public @*/ final int TIMEOUT_MAX = 10;
 
   private final MoveService moveService;
   private final OpeningService openingService;
@@ -20,38 +19,28 @@ public class BotFactory {
     this.openingService = openingService;
   }
 
+  //@ ensures \result instanceof RandomBot;
   public Bot getRandomBot() {
     return new RandomBot(moveService);
   }
 
+  //@ requires 0 <= level <= LEVEL_MAX;
+  //@ requires timeout == null || 0 <= timeout <= TIMEOUT_MAX;
+  //@ ensures \result instanceof TraditionalBot;
   public Bot getTraditionalBot(int level, Integer timeout) {
-    checkLevel(level);
-    checkTimeout(timeout);
     return new TraditionalBot(level, timeout, moveService);
   }
 
+  //@ requires 0 <= level <= LEVEL_MAX;
+  //@ requires timeout == null || 0 <= timeout <= TIMEOUT_MAX;
+  //@ ensures \result instanceof ExperiencedBot;
   public Bot getExperiencedBot(int level, Integer timeout) {
-    checkLevel(level);
-    checkTimeout(timeout);
     return new ExperiencedBot(level, timeout, moveService, openingService);
   }
 
+  //@ ensures \result instanceof ExperiencedBot;
   public Bot getStrongestBot() {
     return getExperiencedBot(LEVEL_MAX, TIMEOUT_MAX);
   }
 
-  private void checkLevel(int level) {
-    boolean okLevel = level >= LEVEL_MIN && level <= LEVEL_MAX;
-    if (!okLevel) {
-      throw new IllegalArgumentException(
-          "Bot level must be between " + LEVEL_MIN + " and " + LEVEL_MAX);
-    }
-  }
-
-  private void checkTimeout(Integer timeout) {
-    boolean okTimeout = timeout == null || timeout <= TIMEOUT_MAX;
-    if (!okTimeout) {
-      throw new IllegalArgumentException("Bot timeout must be less than" + TIMEOUT_MAX);
-    }
-  }
 }

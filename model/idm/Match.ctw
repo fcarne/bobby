@@ -1,0 +1,18 @@
+Model Match
+
+Parameters:
+  played_games : [ 0 .. 11 ]
+  white_points : [ 0 .. 11 ]
+  black_points : [ 0 .. 11 ]
+
+  game_result : { DRAW, WHITE_WIN, BLACK_WIN }
+  white_points_after : [ 0 .. 12 ]
+  black_points_after : [ 0 .. 12 ]
+  played_games_after : [ 1 .. 12 ]
+  
+Constraints:
+  # played_games_after  = played_games + 1 #
+  # game_result = DRAW <=> (white_points_after = white_points and black_points_after = black_points) #
+  # game_result = WHITE_WIN <=> (white_points_after = white_points + 1 and black_points_after = black_points) #
+  # game_result = BLACK_WIN <=> (white_points_after = white_points and black_points_after = black_points + 1) #
+  

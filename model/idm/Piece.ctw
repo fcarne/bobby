@@ -1,0 +1,31 @@
+Model Phone
+
+Parameters:
+  type : { PAWN, ROOK, KNIGHT, BISHOP, QUEEN, KING }
+  color : { WHITE, BLACK }
+  value : { ONE, THREE, FIVE, TEN, ONE_HUNDRED }
+  unicode : { B_R, B_N, B_B, B_Q, B_K, B_P, W_R, W_N, W_B, W_Q, W_K, W_P }
+
+Constraints:
+  # type = PAWN <=> value = ONE #
+  # (type = KNIGHT or type = BISHOP) <=> value = THREE #
+  # type = ROOK <=> value = FIVE #
+  # type = QUEEN <=> value = TEN #
+  # type = KING <=> value = ONE_HUNDRED #
+  
+  # (type = ROOK and color = BLACK) <=> unicode = B_R #
+  # (type = KNIGHT and color = BLACK) <=> unicode = B_N #
+  # (type = BISHOP and color = BLACK) <=> unicode = B_B #
+  # (type = QUEEN and color = BLACK) <=> unicode = B_Q #
+  # (type = KING and color = BLACK) <=> unicode = B_K #
+  # (type = PAWN and color = BLACK) <=> unicode = B_P #
+  # (type = ROOK and color = BLACK) <=> unicode = B_R #
+
+  # (type = ROOK and color = WHITE) <=> unicode = W_R #  
+  # (type = KNIGHT and color = WHITE) <=> unicode = W_N #
+  # (type = BISHOP and color = WHITE) <=> unicode = W_B #
+  # (type = QUEEN and color = WHITE) <=> unicode = W_Q #
+  # (type = KING and color = WHITE) <=> unicode = W_K #
+  # (type = PAWN and color = WHITE) <=> unicode = W_P #
+  
+  

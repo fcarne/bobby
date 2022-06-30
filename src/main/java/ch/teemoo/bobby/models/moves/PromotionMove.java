@@ -5,22 +5,26 @@ import ch.teemoo.bobby.models.pieces.Pawn;
 import ch.teemoo.bobby.models.pieces.Piece;
 
 public class PromotionMove extends Move {
-  private final Piece promotedPiece;
+  private /*@ spec_public @*/ final Piece promotedPiece;
 
+  //@ public invariant promotedPiece != null;
+  
+  //@ requires move.getPiece() instanceof Pawn;
+  //@ requires move.getPiece().getColor() == promotedPiece.getColor();
+  //@ requires !(promotedPiece instanceof King) && !(promotedPiece instanceof Pawn);
+  //@ ensures this.getFromX() == move.getFromX() && this.getFromY() == move.getFromY();
+  //@ ensures this.getToX() == move.getToX() && this.getToY() == move.getToY();
+  //@ ensures this.isChecking() == move.isChecking();
   public PromotionMove(Move move, Piece promotedPiece) {
     super(move.getPiece(), move.getFromX(), move.getFromY(), move.getToX(), move.getToY());
-
-    assert getPiece() instanceof Pawn : "Promoted piece must be a pawn";
-    assert promotedPiece.getColor() == getPiece().getColor()
-        : "Promoted piece must be of the same color";
-    assert !(promotedPiece instanceof King) && !(promotedPiece instanceof Pawn)
-        : "Choosen piece must not be a king or a pawn";
 
     this.promotedPiece = promotedPiece;
     setChecking(move.isChecking());
     setTookPiece(move.getTookPiece());
   }
 
+  //@ ensures \result == promotedPiece;
+  //@ pure
   public Piece getPromotedPiece() {
     return promotedPiece;
   }

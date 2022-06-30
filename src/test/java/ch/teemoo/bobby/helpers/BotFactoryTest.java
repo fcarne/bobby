@@ -1,7 +1,6 @@
 package ch.teemoo.bobby.helpers;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatRuntimeException;
 
 import ch.teemoo.bobby.models.players.Bot;
 import ch.teemoo.bobby.models.players.ExperiencedBot;
@@ -41,7 +40,7 @@ public class BotFactoryTest {
     assertThat(bot.getDescription()).contains("level 2");
   }
 
-  @Test
+  /* @Test
   void getTraditionalBot_wrongLevel_throwsRuntime() {
     assertThatRuntimeException().isThrownBy(() -> botFactory.getTraditionalBot(-1, null));
     assertThatRuntimeException().isThrownBy(() -> botFactory.getTraditionalBot(3, null));
@@ -50,7 +49,7 @@ public class BotFactoryTest {
   @Test
   void getTraditionalBot_wrongTimeout_throwsRuntime() {
     assertThatRuntimeException().isThrownBy(() -> botFactory.getTraditionalBot(1, 60));
-  }
+  }*/
 
   @Test
   void getExperiencedBot_noError_returnsExperiencedWithLevel0() {
@@ -59,7 +58,7 @@ public class BotFactoryTest {
     assertThat(bot.getDescription()).contains("level 0");
   }
 
-  @Test
+  /*@Test
   void getExperiencedBot_wrongLevel_throwsRuntime() {
     assertThatRuntimeException().isThrownBy(() -> botFactory.getExperiencedBot(-1, null));
     assertThatRuntimeException().isThrownBy(() -> botFactory.getExperiencedBot(3, null));
@@ -68,7 +67,7 @@ public class BotFactoryTest {
   @Test
   void getExperiencedBot_wrongTimeout_throwsRuntime() {
     assertThatRuntimeException().isThrownBy(() -> botFactory.getExperiencedBot(1, 60));
-  }
+  }*/
 
   @Test
   void getStrongestBot_returnsExperiencedBot() {

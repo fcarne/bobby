@@ -3,25 +3,32 @@ package ch.teemoo.bobby.models.moves;
 import ch.teemoo.bobby.models.pieces.Pawn;
 
 public class EnPassantMove extends Move {
-  private final int tookPiecePosX;
-  private final int tookPiecePosY;
+  private /*@ spec_public @*/ final int tookPiecePosX;
+  private /*@ spec_public @*/ final int tookPiecePosY;
 
+  //@ requires move.getPiece() instanceof Pawn;
+  //@ requires move.isTaking();
+  //@ ensures this.getFromX() == move.getFromX() && this.getFromY() == move.getFromY();
+  //@ ensures this.getToX() == move.getToX() && this.getToY() == move.getToY();
+  //@ ensures this.isChecking() == move.isChecking();
+  //@ ensures this.tookPiecePosX == tookPiecePosX;
+  //@ ensures this.tookPiecePosY == tookPiecePosY;
   public EnPassantMove(Move move, int tookPiecePosX, int tookPiecePosY) {
     super(move.getPiece(), move.getFromX(), move.getFromY(), move.getToX(), move.getToY());
-
-    assert getPiece() instanceof Pawn : "Only pawns can make an en passant move";
-    assert move.isTaking() : "En passant move must be a taking move";
-
     this.tookPiecePosX = tookPiecePosX;
     this.tookPiecePosY = tookPiecePosY;
     setChecking(move.isChecking());
     setTookPiece(move.getTookPiece());
   }
 
+  //@ ensures \result == tookPiecePosX;
+  //@ pure
   public int getTookPiecePosX() {
     return tookPiecePosX;
   }
 
+  //@ ensures \result == tookPiecePosY;
+  //@ pure
   public int getTookPiecePosY() {
     return tookPiecePosY;
   }

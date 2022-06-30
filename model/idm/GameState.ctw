@@ -1,0 +1,12 @@
+Model Phone
+
+Parameters:
+  state : { IN_PROGRESS, LOSS, DRAW_STALEMATE, DRAW_THREEFOLD, DRAW_50_MOVES, DRAW_AGREEMENT }
+  isDraw : Boolean
+  isLost : Boolean
+  isInProgress : Boolean
+  
+Constraints:
+  # isLost <=> state = LOSS #
+  # isInProgress <=> state = IN_PROGRESS #
+  # isDraw = false <=> (state = IN_PROGRESS or state = LOSS) #

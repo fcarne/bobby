@@ -1,0 +1,12 @@
+Model BotFactory
+
+Parameters:
+  type: { EXPERIENCED, TRADITIONAL, STRONGEST, RANDOM }
+  timeout : [ 0 .. 10 ]
+  nullTimeout : Boolean
+  level : [ 0 .. 2 ]
+
+Constraints:
+  # type = STRONGEST => (timeout = 10 and level = 2) #
+  # nullTimeout <=> timeout = 0 #
+  # type  = RANDOM => (timeout = 0 and level = 0) # 

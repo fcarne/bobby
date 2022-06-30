@@ -6,14 +6,23 @@ import ch.teemoo.bobby.models.pieces.Piece;
 import java.util.Objects;
 
 public class Move {
-  private final Piece piece;
-  private final int fromX;
-  private final int fromY;
-  private final int toX;
-  private final int toY;
-  private Piece tookPiece;
-  private boolean check;
+  private /*@ spec_public @*/ final Piece piece;
+  private /*@ spec_public @*/ final int fromX;
+  private /*@ spec_public @*/ final int fromY;
+  private /*@ spec_public @*/ final int toX;
+  private /*@ spec_public @*/ final int toY;
+  private /*@ spec_public @*/ Piece tookPiece;
+  private /*@ spec_public @*/ boolean check;
+  
+  //@ public invariant piece != null;
+  //@ public invariant 0 <= fromX && fromX <= 7;
+  //@ public invariant 0 <= fromY && fromY <= 7;
+  //@ public invariant 0 <= toX && toX <= 7;
+  //@ public invariant 0 <= toY && toY <= 7;
+  //@ public invariant fromX != toX || fromY != toY;
+  //@ public invariant tookPiece != null ==> tookPiece.getColor() != piece.getColor();
 
+  //@ ensures this.piece == piece && this.fromX == fromX && this.fromY == fromY && this.toX == toX && this.toY == toY;
   public Move(Piece piece, int fromX, int fromY, int toX, int toY) {
     this.piece = piece;
     this.fromX = fromX;
@@ -23,42 +32,60 @@ public class Move {
     //this.tookPiece = null;
   }
 
+  //@ ensures \result == piece;
+  //@ pure
   public Piece getPiece() {
     return piece;
   }
 
+  //@ ensures \result == fromX;
+  //@ pure
   public int getFromX() {
     return fromX;
   }
 
+  //@ ensures \result == fromY;
+  //@ pure
   public int getFromY() {
     return fromY;
   }
 
+  //@ ensures \result == toX;
+  //@ pure
   public int getToX() {
     return toX;
   }
 
+  //@ ensures \result == toY;
+  //@ pure
   public int getToY() {
     return toY;
   }
 
+  //@ ensures \result == (tookPiece != null);
+  //@ pure
   public boolean isTaking() {
     return tookPiece != null;
   }
 
+  //@ ensures \result == tookPiece;
+  //@ pure
   public Piece getTookPiece() {
     return tookPiece;
   }
 
+  //@ ensures this.tookPiece == tookPiece;
   public void setTookPiece(Piece tookPiece) {
     this.tookPiece = tookPiece;
   }
 
+  //@ ensures \result == check;
+  //@ pure
   public boolean isChecking() {
     return check;
   }
 
+  //@ ensures this.check == checking;
   public void setChecking(boolean checking) {
     check = checking;
   }
@@ -86,7 +113,7 @@ public class Move {
     }
     return builder.toString();
   }
-
+  
   public static Move fromBasicNotation(String notation, Color color, Board board) {
     if (notation == null || color == null) {
       throw new IllegalArgumentException(
@@ -165,6 +192,8 @@ public class Move {
     return charAscii - aAscii;
   }
 
+  //@ requires move != null;
+  //@ ensures \result <==> fromX == move.fromX && fromY == move.fromY && toX == move.toX && toY == move.toY;
   public boolean equalsForPositions(Move move) {
     return fromX == move.fromX && fromY == move.fromY && toX == move.toX && toY == move.toY;
   }

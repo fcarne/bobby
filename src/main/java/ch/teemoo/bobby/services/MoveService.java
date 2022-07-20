@@ -19,7 +19,6 @@ import ch.teemoo.bobby.models.pieces.Pawn;
 import ch.teemoo.bobby.models.pieces.Piece;
 import ch.teemoo.bobby.models.pieces.Queen;
 import ch.teemoo.bobby.models.pieces.Rook;
-import com.puppycrawl.tools.checkstyle.checks.coding.VariableDeclarationUsageDistanceCheck;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.ArrayList;

@@ -1,0 +1,12 @@
+<testsuite name="StatechartTest" time="">
+  <testcase name="testAgreement" classname="platform:/resource/bobby/model/StatechartTest.sctunit#StatechartTest.testAgreement" time="">
+  </testcase>
+  <testcase name="testCheckmate" classname="platform:/resource/bobby/model/StatechartTest.sctunit#StatechartTest.testCheckmate" time="">
+  </testcase>
+  <testcase name="testStalemate" classname="platform:/resource/bobby/model/StatechartTest.sctunit#StatechartTest.testStalemate" time="">
+  </testcase>
+  <testcase name="testThreefold" classname="platform:/resource/bobby/model/StatechartTest.sctunit#StatechartTest.testThreefold" time="">
+  </testcase>
+  <testcase name="test50Moves" classname="platform:/resource/bobby/model/StatechartTest.sctunit#StatechartTest.test50Moves" time="">
+  </testcase>
+</testsuite>
